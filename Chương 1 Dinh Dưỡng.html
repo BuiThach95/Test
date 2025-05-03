@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+    {
+      type: "single",
+      question: "Câu 1: Tất cả các nguyên nhân sau là nguyên nhân gây SDD ngoại trừ:",
+      options: ["a. Mẹ không có sữa phải nuôi nhân tạo bằng sữa bò pha loãng.", "b. Ăn bổ sung quá sớm hoặc quá muộn.", "c. Hay bị nhiễm trùng viêm phổi hoặc ỉa chảy tái diễn.", "d. Bú sữa công nghiệp."],
+      answer: ["d. Bú sữa công nghiệp."]
+    },
+    {
+      type: "single",
+      question: "Câu 2: Phân loại SDD theo Welcome dựa vào cân nặng theo tuổi và triệu chứng phù có ưu điểm:",
+      options: ["a. Dễ áp dụng trong cộng đồng.", "b. Phân loại được các thể SDD nặng.", "c. Phân loại được SDD cấp và mãn.", "d. Phân loại được SDD độ 1 và 2."],
+      answer: ["a. Dễ áp dụng trong cộng đồng."]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 3: Biểu hiện rối loạn điện giải ở trẻ SDD là: Đ/S",
+      statements: [
+        { text: "Na toàn phần tăng kể cả trong tế bào.", answer: "Sai" },
+        { text: "Na máu có thể thấp.", answer: "Đúng" },
+        { text: "K huyết tương thường tăng do tổ chức cơ bị phá huỷ.", answer: "Đúng" },
+        { text: "Ca máu có thể thấp hoặc bình thường", answer: "Đúng" }
+      ]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 4: Sự biến đổi của các cơ quan bộ phận ở trẻ bị SDD là: Đ/S",
+      statements: [
+        { text: "Gan to do rối loạn chuyển hoá glucid gây tích tụ glycogen.", answer: "Sai" },
+        { text: "Da thường bị tổn thương dạng chàm đặc biệt ở vùng da hở.", answer: "Đúng" },
+        { text: "Tăng bài tiết acid trong dịch vị dạ dày nên dễ gây viêm dạ dày.", answer: "Sai" },
+        { text: "Hormon tuyến giáp giảm nên trẻ có biểu hiện suy giáp.", answer: "Sai" },
+        { text: "Giảm độ lọc cầu thận và chức năng ống thận.", answer: "Đúng" }
+      ]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 5: Biểu hiện lâm sàng của SDD thể Kwashiokor: Đ/S",
+      statements: [
+        { text: "Cân nặng còn 60- 80%.", answer: "Đúng" },
+        { text: "Trẻ phù từ mặt đến chân rồi phù trắng mềm ấn lõm.", answer: "Đúng" },
+        { text: "Trên da có thể xuất hiện các mảng sắc tố", answer: "Đúng" },
+        { text: "Trẻ hay nôn chớ, ỉa phân sống lỏng.", answer: "Đúng" },
+        { text: "Trẻ hay quấy khóc kém vận động.", answer: "Sai" }
+      ]
+    },
+    {
+      type: "single",
+      question: "Câu 6: Đặc điểm thiếu máu ở trẻ SDD là:",
+      options: ["a. Thiếu máu cấp tính.", "b. Thiếu máu mãn tính do tan máu.", "c. Thiếu máu đẳng sắc hồng cầu bình thường.", "d. Thiếu máu nhược sắc hồng cầu nhỏ"],
+      answer: ["c. Thiếu máu đẳng sắc hồng cầu bình thường."]
+    },
+    {
+      type: "single",
+      question: "Câu 7: Biểu hiện hội chứng kém hấp thu ở trẻ SDD qua xét nghiệm phân là:",
+      options: ["a. Có nhiều tinh bột, sợi cơ và bạch cầu trung tính", "b. Có nhiều tinh bột, hạt mỡ và bạch cầu, hồng cầu.", "c. Có nhiều tinh bột, sợi cơ và hạt mỡ trung tính.", "d. Có nhiều tinh bột, sợi cơ, hạt mỡ, bạch cầu và hồng cầu"],
+      answer: ["c. Có nhiều tinh bột, sợi cơ và hạt mỡ trung tính."]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 8: Sự khác nhau cơ bản giữa SDD thể Marasmus và Kwashiokor là: Đ/S",
+      statements: [
+        { text: "SDD thể Marasmus là do thiếu protein còn Kwashiokor là do thiếu năng lượng kéo dài", answer: "Sai" },
+        { text: "Chỉ gặp triệu chứng phù ở trẻ SDD thể Kwashiokor.", answer: "Đúng" },
+        { text: "Albumin huyết thanh giảm rõ ở SDD thể Kwashiokor.", answer: "Đúng" },
+        { text: "Mảng sắc tố dưới da chỉ gặp ở SDD thể Kwashiokor", answer: "Đúng" }
+      ]
+    },
+    {
+      type: "single",
+      question: "Câu 9: Tất cả bệnh nhân SDD nặng khi đến bệnh viện cần phải được:",
+      options: ["a. Uống vitamin A.", "b. Truyền đường", "c. Truyền đạm", "d. Truyền máu."],
+      answer: ["a. Uống vitamin A."]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 10: Khi một trẻ SDD bị hạ đường huyết cần phải: Đ/S",
+      statements: [
+        { text: "Nới rộng quần áo.", answer: "Sai" },
+        { text: "Cho trẻ uống nước đường hay sữa", answer: "Đúng" },
+        { text: "Nếu trẻ có co giật hôn mê thì cần phải tiêm tĩnh mạch Glucoza 5%", answer: "Đúng" },
+        { text: "Cho trẻ uống thêm nước gừng", answer: "Sai" }
+      ]
+    },
+    {
+      type: "single",
+      question: "Câu 11: Để phát hiện sớm SDD cần phải:",
+      options: ["a. Cho trẻ tiêm chủng đầy đủ", "b. Mỗi tháng cân trẻ 1 lần", "c. Đo chiều cao hàng tháng", "d. Điều trị sớm các bệnh nhiễm khuẩn"],
+      answer: ["b. Mỗi tháng cân trẻ 1 lần"]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 12: Các chất dinh dưỡng thiết yếu gồm: Đ/S",
+      statements: [
+        { text: "Nước .", answer: "Đúng" },
+        { text: "Chất khoáng.", answer: "Đúng" },
+        { text: "Chất đạm.", answer: "Đúng" },
+        { text: "Các Vitamin", answer: "Đúng" }
+      ]
+    },
+    {
+      type: "single",
+      question: "Câu 13: Thời gian sau đẻ trẻ bắt đầu bú mẹ là:",
+      options: ["A. Trong vòng 30 phút đầu", "B. Từ 2h đến 6h", "C. Từ 7h đến 12h", "D. Sau 12h"],
+      answer: ["A. Trong vòng 30 phút đầu"]
+    },
+    {
+      type: "single",
+      question: "Câu 14: Nhu cầu lipit của trẻ em theo khuyến nghị của viện dinh dưỡng là:",
+      options: ["A. Chiếm 15% khẩu phần năng lượng /ngày", "B. Chiếm 25%", "C. Chiếm 30%", "D. Chiếm 35%"],
+      answer: ["B. Chiếm 25%"]
+    },
+    {
+      type: "single",
+      question: "Câu 15: Nhu cầu gluxit của trẻ em theo khuyến nghị của viện dinh dưỡng là:",
+      options: ["A. Chiếm 60-65% khẩu phần năng lượng /ngày", "B. Chiếm 50-55%", "C. Chiếm 65-70%", "D. Chiếm >70%"],
+      answer: ["A. Chiếm 60-65% khẩu phần năng lượng /ngày"]
+    },
+    {
+      type: "single",
+      question: "Câu 16: Thời gian trẻ cần được ăn bổ sung là:",
+      options: ["A. 4 tháng", "B. 5 tháng", "C. 6 tháng", "D. 7 tháng"],
+      answer: ["C. 6 tháng"]
+    },
+    {
+      type: "single",
+      question: "Câu 17: Số bữa bột / ngày của trẻ 10 tháng tuổi là:",
+      options: ["a. 1 bữa/ngày", "b. 2 bữa/ngày", "c. 3 bữa/ngày", "d. 4 bữa/ngày"],
+      answer: ["c. 3 bữa/ngày"]
+    },
+    {
+      type: "single",
+      question: "Câu 18: Số bữa ăn / ngày của trẻ 12-18 tháng tuổi là:",
+      options: ["a. 4 bữa/ngày", "b. 5 bữa/ngày", "c. 6 bữa/ngày", "d. 7 bữa/ngày"],
+      answer: ["a. 4 bữa/ngày"]
+    },
+    {
+      type: "single",
+      question: "Câu 19: Số bữa bột / ngày của trẻ 9-12 tháng tuổi là:",
+      options: ["a. 2 bữa/ngày", "b. 3 bữa/ngày", "c. 4 bữa/ngày", "d. >4 bữa/ngày"],
+      answer: ["b. 3 bữa/ngày"]
+    },
+    {
+      type: "single",
+      question: "Câu 20: Một trẻ bình thường <12 tháng, số lượng bột mỗi bữa trẻ cần ăn là:",
+      options: ["a. 400 ml/ bữa", "b. 300 ml/ bữa", "c. 200 ml/ bữa", "d.100 ml/ bữa"],
+      answer: ["d.100 ml/ bữa"]
+    },
+    {
+      type: "single",
+      question: "Câu 21: Tỉ lệ năng lượng do các chất sinh năng lượng tạo ra ( Protein, Lipit, Gluxit), được khuyến nghị cho trẻ em là:",
+      options: ["a. 10%, 20%,70%", "b. 15%, 30%, 60%", "c. 20%, 15%, 60%", "d. 30%, 10%, 60%"],
+      answer: ["b. 15%, 30%, 60%"]
+    },
+    {
+      type: "single",
+      question: "Câu 22: Thời gian cai sũa theo khuyến nghị của WHO là :",
+      options: ["a. 18 tháng .", "b. 12 tháng .", "c. 24 tháng .", "d. từ 18 đến 24 tháng hoặc hơn ."],
+      answer: ["d. từ 18 đến 24 tháng hoặc hơn ."]
+    },
+    {
+      type: "single",
+      question: "Câu 23: Số bữa ăn hàng ngày của trẻ < 3 tháng tuổi được nuôi nhân tạo là :",
+      options: ["a. 7 bữa.", "b. 8 bữa ", "c. 9 bữa .", "d. 10 bữa"],
+      answer: ["b. 8 bữa "]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 24: Về ăn bổ sung cho trẻ: Đ/S",
+      statements: [
+        { text: "Trẻ cần được ăn bổ sung khi trẻ được 6 tháng tuổi", answer: "Đúng" },
+        { text: "Trẻ ăn bổ sung càng muộn càng tốt", answer: "Sai" },
+        { text: "Có thể cho trẻ ăn bổ sung sớm hơn khi trẻ chậm tăng cân", answer: "Đúng" },
+        { text: "Ăn bổ sung muộn, trẻ sẽ bị thiếu vi chất", answer: "Đúng" },
+        { text: "Ăn bổ sung sớm sẽ đưa thêm nhiều chất dinh dưỡng cho trẻ", answer: "Sai" }
+      ]
+    },
+    {
+      type: "single",
+      question: "Câu 25: Bệnh còi xương do thiếu vitamin D hay gặp nhất ở lứa tuổi nào:",
+      options: ["a. Từ sơ sinh đến 6 tháng tuổi.", "b. Từ 6 tháng đến 24 tháng tuổi.", "c. Từ 24 tháng đến 36 tháng tuổi.", "d. Trên 36 tháng tuổi."],
+      answer: ["b. Từ 6 tháng đến 24 tháng tuổi."]
+    },
+    {
+      type: "single",
+      question: "Câu 26: Bệnh còi xương do thiếu vitamin D hay gặp nhất vào mùa nào:",
+      options: ["a. Mùa hè.", "b. Mùa đông.", "c. Mùa thu.", "d. Mùa xuân."],
+      answer: ["b. Mùa đông."]
+    },
+    {
+      type: "single",
+      question: "Câu 27: Nguồn cung cấp vitamin D cho cơ thể chủ yếu nhất từ:",
+      options: ["a. Từ thức ăn thực vật.", "b. Từ thức ăn động vật.", "c. Từ nguồn dự trữ trong thời kỳ bào thai.", "d. Từ da."],
+      answer: ["d. Từ da."]
+    },
+    {
+      type: "single",
+      question: "Câu 28: Nhu cầu vitamin D cho trẻ bình thường là:",
+      options: ["a. 200 đv/ngày.", "b. 300 đv/ngày.", "c. 400 đv/ngày.", "d. 500 đv/ngày."],
+      answer: ["c. 400 đv/ngày."]
+    },
+    {
+      type: "single",
+      question: "Câu 29: Trẻ nào dưới đây ít bị mắc còi xương do thiếu vitamin D nhất:",
+      options: ["a. Trẻ < 1 tuổi.", "b. Trẻ đẻ non.", "c. Trẻ da màu.", "d. Trẻ da trắng."],
+      answer: ["d. Trẻ da trắng."]
+    },
+    {
+      type: "single",
+      question: "Câu 30: Biến đổi sinh học nào dưới đây có giá trị nhât để chẩn đoán bệnh còi xương",
+      options: ["a. Phosphataza kiềm tăng.", "b. Canxi máu Giảm.", "c. Phospho máu giảm.", "d. Dự trữ kiềm giảm."],
+      answer: ["a. Phosphataza kiềm tăng."]
+    },
+    {
+      type: "truefalse",
+      question: "Câu 31: Các dấu hiệu tổn thương xương chi thấy trên XQ gồm: Đ/S",
+      statements: [
+         {
+            text: "Loãng xương.",
+            answer: "Đúng"
+         },
+         {
+            text: "Điểm cốt hoá chậm.",
+            answer: "Đúng"
+         },
+         {
+            text: "Đầu xương to bè.",
+            answer: "Đúng"
+         },
+         {
+            text: "Đường cốt hóa nham nhở",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 32: Liều vitamin D điều trị còi xương hiện nay là:",
+      options: [
+         "a. 10.000 đv/ngày.",
+         "b. 40.000 đv/ngày.",
+         "c. 4.000 đv/ngày.",
+         "d. 300.000 đv/ngày."
+      ],
+      answer: [
+         "c. 4.000 đv/ngày."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 33: Vitamin A có nhiều nhất trong các thực phẩm nào dưới đây:",
+      options: [
+         "a. Sữa mẹ.",
+         "b. Gạo.",
+         "c. Dầu cá.",
+         "d. Trứng."
+      ],
+      answer: [
+         "c. Dầu cá."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 34: Tổn thương ở mắt sớm nhất do thiếu vitamin A là:",
+      options: [
+         "a. Khô kết mạc",
+         "b. Vệt Bittot.",
+         "c. Khô giác mạc.",
+         "d. Quáng gà."
+      ],
+      answer: [
+         "a. Khô kết mạc"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 35: Liều vitamin A để phòng bệnh cho trẻ < 1 tuổi:",
+      options: [
+         "a. 100.000 đv cách 1 tháng 1 lần.",
+         "b. 100.000 đv cách 6 tháng 1 lần.",
+         "c. 200.000 đv cách 6 tháng 1 lần.",
+         "d. 200.000 đv cách 1 năm 1 lần."
+      ],
+      answer: [
+         "b. 100.000 đv cách 6 tháng 1 lần."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 36: β-caroten không có trong thực phẩm nào:",
+      options: [
+         "a. Cam.",
+         "b. Đu đủ.",
+         "c. Thịt.",
+         "d. Rau ngót."
+      ],
+      answer: [
+         "c. Thịt."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 37: Bệnh thiếu vitamin B1 hay gặp ở các nước mà lương thực chính là:",
+      options: [
+         "a. Lúa mì.",
+         "b. Ngô.",
+         "c. Gạo."
+      ],
+      answer: [
+         "c. Gạo."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 38: Nhu cầu vitamin B1 trong cơ thể tăng khi:",
+      options: [
+         "a. Chế độ ăn nhiều bột, đường.",
+         "b. Chế độ ăn nhiều giầu, mỡ.",
+         "c. Chế độ ăn nhiều rau, quả.",
+         "d. Chế độ ăn nhiều đạm."
+      ],
+      answer: [
+         "a. Chế độ ăn nhiều bột, đường."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 39: Nhu cầu vitamin B1 hàng ngày cho mọi lứa tuổi của OSM là:",
+      options: [
+         "a. 1 mg/ngày.",
+         "b. 1 mg/1000 kcal.",
+         "c. 0.4 mg/1000 kcal.",
+         "d. 0.2 mg/1000 kcal."
+      ],
+      answer: [
+         "c. 0.4 mg/1000 kcal."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 40: Thể suy tim cấp do thiếu vitamin B1 hày gặp ở lứa tuổi nào:",
+      options: [
+         "a. Trẻ < 3 tháng tuổi.",
+         "b. Trẻ từ 3 tháng đến 6 tháng. Sgk cũ là 2 đến 5 tháng",
+         "c. Trẻ từ 6 tháng đến 12 tháng.",
+         "d. Trẻ > 12 tháng."
+      ],
+      answer: [
+         "a. Trẻ < 3 tháng tuổi."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 41: Nguyên nhân chủ yếu dẫn đến thiếu vitamin B1 là:",
+      options: [
+         "a. Ăn ít hoa quả.",
+         "b. Chế độ ăn thiếu dầu mỡ.",
+         "c. Chế độ ăn ít đạm.",
+         "d. Ăn gạo sát kỹ quá."
+      ],
+      answer: [
+         "d. Ăn gạo sát kỹ quá."
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 42: Các triệu chứng rối loạn thần kinh thực vật trong bệnh còi xương gồm: Đ/S",
+      statements: [
+         {
+            text: "Ra mồ hôi nhiều.",
+            answer: "Đúng"
+         },
+         {
+            text: "Kích thích, khó ngủ.",
+            answer: "Đúng"
+         },
+         {
+            text: "Hay giật mình.",
+            answer: "Đúng"
+         },
+         {
+            text: "Ngủ nhiều, li bì",
+            answer: "Sai"
+         },
+         {
+            text: "Rụng tóc gáy",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 43: Các biểu hiện của xương sọ trong bệnh còi xương gồm: Đ/S",
+      statements: [
+         {
+            text: "Mềm xương sọ.",
+            answer: "Đúng"
+         },
+         {
+            text: "Xương hàm biến dạng, răng mọc lộn xộn.",
+            answer: "Đúng"
+         },
+         {
+            text: "Bướu xương sọ .",
+            answer: "Đúng"
+         },
+         {
+            text: "Thóp chậm liền",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 44: Biểu hiện biến dạng xương lồng ngực trong bệnh còi xương gồm:Đ/S",
+      statements: [
+         {
+            text: "Lồng ngực gà.",
+            answer: "Đúng"
+         },
+         {
+            text: "Rãnh filatop Harrison.",
+            answer: "Đúng"
+         },
+         {
+            text: "Chuỗi hạt sườn",
+            answer: "Đúng"
+         },
+         {
+            text: "Hình lòng máng (slide 55/76 cô Mai)",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 45: Về bệnh còi xương thiếu vitamin D: Đ/S",
+      statements: [
+         {
+            text: "Trẻ từ 6 tháng đến 12 tháng hay mắc còi xương do thiếu vitamin D.",
+            answer: "Đúng"
+         },
+         {
+            text: "Nhà cửa ẩm thấp là điều kiện thuận lợi gây bệnh còi xương.",
+            answer: "Đúng"
+         },
+         {
+            text: "Bệnh còi xương thiếu vitamin D hay gặp ở vùng nhiều ánh sáng mặt trời.",
+            answer: "Sai"
+         },
+         {
+            text: "Lượng vitaminD trong sữa mẹ đủ cung cấp cho nhu cầu hàng ngày của trẻ .",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 46: Các nguyên nhân dẫn đến thiếu vitamin A gồm: Đ/S",
+      statements: [
+         {
+            text: "Trẻ được nuôi hoàn toàn bằng sữa mẹ.",
+            answer: "Sai"
+         },
+         {
+            text: "Khẩu phần ăn thiếu thức ăn động vật.",
+            answer: "Đúng"
+         },
+         {
+            text: "Trẻ ăn bổ sung đúng cách.",
+            answer: "Sai"
+         },
+         {
+            text: "Chế độ ăn thiếu dầu, mỡ.",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 47: Trong các chỉ số nhân trắc, chỉ số nào thể hiện sự thay đổi thể trạng dinh dưỡng của trẻ nhanh nhất:",
+      options: [
+         "A. Cân nặng",
+         "B. Chiều cao",
+         "C. Vòng cánh tay",
+         "D. Vòng đầu"
+      ],
+      answer: [
+         "A. Cân nặng"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 48: Liều bổ sung vitamin A cho trẻ em >1t:",
+      options: [
+         "A. 100000:100000:100000",
+         "B. 200000:200000:100000",
+         "C. 100000:200000:200000",
+         "D. 200000:200000:200000"
+      ],
+      answer: [
+         "D. 200000:200000:200000"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 49: Trẻ ăn bổ sung có thể: Đ/S",
+      statements: [
+         {
+            text: "Trẻ ăn càng nhiều Protein càng tốt",
+            answer: "Sai"
+         },
+         {
+            text: "Trẻ ăn mỡ, dầu sẽ bị tiêu chảy",
+            answer: "Sai"
+         },
+         {
+            text: "Dầu thực vật dễ tiêu hoá hơn mỡ",
+            answer: "Đúng"
+         },
+         {
+            text: "Không nên cho trẻ ăn rau hàng ngày",
+            answer: "Sai"
+         },
+         {
+            text: "Trẻ ăn nước hoa quả hàng ngày có thể thay rau",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 50: Nguyên nhân gây thiếu vit A",
+      options: [
+         "a. Ăn nhiều gạo, nhiều mỡ,",
+         "b. Nhiều thức ăn động vật, ít rau hoa quả",
+         "c. Ăn ít gạo nhiều mỡ",
+         "d. Ít thức ăn động vật , ít rau hoa quả"
+      ],
+      answer: [
+         "d. Ít thức ăn động vật , ít rau hoa quả"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 51: Thiếu vitamin D ảnh hưởng tới thần kinh tv như thế nào",
+      options: [
+         "a. Trẻ ra nhiều mồ hôi",
+         "b. Li bì, hôn mê",
+         "c. Ban nhiều toàn thân",
+         "d. Rụng tóc nhiều"
+      ],
+      answer: [
+         "a. Trẻ ra nhiều mồ hôi"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 52: Nguồn b-caroten nhiều nhất ở đâu:",
+      options: [
+         "a. rau quả xanh đậm,củ quả đỏ vàng",
+         "b. gan cá",
+         "c. sữa",
+         "d. thịt đỏ"
+      ],
+      answer: [
+         "a. rau quả xanh đậm,củ quả đỏ vàng"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 53: Về biểu hiện của thiếu vitamin D: Đ/S",
+      statements: [
+         {
+            text: "làm giảm Ca máu",
+            answer: "Đúng"
+         },
+         {
+            text: "làm giảm P máu",
+            answer: "Đúng"
+         },
+         {
+            text: "làm giảm Mg máu",
+            answer: "Sai"
+         },
+         {
+            text: "làm tăng K máu",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 54: Dấu hiệu sớm của bệnh thiếu vitamin A: Đ/S",
+      statements: [
+         {
+            text: "Khô kết mạc",
+            answer: "Đúng"
+         },
+         {
+            text: "Sợ ánh sáng",
+            answer: "Sai"
+         },
+         {
+            text: "Vệt bitot",
+            answer: "Sai"
+         },
+         {
+            text: "Hay chớp mắt",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 55: Đặc điểm của sữa cuối: Đ/S",
+      statements: [
+         {
+            text: "Là sữa tiết ra ở cuối bữa bú",
+            answer: "Đúng"
+         },
+         {
+            text: "Chứa nhiều năng lượng",
+            answer: "Đúng"
+         },
+         {
+            text: "Thành phần chủ yếu là dinh dưỡng, muối khoáng, vitamin",
+            answer: "Sai"
+         },
+         {
+            text: "Thành phần có nhiều chất béo",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 56: Vitamin D2 có nhiều trong",
+      options: [
+         "A. Động vật",
+         "B. Nấm",
+         "C. Hải sản",
+         "D. Rau xanh"
+      ],
+      answer: [
+         "B. Nấm"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 57: Tác dụng của vitamin D, trừ",
+      options: [
+         "A. Tăng gắn Ca, P vào xương",
+         "B. Tăng tái hấp thu Ca,P ở ống thận",
+         "C. Tăng quá trình huỷ cốt bào",
+         "D. Tăng hấp thu Ca, P ở ruột"
+      ],
+      answer: [
+         "C. Tăng quá trình huỷ cốt bào"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 58: DH muộn nhất của thiếu vitamin D:",
+      options: [
+         "a. Chậm phát triển tâm thần vận động",
+         "b. Rối loạn tk thực vật",
+         "c. Biến dạng xương",
+         "d. Rãnh Philatop Harrison"
+      ],
+      answer: [
+         "a. Chậm phát triển tâm thần vận động"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 59: Thiếu vitamin A do: Đ/S",
+      statements: [
+         {
+            text: "Trẻ thừa cân",
+            answer: "Sai"
+         },
+         {
+            text: "Ko ra tắm nắng",
+            answer: "Sai"
+         },
+         {
+            text: "Ăn ít các loại đậu",
+            answer: "Sai"
+         },
+         {
+            text: "Bệnh gan mật tụy",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 60: Phân loại SDD theo WHO: Đ/S",
+      statements: [
+         {
+            text: "Đơn giản.",
+            answer: "Đúng"
+         },
+         {
+            text: "Phân loại được SDD cấp và mạn.",
+            answer: "Đúng"
+         },
+         {
+            text: "Phân loại được tình trạng SDD nặng",
+            answer: "Đúng"
+         },
+         {
+            text: "Dễ áp dụng ở cộng đồng.",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 61: Thiếu vitamin A gây: Đ.S",
+      statements: [
+         {
+            text: "Nôn trớ",
+            answer: "Sai"
+         },
+         {
+            text: "Chậm phát triển",
+            answer: "Đúng"
+         },
+         {
+            text: "Dễ nhiễm trùng",
+            answer: "Đúng"
+         },
+         {
+            text: "Dễ chàm da cơ địa",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 62: Số lượng sữa công thức ở trẻ 3 tháng ăn thay thế sữa mẹ hoàn toàn:",
+      options: [
+         "A. 600ml",
+         "B. 800ml",
+         "C. 1000ml",
+         "D. 1200ml"
+      ],
+      answer: [
+         "B. 800ml"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 63: Nhu cầu protein trẻ 1-3 tuổi là:",
+      options: [
+         "A. 28 g/ngày",
+         "B. 25 g/ngày",
+         "C. 30 g/ngày",
+         "D. 42 g/ngày"
+      ],
+      answer: [
+         "A. 28 g/ngày"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 64: Công thức tính lượng sữa hàng ngày cảu trẻ dưới 1 tuần tuổi",
+      options: [
+         "a. X= n*70 (P>3200g)",
+         "b. X=n*70 (P<3200g)",
+         "c. X=n*80 (P<3200g)",
+         "d. X=n*60( P<3200g)"
+      ],
+      answer: [
+         "a. X= n*70 (P>3200g)"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 65: Trẻ 2 tuổi cho ăn thế nào?",
+      options: [
+         "A. Bột",
+         "B. Cháo",
+         "C. Cơm trên 2 tuổi mới ăn cơm",
+         "D. Bún"
+      ],
+      answer: [
+         "B. Cháo"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 66: Suy dinh dưỡng thể thấp còi có đặc điểm: Đ/S",
+      statements: [
+         {
+            text: "Là biểu hiện của chiều cao thấp so với tuổi",
+            answer: "Đúng"
+         },
+         {
+            text: "Là biểu hiện của cân nặng thấp so với tuổi",
+            answer: "Sai"
+         },
+         {
+            text: "Chịu ảnh hưởng của thiếu các chất dinh dưỡng và tình trạng nhiễm khuẩn trong quá khứ",
+            answer: "Đúng"
+         },
+         {
+            text: "Do thiếu dinh dưỡng ở thời điểm hiện tại",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 67: Chẩn đoán mức độ nặng của suy dinh dưỡng bào thai cần dựa vào các chỉ số: Đ/S",
+      statements: [
+         {
+            text: "Cân nặng",
+            answer: "Đúng"
+         },
+         {
+            text: "Chiều cao",
+            answer: "Đúng"
+         },
+         {
+            text: "Vòng cánh tay",
+            answer: "Đúng"
+         },
+         {
+            text: "Vòng đầu",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 68: Nguyên nhân gây suy dinh dưỡng bào thai chủ yếu từ: Đ/S",
+      statements: [
+         {
+            text: "Dinh dưỡng của mẹ kém",
+            answer: "Đúng"
+         },
+         {
+            text: "Mẹ bị tiểu đường",
+            answer: "Đúng"
+         },
+         {
+            text: "Mẹ bị béo phì",
+            answer: "Sai"
+         },
+         {
+            text: "Bánh rau bị vôi hoá",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 69: Theo mục tiêu chiến lược dinh dưỡng quốc gia đến năm 2020, tỷ lệ suy dinh dưỡng thể nhẹ cân ở Việt Nam sẽ giảm xuống còn:",
+      options: [
+         "A. <10%",
+         "B. <20%",
+         "C. <25%",
+         "D. <30%"
+      ],
+      answer: [
+         "A. <10%"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 70: Theo mục tiêu chiến lược dinh dưỡng quốc gia đến năm 2020, tỷ lệ suy dinh dưỡng thể thấp còi ở Việt Nam sẽ giảm xuống còn:",
+      options: [
+         "A. <10%",
+         "B. <20%",
+         "C. <25%",
+         "D. <30%"
+      ],
+      answer: [
+         "C. <25%"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 71: Trong các thể suy dinh dưỡng, thể nào chiếm tỷ lệ cao nhất ở nước ta hiện nay:",
+      options: [
+         "A. Thể nhẹ cân",
+         "B. Thể thấp còi",
+         "C. Thể gầy còm",
+         "D. Thể Kashiorkor"
+      ],
+      answer: [
+         "B. Thể thấp còi"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 72: Theo Tổ chức y tế thế giới, các hướng dẫn cho trẻ bú đúng là, TRỪ:",
+      options: [
+         "A. Bú mẹ hoàn toàn trong 6 tháng đầu",
+         "B. Bú theo nhu cầu, càng nhiều lần càng tốt",
+         "C. Bú hết sữa đầu và sữa cuối",
+         "D. Bú hết một bầu vú mới chuyển sang bên tiếp theo"
+      ],
+      answer: [
+         "D. Bú hết một bầu vú mới chuyển sang bên tiếp theo"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 73: Có mấy cách phân loại suy dinh dưỡng:",
+      options: [
+         "A. 2",
+         "B. 4",
+         "C. 5",
+         "D. 3"
+      ],
+      answer: [
+         "D. 3"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 74: Phân loại suy dinh dưỡng theo WATERLOW, dựa vào:",
+      options: [
+         "A. Cân nặng theo chiều cao và chiều cao theo tuổi",
+         "B. Cân nặng theo tuổi",
+         "C. Cân nặng theo chiều cao",
+         "D. Chiều cao theo tuổi"
+      ],
+      answer: [
+         "A. Cân nặng theo chiều cao và chiều cao theo tuổi"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 75: Phân loại suy dinh dưỡng theo WELCOME, dựa vào:",
+      options: [
+         "A. Cân nặng theo tuổi",
+         "B. Cân nặng theo chiều cao",
+         "C. Cân nặng theo tuổi và triệu chứng phù",
+         "D. Triệu chứng phù"
+      ],
+      answer: [
+         "C. Cân nặng theo tuổi và triệu chứng phù"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 76: Triệu chứng lâm sàng của suy dinh dưỡng nặng thể Kwashiorkor: (-3SD)\na)Cân nặng/tuổi <-2Z-Score. b)Trẻ mất toàn bộ lớp mỡ dưới da. c)Da khô, có mẳng sắc tố da.\nd)Trẻ thường có phù ở mặt và 2 chi dưới. e)Trẻ thường xuyên có rối loạn tiêu hoá.",
+      options: [
+         "A. a+b+d",
+         "B. a+d+e",
+         "C. a +b+c",
+         "D. c+d+e"
+      ],
+      answer: [
+         "D. c+d+e"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 77: Nguyên tắc điều trị suy dinh dưỡng thể nặng: Đ/S",
+      statements: [
+         {
+            text: "Bồi phụ nước, điện giải, vitamin và muối khoáng.",
+            answer: "Đúng"
+         },
+         {
+            text: "Chống nhiễm trùng.",
+            answer: "Đúng"
+         },
+         {
+            text: "Điều trị và phòng các biến chứng.",
+            answer: "Đúng"
+         },
+         {
+            text: "Chống thiếu máu bằng bổ sung sắt cho trẻ càng sớm càng tốt.",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 78: Phân loại suy dinh dưỡng theo WHO(2006): Đ/S",
+      statements: [
+         {
+            text: "Khi cân nặng/tuổi: Z-Score < -2 thì được phân loại là suy dinh dưỡng thể nhẹ ân.",
+            answer: "Đúng"
+         },
+         {
+            text: "Khi chiều cao/tuổi: Z-Score < -2 thì được phân loại là suy dinh dưỡng thể gày còm.",
+            answer: "Sai"
+         },
+         {
+            text: "Khi cân nặng/chiều cao: Z-Score < -2 thì được phân loại là suy dinh dưỡng thể thấp còi.",
+            answer: "Sai"
+         },
+         {
+            text: "Khi chiều cao/cân nặng: Z-Score < -2 thì được phân loại là suy dinh dưỡng mạn tính.",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 79: Bệnh nhân 9 tháng tuổi đến khám với lý do chậm tăng cân.\nKhám lâm sàng thấy trẻ có biểu hiện nhẹ cân so với tuổi, trẻ chưa biết ngồi,\ntrẻ có thiếu máu nhẹ.\n79.1. Với những triệu chứng trên, tiền sử quan trọng nhất cần khai thác là:",
+      options: [
+         "A. Tiền sử dinh dưỡng của trẻ.",
+         "B. Tiền sử phát triển tâm thần và vận động của trẻ.",
+         "C. Tiền sử phát triển thể chất của trẻ.",
+         "D. Tiền sử bệnh tật của trẻ."
+      ],
+      answer: [
+         "A. Tiền sử dinh dưỡng của trẻ."
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 79.2.Với tình huống này, mức năng lượng cần cung cấp cho trẻ là:",
+      options: [
+         "A. 100 – 110 Kcal/kg/ngày",
+         "B. 120 – 140 Kcal/kg/ngày",
+         "C. 80 – 100 Kcal/kg/ngày",
+         "D. 150 – 200 Kcal/kg/ngày"
+      ],
+      answer: [
+         "B. 120 – 140 Kcal/kg/ngày"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 79.3Với tình trạng hiện tại, trẻ cần ăn mấy bữa bột/ngày:",
+      options: [
+         "A. 3",
+         "B. 2",
+         "C. 5",
+         "D. Ăn theo nhu cầu"
+      ],
+      answer: [
+         "A. 3"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 80: Trẻ nam 11 tháng tuổi, cân nặng 7 kg được mẹ đưa đến khám vì lý do không tăng cân. Khám lâm sàng thấy: da trẻ xanh, niêm mạc nhợt, chưa biết ngồi, chưa mọc răng. Mẹ kể trẻ ngủ kém, hay quấy khóc về đêm.\n80.1 Hãy đưa ra chẩn đoán sơ bộ phù hợp nhất:\na. Suy dinh dưỡng\nb. Thiếu máu\nc. Còi xương\nd. Hạ canxi máu",
+      options: [
+         "A. a + b + c",
+         "B. a + c + d",
+         "C. b + c + d",
+         "D. a + b + d"
+      ],
+      answer: [
+         "A. a + b + c"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 80.2 Đề xuất các xét nghiệm theo thứ tự ưu tiên để chẩn đoán xác định bệnh cho trẻ:",
+      options: [
+         "A. Công thức máu + Sắt huyết thanh + Phosphataza kiềm",
+         "B. Công thức máu + Sắt huyết thanh + 25 (OH)D",
+         "C. Công thức máu + Ferritin huyết thanh + Canxi",
+         "D. Công thức máu + Ferritin huyết thanh + XQ tuổi xương"
+      ],
+      answer: [
+         "B. Công thức máu + Sắt huyết thanh + 25 (OH)D"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 81: Trẻ nam 20 tháng tuổi, cân nặng 11,3 kg. Trẻ được mẹ đưa đến khám với lý do có cơn tím khi khóc. Khám lâm sàng thấy trẻ chưa biết đi, lồng ngực biến dạng, đầu bẹt\n81.1 Chẩn đoán sơ bộ phù hợp nhất với trẻ:",
+      options: [
+         "A. Tim bẩm sinh",
+         "B. Động kinh",
+         "C. Suy dinh dưỡng",
+         "D. Còi xương, hạ canxi máu"
+      ],
+      answer: [
+         "D. Còi xương, hạ canxi máu"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 81.2 Hãy đề xuất xét nghiệm quan trọng nhất để chẩn đoán bệnh cho trẻ:",
+      options: [
+         "A. Điện não đồ",
+         "B. Điện tâm đồ",
+         "C. Định lượng Magie máu",
+         "D. Định lượng canxi máu"
+      ],
+      answer: [
+         "D. Định lượng canxi máu"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 82: Các cách phân loại SDD: chọn Đ/S",
+      statements: [
+         {
+            text: "cân nặng / tuổi : quy ra % cân nặng chuẩn",
+            answer: "Đúng"
+         },
+         {
+            text: "phân loại waterlow : dựa vào chiều cao/ tuổi , cân nặng / chiểu cao",
+            answer: "Đúng"
+         },
+         {
+            text: "phân loại OMS : dựa vào CC/ tuổi",
+            answer: "Sai"
+         },
+         {
+            text: "phân loại welcome : phân loại SDD nặng .",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 83: Liều vit D điều trị còi xương? Chọn Đ/S",
+      statements: [
+         {
+            text: "D2, D3 : 2000-4000 đv/ ngày kéo dài 4-6w .",
+            answer: "Đúng"
+         },
+         {
+            text: "Khi có bệnh cấp tính or nhiễm khuẩn : 10000 đv/ ngày * 20 ngày",
+            answer: "Đúng"
+         },
+         {
+            text: "Nặng or k uống thuốc đều : 200000 1 lần duy nhất",
+            answer: "Đúng"
+         },
+         {
+            text: "bổ sung vitamin D cần phối hợp bổ sung dinh dưỡng giàu protein , lipid ,Ca",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 84: Đúng khi đánh giá dấu hiệu mất nước ở BN SDD nặng:Đ/S",
+      statements: [
+         {
+            text: "Nếp véo da có thể mất nhanh ở trẻ SDD Marasmus",
+            answer: "Đúng"
+         },
+         {
+            text: "Kwashiokor và Marasmus đều có biểu hiện thần kinh",
+            answer: "Đúng"
+         },
+         {
+            text: "Thiểu niệu và vô niệu là triệu chứng ít giá trị",
+            answer: "Sai"
+         },
+         {
+            text: "Mất nước nặng phân biệt rõ với shock nhiễm khuẩn",
+            answer: "Sai"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 85: Các yếu tố liên quan đến còi xương: Đ/S",
+      statements: [
+         {
+            text: "Đẻ non, nhẹ cân, suy dinh dưỡng bào thai",
+            answer: "Đúng"
+         },
+         {
+            text: "Gia đình có trẻ khác bị còi xương",
+            answer: "Đúng"
+         },
+         {
+            text: "Chế độ ăn nhiều bột",
+            answer: "Đúng"
+         },
+         {
+            text: "Bệnh lý gan mật",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 86: Trẻ 9 tháng, 4,5kg, vào viện trong tình trạng li bì, co giật, chân tay lạnh, vã mồ hôi nhiều. Ngày hôm trước trẻ không ăn được gì. Trẻ không sốt, thóp không phồng.\n86.1 Chẩn đoán sơ bộ:\na. Suy dinh dưỡng nặng\nb. Hạ đường huyết\nc. Hạ thân nhiệt\nd. Viêm màng não",
+      options: [
+         "A. a+b",
+         "B. a+c",
+         "C. b+c",
+         "D. a+d"
+      ],
+      answer: [
+         "C. b+c"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 86.2 Lựa chọn xử trí ban đầu cho trẻ:",
+      options: [
+         "A. Ủ ấm -> Ăn qua sonde -> Kháng sinh",
+         "B. Ủ ấm -> Truyền dịch",
+         "C. Ủ ấm -> Đổ thìa",
+         "D. Ủ ấm -> Kháng sinh"
+      ],
+      answer: [
+         "C. Ủ ấm -> Đổ thìa"
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 87: Muối khoáng trong cơ thể có vai trò(Đ/S)",
+      statements: [
+         {
+            text: "Là tp quan trọng cấu tạo xương",
+            answer: "Đúng"
+         },
+         {
+            text: "Tạo nên áp lực thẩm thấu",
+            answer: "Đúng"
+         },
+         {
+            text: "Tham gia vào chuyển hóa",
+            answer: "Đúng"
+         },
+         {
+            text: "Là tp quan trọng trong cơ",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 88: Chế độ ăn trong gai doạn hồi phục bắt kịp trăng tưởng của trẻ: Đ/S",
+      statements: [
+         {
+            text: "Nhu cầu năng lượng thấp <= 150 kcal/kg/ngày",
+            answer: "Sai"
+         },
+         {
+            text: "Nhu cầu năng lượng từ 150-220 kcal/kg/ngày",
+            answer: "Đúng"
+         },
+         {
+            text: "Tăng dần số lượng mỗi bữa ăn",
+            answer: "Đúng"
+         },
+         {
+            text: "Đa dạng chất lượng bữa ăn",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 89: Biến dạng lồng ngực trẻ thiếu vitamin D: Đ/S",
+      statements: [
+         {
+            text: "Hình chuông",
+            answer: "Sai"
+         },
+         {
+            text: "Hình bát úp",
+            answer: "Sai"
+         },
+         {
+            text: "Hình lõm",
+            answer: "Đúng"
+         },
+         {
+            text: "Hình ức gà",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 90: Bệnh nhân nam 18 tháng tuổi, nặng 5,3 kg, không phù, được chấn đoán là suy dinh dưỡng thể Marasmus. Được điều trị tại bệnh viện đã qua gia đoạn cấp.\n90.1 Với tình trạng cơ thể cho phép, để bắt kịp tăng trưởng trẻ cần được cung cấp mức năng lượng là:",
+      options: [
+         "1. 430 kcal/ngày",
+         "2. 530 kcal/ngày",
+         "3. 1300 kcal/ngày",
+         "4. 850 kcal/ngày"
+      ],
+      answer: [
+         "4. 850 kcal/ngày"
+      ]
+   },
+   {
+      type: "single",
+      question: "Câu 90.2 Trong trường hiện tại trẻ đang có thiếu máu do thiếu sắt, có thể:",
+      options: [
+         "A.Bổ sung sắt cho trẻ bất cứ lúc nào",
+         "B. Chỉ được bổ sung sắt khi trẻ bắt đầu tăng cân",
+         "C. Bổ sung sắt ngay sau giai đoạn cấp",
+         "D. Nên bổ sung sắt từ thức ăn hàng ngày"
+      ],
+      answer: [
+         "B. Chỉ được bổ sung sắt khi trẻ bắt đầu tăng cân"
+      ]
+   },
+    {
+      type: "truefalse",
+      question: "Câu 91: Các biểu hiện nào sau đây gợi ý trẻ có thể bị ngộ độc vitamin A: Đ/S",
+      statements: [
+         {
+            text: "Kích thích",
+            answer: "Đúng"
+         },
+         {
+            text: "Co giật",
+            answer: "Đúng"
+         },
+         {
+            text: "Chân tay lạnh, vã mồ hôi nhiều",
+            answer: "Sai"
+         },
+         {
+            text: "Thóp phồng",
+            answer: "Đúng"
+         }
+      ]
+   },
+   {
+      type: "truefalse",
+      question: "Câu 92: Các biện pháp phòng thiếu vitamin A cho trẻ: Đ/S",
+      statements: [
+         {
+            text: "Bú mẹ sớm ngay sau sinh",
+            answer: "Đúng"
+         },
+         {
+            text: "Bú mẹ kéo dài đến 18 – 24 tháng tuổi",
+            answer: "Đúng"
+         },
+         {
+            text: "Ăn nhiều sữa công thức",
+            answer: "Sai"
+         },
+         {
+            text: "Ăn nhiều hoa quả",
+            answer: "Đúng"
+         }
+      ]
+   },
+      {
+      type: "single",
+      question: "Câu 93: Bé Mai 8 tháng tuổi, nặng 7 kg được mẹ đưa đi khám vì chậm tăng cân. Tình trạng lúc thăm khám: Trẻ mệt, chảy nước mắt nhiều, hay rụi mắt. Tiền sử: Trẻ bị sốt phát ban cách đây 2 tuần.\n93.1 Những vấn đề trẻ có thể gặp phải:",
+      options: [
+         "A. Thiếu vitamin D",
+         "B. Thiếu vitamin A",
+         "C. Hạ đượng huyết",
+         "D. Thiếu sắt"
+      ],
+      answer: [
+         "B. Thiếu vitamin A"
+      ]
+   },
+      {
+      type: "single",
+      question: "Câu 93.2 Đề xuất xét nghiệm quan trọng nhất để chẩn đoán bệnh:",
+      options: [
+         "A. Vitamin A",
+         "B. Phosphor máu",
+         "C. Đường máu",
+         "D. Magie máu"
+      ],
+      answer: [
+         "A. Vitamin A"
+      ]
+   },
+      {
+      type: "single",
+      question: "Câu 94: Triệu chứng sớm của bệnh còi xương là, TRỪ:",
+      options: [
+         "A. Rối loạn thần kinh thực vật",
+         "B. Rối loạn vận mạch",
+         "C. Giảm canxi máu",
+         "D. Rụng tóc vành khăn"
+      ],
+      answer: [
+         "C. Giảm canxi máu"
+      ]
+   },
+         {
+      type: "single",
+      question: "Câu 95: Theo khuyến cáo hiện nay, thời gian điều trị vitamin D nên kéo dài:",
+      options: [
+         "A. 4 tuần",
+         "B. 10 tuần",
+         "C. 3 tháng",
+         "D. 6 tháng"
+      ],
+      answer: [
+         "C. 3 tháng"
+      ]
+   }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
