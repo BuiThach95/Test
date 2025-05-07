@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+const questions = [
+{
+type: "truefalse",
+question: "Câu 1: Hội chứng gan thận thường gặp trong ngộ độc cấp do: Đ/S",
+statements: [
+{ text: "Paracetamol", answer: "Đúng" },
+{ text: "Phân lân hữu cơ", answer: "Đúng" },
+{ text: "Ong đốt", answer: "Đúng" },
+{ text: "Thuốc ngủ", answer: "Sai" }
+]
+},
+{
+type: "single",
+question: "Câu 2: Liều ban đầu N-acetyl cystein để giải độc paracetamol",
+options: ["A. 120 mg/kg", "B. 140 mg/kg", "C. 160 mg/kg", "D. 100 mg/kg"],
+answer: ["B. 140 mg/kg"]
+},
+{
+type: "single",
+question: "Câu 3: Liều Atropin trong giải độc phân lân hữu cơ:",
+options: ["A. 0,025 mg/kg", "B. 0,05 mg/kg", "C. 0.1 mg/kg", "D. 0,2 mg/kg"],
+answer: ["B. 0,05 mg/kg"]
+},
+{
+type: "single",
+question: "Câu 4: Rửa dạ dày trong điều trị ngộ độc cấp thể tích nước muối bơm vào dạ dày bao nhiêu một lần:",
+options: ["A. 10-20 ml/kg", "B. 20-30ml/kg", "C. 5-10ml/kg", "D. 2-5ml/kg"],
+answer: ["A. 10-20 ml/kg"]
+},
+{
+type: "single",
+question: "Câu 5: Nguyên tắc điều trị ngộ độc cấp, trừ:",
+options: [
+"A. Giải độc không đặc hiệu",
+"B. Đảm bảo chức năng sống",
+"C. Giải độc đặc hiệu",
+"D. Loại trừ chất độc ra khỏi cơ thể"
+],
+answer: ["A. Giải độc không đặc hiệu"]
+},
+{
+type: "single",
+question: "Câu 6: Chống chỉ định của gây nôn, trừ",
+options: [
+"A. Sốt cao",
+"B. Hôn mê",
+"C. Ngộ độc hydrocacbon",
+"D. Ngộ độc chất ăn mòn"
+],
+answer: ["A. Sốt cao"]
+},
+{
+type: "truefalse",
+question: "Câu 7: Dấu hiệu nào đánh giá hiệu quả của động tác thở di động bụng: Đ/S",
+statements: [
+{ text: "Luồng khí đi ra và vào phổi", answer: "Đúng" },
+{ text: "Nhịp tim", answer: "Sai" },
+{ text: "Di động lồng ngực", answer: "Đúng" },
+{ text: "Tưới máu ngoại vi", answer: "Sai" }
+]
+},
+{
+type: "truefalse",
+question: "Câu 8: Ngộ độc cấp: Đ/S",
+statements: [
+{ text: "Atropin gây nhịp chậm", answer: "Sai" },
+{ text: "Aspirin gây tăng hô hấp", answer: "Đúng" },
+{ text: "Phải tìm các dấu hiệu chỉ đỏ để xác định nguyên nhân", answer: "Đúng" },
+{ text: "Điều trị quan trọng nhất là giải độc đặc hiệu", answer: "Sai" }
+]
+},
+{
+type: "truefalse",
+question: "Câu 9: Đánh giá trẻ có nguy cơ sớm suy tuần hoàn: Đ/S",
+statements: [
+{ text: "Nhịp tim rất nhanh so với tuổi", answer: "Đúng" },
+{ text: "Refill > 2s", answer: "Đúng" },
+{ text: "Huyết áp hạ", answer: "Sai" },
+{ text: "Đầu chi lạnh", answer: "Đúng" }
+]
+},
+{
+type: "single",
+question: "Câu 10: Dấu hiệu suy hô hấp nặng, ngoại trừ",
+options: [
+"A. Thở chậm",
+"B. Lồng ngực không di động",
+"C. Thở rít",
+"D. Phổi giảm thông khí"
+],
+answer: ["C. Thở rít"]
+},
+{
+type: "single",
+question: "Câu 11: Đánh giá tình trạng nặng ban đầu không có",
+options: ["A. Tuần hoàn", "B. Hô hấp", "C. Thận", "D. Thần kinh"],
+answer: ["C. Thận"]
+},
+{
+type: "single",
+question: "Câu 12: Dấu hiệu sốt, thở nhanh, mạch nhanh gặp trong ngộ độc",
+options: [
+"A. Kháng cholinergic",
+"B. Tăng tiết acetylcholine",
+"C. Ngộ độc thuốc ngủ, thuốc an thần",
+"D. Ngộ độc aspirin"
+],
+answer: ["A. Kháng cholinergic"]
+},
+{
+type: "single",
+question: "Câu 13: Điều kiện trẻ hôn mê có thể rửa dạ dày",
+options: [
+"A. Phải đặt NKQ",
+"B. Phải có trang bị cấp cứu đầy đủ",
+"C. Phải đặt đường truyền tĩnh mạch trung tâm",
+"D. Phải có ít nhất một người phụ giúp"
+],
+answer: ["A. Phải đặt NKQ"]
+},
+{
+type: "single",
+question: "Câu 14: Ngộ độc cấp hay gặp ở độ tuổi",
+options: [
+"A. 0-1 tuổi",
+"B. 1-5 tuổi",
+"C. 5-10 tuổi",
+"D. 10-15 tuổi"
+],
+answer: ["B. 1-5 tuổi"]
+},
+{
+type: "single",
+question: "Câu 15: Khi xử trí ngộ độc, điều nào sau đây là quan trọng nhất",
+options: [
+"A. Đánh giá và phân loại tình trạng nặng",
+"B. Tìm nguyên nhân ngộ độc",
+"C. Thải độc",
+"D. Giải độc đặc hiệu"
+],
+answer: ["A. Đánh giá và phân loại tình trạng nặng"]
+},
+{
+type: "single",
+question: "Câu 16: Các CCĐ gây nôn cho trẻ bị ngộ độc cấp là\na) Ngộ độc Hydrocarbon      b) Chất ăn mòn mạnh        c) Trẻ sốt cao\nd) Trẻ hôn mê             e) trẻ co giật                      f) Khi trẻ ngộ độc đến < 6h",
+options: [
+"A. b + c + d + f",
+"B. a + b + c + e",
+"C. a + b + d + e",
+"D. a + b + d +f"
+],
+answer: ["C. a + b + d + e"]
+},
+{
+type: "truefalse",
+question: "Câu 17: Biểu hiện co giật thường gặp trong ngộ độc cấp do các nguyên nhân: Đ/S",
+statements: [
+{ text: "Ngộ độc Atropin", answer: "Đúng" },
+{ text: "Ngộ độc Theophyline", answer: "Đúng" },
+{
+text: "Ngộ độc thuốc ngủ và các loại thuốc an thần",
+answer: "Sai"
+},
+{ text: "Ngộ độc strychnine", answer: "Đúng" }
+]
+},
+{
+type: "single",
+question: "Câu 18: Biểu hiện mạch chậm thường gặp trong ngộ độc các nguyên nhân sau, Trừ:",
+options: [
+"A. Ngộ độc Theophyline",
+"B. Ngộ độc Digitalis",
+"C. Ngộ độc Quinin",
+"D. Ngộ độc Muscarin"
+],
+answer: ["A. Ngộ độc Theophyline"]
+},
+{
+type: "single",
+question: "Câu 19: Thuốc hạ nhiệt có thể gây ra những tai biến sau:",
+options: [
+"A. Hạ nhiệt độ, suy thận, suy gan",
+"B. Hạ nhiệt độ, xuất huyết, suy gan, tan máu, di ứng nặng",
+"C. Hạ nhiệt độ, xuất huyết, suy thận, di ứng nặng",
+"D. Hạ nhiệt độ, tiêu chảy, tan máu, dị ứng nặng"
+],
+answer: ["B. Hạ nhiệt độ, xuất huyết, suy gan, tan máu, di ứng nặng"]
+},
+{
+type: "single",
+question: "Câu 20: Các nguyên nhân ngộ độc gây hôn mê, trừ:",
+options: [
+"A. Quá liều thuốc an thần kinh",
+"B. Tăng đường huyết",
+"C. Ngộ độc CO2",
+"D. Ngộ độc Phospho hữu cơ"
+],
+answer: ["C. Ngộ độc CO2"]
+},
+{
+type: "truefalse",
+question: "Câu 21: Suy hô hấp có thể gây: Đ/S",
+statements: [
+{ text: "Da xanh tái", answer: "Đúng" },
+{ text: "Bài niệu giảm", answer: "Sai" },
+{ text: "Nhịp tim nhanh", answer: "Đúng" },
+{ text: "Hôn mê, co giật", answer: "Đúng" }
+]
+},
+{
+type: "single",
+question: "Câu 22: Trường hợp nào sau đây có thể chỉ định rửa dạ dày:",
+options: [
+"A. Ngộ độc hydrocacbon",
+"B. Đến viện sau 8h",
+"C. Bệnh nhân hôn mê",
+"D. Ngộ độc chất ăn mòn"
+],
+answer: ["C. Bệnh nhân hôn mê"]
+},
+{
+type: "truefalse",
+question: "Câu 23: Triệu chứng của tổn thương não nặng: Đ/S",
+statements: [
+{ text: "Đồng tử co", answer: "Sai" },
+{ text: "Nhịp nhanh, hạ huyết áp", answer: "Sai" },
+{ text: "Thở chậm", answer: "Đúng" },
+{ text: "Rối loạn nhịp thở", answer: "Đúng" }
+]
+},
+{
+type: "single",
+question: "Câu 24: Đánh giá suy hô hấp cần đánh giá:",
+options: [
+"A. Đánh giá suy tim",
+"B. Đánh giá tổn thương thần kinh trung ương",
+"C. Đánh giá tổn thương thần kinh-cơ",
+"D. Cả 3"
+],
+answer: ["D. Cả 3"]
+},
+{
+type: "single",
+question: "Câu 25: Đánh giá hiệu quả thở, trừ",
+options: [
+"A. Rì rào phế nang đều 2 bên",
+"B. Môi hồng",
+"C. Phổi không rales",
+"D. Di động lồng ngực bình thường"
+],
+answer: ["C. Phổi không rales"]
+},
+{
+type: "single",
+question: "Câu 26: Hội chứng ngộ độc sau: Nhịp chậm, co đồng tử, tăng tiết dịch phế quản, co giật, hôn mê là của:",
+options: [
+"A. Hội chứng tăng chuyển hóa",
+"B. Hội chứng kháng Cholinergic",
+"C. Hội chứng ngộ độc thuốc mê",
+"D. Hội chứng cường Cholinergic"
+],
+answer: ["D. Hội chứng cường Cholinergic"]
+},
+{
+type: "single",
+question: "Câu 27: Hội chứng ngộ độc sau: mạch nhanh, khát, mê sảng, nhiệt độ 39 độ C, da đỏ, môi khô là của:",
+options: [
+"A. Hội chứng tăng chuyển hóa",
+"B. Hội chứng kháng Cholinergic",
+"C. Hội chứng ngộ độc thuốc mê",
+"D. Hội chứng cường Cholinergic"
+],
+answer: ["B. Hội chứng kháng Cholinergic"]
+},
+{
+type: "single",
+question: "Câu 28: Hội chứng ngộ độc sau: hạ huyết áp, hạ nhiệt độ, hôn mê, giảm thông khí, phản xạ gân xương giảm là của:",
+options: [
+"A. Hội chứng tăng chuyển hóa",
+"B. Hội chứng kháng Cholinergic",
+"C. Hội chứng ngộ độc thuốc mê",
+"D. Hội chứng cường Cholinergic"
+],
+answer: ["C. Hội chứng ngộ độc thuốc mê"]
+},
+{
+type: "single",
+question: "Câu 29: Hội chứng ngộ độc làm trẻ sốt, thở nhanh, tăng nhịp tim, co giật là:",
+options: [
+"A. Kháng cholinergic",
+"B. Tiết cholinergic",
+"C. Tăng chuyển hóa",
+"D. Hôn mê"
+],
+answer: ["C. Tăng chuyển hóa"]
+},
+{
+type: "single",
+question: "Câu 30.1: Case : Trẻ 3 tháng, bệnh 2 ngày: sốt cao, li bì, bú kém, quấy khóc, ho nhiều.\nKhám: nhịp thở 60 lần/phút, có RLLN, tím nhẹ quanh môi. Sốt 38,5 độ. Nhịp tim 190 chu kỳ/phút, mạch quay bắt yếu, tay chân lạnh. Từ sáng trẻ bú rất kém và tiểu ít.\nTrẻ có các tình trạng nặng nào",
+options: [
+"A. Suy hô hấp và suy tuần hoàn",
+"B. Suy hô hấp và suy thần kinh",
+"C. Suy tuần hoàn và suy thần kinh",
+"D. Suy hô hấp, suy tuần hoàn, suy thần kinh"
+],
+answer: ["D. Suy hô hấp, suy tuần hoàn, suy thần kinh"]
+},
+{
+type: "single",
+question: "Câu 30.2: Tiếp cận xử trí trẻ theo thứ tự như thế nào\na) Tìm dấu hiệu suy tim cấp\nb) Kiểm soát đường thở, cho thở O2\nc) Đặt đường truyền tĩnh mạch, bù dịch\nd) Tìm và xử trí các dấu hiệu suy thần kinh",
+options: [
+"A. a -> b -> c -> d",
+"B. b -> a -> c -> d",
+"C. b -> c -> a -> d",
+"D. b -> c -> d -> a"
+],
+answer: [
+"B. b -> a -> c -> d"
+]
+},
+{
+type: "truefalse",
+question: "Câu 31: Nguyên nhân gây co đồng tử : chọn ĐS",
+statements: [
+{
+text: "Thuốc phiện",
+answer: "Đúng"
+},
+{
+text: "Sái thuốc phiện",
+answer: "Đúng"
+},
+{
+text: "Belladon",
+answer: "Sai"
+},
+{
+text: "Pilocarpin.",
+answer: "Đúng"
+}
+]
+},
+{
+type: "single",
+question: "Câu 32: Liều ngộ độc của paracetamol là bao nhiêu?",
+options: [
+"1. >30mg/kg/lần",
+"2. >45mg/kg/ lần",
+"3. >60 mg/kg/ lần",
+"4. >150 mg/kg/ lần"
+],
+answer: [
+"1. >30mg/kg/lần"
+]
+},
+{
+type: "single",
+question: "Câu 33: Đặc điểm hôn mê do Aspirin:",
+options: [
+"A. Nhịp tim nhanh.",
+"B. Ức chế hô hấp.",
+"C. Phù phổi.",
+"D.  hạ HA"
+],
+answer: [
+"A. Nhịp tim nhanh."
+]
+},
+{
+type: "truefalse",
+question: "Câu 34: Về ngộ độc cấp.Đ/S:",
+statements: [
+{
+text: "Gây nôn khi >6h.",
+answer: "Sai"
+},
+{
+text: "Khám đầu tiên ở bệnh nhân ngộc độc cấp là chức năng sống.",
+answer: "Đúng"
+},
+{
+text: "Rửa dạ dày dùng được khi bênh nhân hôn mê.",
+answer: "Đúng"
+},
+{
+text: "Vàng da, xuất huyết thường do nấm độc.",
+answer: "Đúng"
+}
+]
+},
+{
+type: "single",
+question: "Câu 35: Nguyên nhân ngộ độc, trừ:",
+options: [
+"1. Người lớn vô tâm",
+"2. Dễ tìm nguyên nhân ở trẻ lớn, tự tử.",
+"3. Nam>nữ",
+"4. Gặp ở mọi lứa tuổi"
+],
+answer: [
+"2. Dễ tìm nguyên nhân ở trẻ lớn, tự tử."
+]
+},
+{
+type: "truefalse",
+question: "Câu 36: Ngộ độc cấp. Đ/S", // Renumbered from 35
+statements: [
+{
+text: "Trẻ lớn dễ phát hiện nguyên nhân, trẻ tự tử.",
+answer: "Sai"
+},
+{
+text: "Trẻ trai nhiều hơn trẻ gái.",
+answer: "Đúng"
+},
+{
+text: "Dấu hiệu mạch chậm trong ngộ độc Atropin.",
+answer: "Sai"
+},
+{
+text: "Thở nhanh trong ngộ độc Aspirin.",
+answer: "Đúng"
+},
+{
+text: "Tìm dấu hiệu chỉ đỏ để xác định nguyên nhân ngộ độc.",
+answer: "Đúng"
+},
+{
+text: "Mạch chậm trong ngộ độc thuốc ngủ.",
+answer: "Đúng"
+}
+]
+},
+{
+type: "single",
+question: "Câu 37.1: Trẻ nam 13 tuổi, có xích mích với gia đình, 1 tuần trước khi vào viện , trẻ uống nhiều rượu và bị bố đánh vào đầu, Trưa nay trên đường đi học về trẻ đột nhiên xuất hiện hôn mê.\nNghĩ đến nguyên nhân nào\na.Xuất huyết não màng não\nb. Ngộ độc chất\nc. Động kinh\nd. Nhiễm khuẩn thần kinh", // Renumbered from 36.1
+options: [
+"1. a+c",
+"2. a+d",
+"3. b+a",
+"4. b+c"
+],
+answer: [
+"3. b+a"
+]
+},
+{
+type: "single",
+question: "Câu 37.2: Cần làm xét nghiệm gì để chuẩn đoán ở bệnh nhân này\na.công thức máu b máu, xét nghiệm độc chất\nc CT, dịch não tủy          d đông máu", // Renumbered from 36.2
+options: [
+"A. a+b",
+"B. b+c",
+"C. a+c",
+"D. c+d"
+],
+answer: [
+"B. b+c"
+]
+},
+{
+type: "single",
+question: "Câu 37.3: Nếu BN nghi ngờ ngộ độc, cần lấy xét nghiệm độc chất ở đâu ở chẩn đoán\na máu b nước tiểu      c dịch não tủy d dịch dạ dày      e phân", // Renumbered from 36.3
+options: [
+"A. c,d,e",
+"B. a,b,d",
+"C. a,c,d",
+"D. a,b,c"
+],
+answer: [
+"B. a,b,d"
+]
+},
+{
+type: "single",
+question: "Câu 37.4: Trẻ xét nghiệm có gardenal trong nước tiểu, điều gì không hợp lý liên quan đến ngộ độc chất:", // Renumbered from 36.4
+options: [
+"A. Trẻ tự sát",
+"B. Bố mẹ khai mang",
+"C. Tuổi không phù hợp",
+"D. Xảy ra đột ngột"
+],
+answer: [
+"C. Tuổi không phù hợp"
+]
+},
+{
+type: "single",
+question: "Câu 37.5: Cần điều trị truyền dịch gì cho trẻ trừ:\na) Glucose ưu trương\nb) Nacl 0,9%\nc) NaHCO3\nd) Dịch keo", // Renumbered from 36.5
+options: [
+"a) Glucose ưu trương",
+"b) Nacl 0,9%",
+"c) NaHCO3",
+"d) Dịch keo"
+],
+answer: [
+"d) Dịch keo"
+]
+}
+];
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
