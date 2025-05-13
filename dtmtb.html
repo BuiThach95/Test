@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Màng tế bào có tính thấm cao nhất đối với ion:",
+    options: ["A. Natri", "B. Kali", "C. Calcium", "D. Sắt"],
+    answer: ["B. Kali"]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Ion dương có nồng độ bên ngoài cao hơn bên trong tế bào là:",
+    options: ["A. Na+", "B. K+", "C. Fe2+", "D. H+"],
+    answer: ["A. Na+"]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Phương trình Nernst hay được dùng để tính:",
+    options: ["A. Điện thế màng", "B. Áp suất thẩm thấu qua màng", "C. Ngưỡng điện thế", "D. Điện thế khuếch tán của Na+ hoặc K+"],
+    answer: ["C. Ngưỡng điện thế"]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Sử dụng phương trình Nernst sẽ tính được điện thế của Na+ là:",
+    options: ["A. -90 mV", "B. -70 mV", "C. 0 mV", "D. +61 mV"],
+    answer: ["D. +61 mV"]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Điện thế Nernst đối với Cl-:",
+    options: ["A. +61 mV", "B. -4 mV", "C. -70 mV", "D. -94 mV"],
+    answer: ["C. -70 mV"]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Điện thế màng bớt âm có ý nghĩa:",
+    options: ["A. Giá trị điện thế âm của màng lớn hơn.", "B. Điện thế âm của màng tăng dần về giá trị 0 mV.", "C. Màng dễ bị ức chế.", "D. Làm cho màng tiến đến trạng thái ưu phân cực."],
+    answer: ["B. Điện thế âm của màng tăng dần về giá trị 0 mV."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Nguyên nhân chủ yếu tạo ra điện thế nghỉ của màng tế bào:",
+    options: ["A. Khuếch tán ion K+.", "B. Khuếch tán ion Na+.", "C. Bơm Na+ - K+ - ATPase.", "D. Các ion (-) trong màng tế bào."],
+    answer: ["C. Bơm Na+ - K+ - ATPase."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Yếu tố tham gia tạo điện thế nghỉ",
+    options: ["A. K+ khuếch tán từ ngoài vào trong màng.", "B. Na+ khuếch tán từ trong ra ngoài màng.", "C. Các phân tử protein không khuếch tán ra ngoài được.", "D. Cl- khuếch tán từ ngoài vào trong màng."],
+    answer: ["C. Các phân tử protein không khuếch tán ra ngoài được."]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Điện thế nghỉ do khuếch tán K+ là +61 mV.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Bơm Na+- K+ tạo điện thế ( - ) bên trong màng là -86mV.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Tính thấm của màng đối với Na+ cao hơn đối với K+ 100 lần.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Dùng phương trình Goldman để tính điện thế khuếch tán khi màng thấm nhiều loại ion khác nhau.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Nồng độ ion Na+ ở dịch ngoại bào cao hơn ở dịch nội bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Cân bằng điện thế là một giả thiết về điện thế mà thực tế không xảy ra ở tế bào sống trong điều kiện bình thường.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Ở mức điện thế màng là -70 mV sẽ làm khuếch tán Na+ ra ngoài tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Do tác dụng của bơm Na+/K+, nồng độ cả Na+ và K+ hoàn toàn cân bằng giữa hai phía của màng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Các biểu thị toán học trong phương trình Nernst mô tả điện thế màng của một tế bào có thể bị ảnh hưởng bởi nồng độ ion và tính thấm của màng với ion đó.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Nhận xét không đúng về điện thế hoạt động:",
+    options: ["A. Chỉ một lượng nhỏ Na+ và K+ khuếch tán qua màng.", "B. Có cả hiện tượng feedback âm và feedback dương", "C. Bơm Na+/K+ trực tiếp liên quan đến việc tạo ra điện thế hoạt động", "D. Trong giai đoạn điện thế hoạt động, tổng nồng độ ion Na+ và K+ không thay đổi đáng kể", "E. Giai đoạn khử cực có sự khuếch tán K+ ra ngoài"],
+    answer: ["A. Chỉ một lượng nhỏ Na+ và K+ khuếch tán qua màng."] // Dựa theo key 'a' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 19: Cổng hoạt hoá của kênh Na+:",
+    options: ["A. Mở khi mặt trong màng mất điện tích (-)", "B. Mở khi mặt trong màng tích điện tích (-) mạnh", "C. Đóng khi mặt trong màng mất điện tích (-)", "D. Đóng khi mặt trong màng tích điện tích (+)"],
+    answer: ["A. Mở khi mặt trong màng mất điện tích (-)"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Sắp xếp các hiện tượng: 1. Bắt đầu khử cực màng. 2. Cổng K+ bắt đầu mở. 3. cổng K+ bắt đầu đóng. 4. Cổng Na+ bắt đầu mở. 5. Cổng Na+ bắt đầu đóng. 6. Tái cực màng.",
+    options: ["A. 1, 2, 4, 3, 5, 6", "B. 2, 6, 3, 4, 1, 5", "C. 4, 6, 2, 1, 5, 3", "D. 1, 4, 2, 5, 6, 3"],
+    answer: ["D. 1, 4, 2, 5, 6, 3"]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Các yếu tố sau đây đều tham gia tạo điện thế hoạt động, trừ:",
+    options: ["A. Mở kênh Na+", "B. Mở kênh K+", "C. Mở kênh Ca2+-Na+", "D. Hoạt động của bơm Na+-K+"],
+    answer: ["D. Hoạt động của bơm Na+-K+"]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Yếu tố tham gia tạo điện thế hoạt động:",
+    options: ["A. Hoạt động của bơm Na+ -K+", "B. Hoạt động của bơm Ca++", "C. Mở kênh Ca++ -Na+", "D. Mở kênh Cl-"],
+    answer: ["C. Mở kênh Ca++ -Na+"]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Các yếu tố sau đây đều tham gia tạo điện thế hoạt động, trừ:",
+    options: ["A. Mở kênh Na+", "B. Mở kênh K+", "C. Mở kênh Ca++-Na+", "D. Hoạt động của bơm H +-K+"],
+    answer: ["D. Hoạt động của bơm H +-K+"]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Điện thế hoạt động xuất hiện khi:",
+    options: ["A. Tăng điện thế màng trong nhiều miligiây.", "B. Tăng đột ngột điện thế màng trong vài phần vạn giây.", "C. Tăng đột ngột điện thế màng lên thêm 10 mV.", "D. Tăng đột ngột điện thế màng từ -90 mV đến -50 mV."],
+    answer: ["B. Tăng đột ngột điện thế màng trong vài phần vạn giây."]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Trong lúc xuất hiện điện thế hoạt động, tính thấm với natri tăng",
+    options: ["A. Trong khi khử cực", "B. Trong giai đoạn tăng nhanh của điện thế hoạt động", "C. Trong khi ưu phân cực", "D. Trong khi tái cực"],
+    answer: ["B. Trong giai đoạn tăng nhanh của điện thế hoạt động"]
+  },
+  {
+    type: "single",
+    question: "Câu 26: Trong lúc xuất hiện điện thế hoạt động, tính thấm của màng đối với natri giảm nhanh",
+    options: ["A. Trong khi khử cực", "B. Trong giai đoạn tăng nhanh của điện thế hoạt động", "C. Trong khi ưu phân cực", "D. Trong khi tái cực"],
+    answer: ["D. Trong khi tái cực"]
+  },
+  {
+    type: "single",
+    question: "Câu 27: Trong lúc xuất hiện điện thế hoạt động, tính thấm của màng với Kali lớn nhất",
+    options: ["A. Trong khi khử cực", "B. Trong giai đoạn tăng nhanh của điện thế hoạt động", "C. Trong khi ưu phân cực", "D. Trong khi tái cực"],
+    answer: ["D. Trong khi tái cực"]
+  },
+  {
+    type: "single",
+    question: "Câu 28: Trong giai đoạn điện thế hoạt động, tính thấm của kali giảm nhẹ",
+    options: ["A. Trong khi khử cực", "B. Trong giai đoạn tăng nhanh của điện thế hoạt động", "C. Trong khi phân cực", "D. Trong khi tái cực"],
+    answer: ["A. Trong khi khử cực"] // Dựa theo key 'a' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 29: Tăng tính thấm với natri gây ra",
+    options: ["A. Tái cực", "B. Ưu phân cực", "C. Giai đoạn tăng nhanh của điện thế hoạt động"],
+    answer: ["C. Giai đoạn tăng nhanh của điện thế hoạt động"]
+  },
+  {
+    type: "single",
+    question: "Câu 30: Giảm tính thấm với natri, tăng tính thấm với kali xảy ra ở giai đoạn:",
+    options: ["A. tái cực", "B. ưu phân cực", "C. giai đoạn tăng nhanh của điện thế hoạt động"],
+    answer: ["A. tái cực"]
+  },
+  {
+    type: "single",
+    question: "Câu 31: Giảm tính thấm từ từ với kali xảy ra ở giai đoạn",
+    options: ["A. tái cực", "B. ưu phân cực", "C. giai đoạn tăng nhanh của điện thế hoạt động"],
+    answer: ["B. ưu phân cực"]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Chữ hoa in nào trong hình chú thích về:",
+    options: ["A. Giai đoạn nghỉ", "B. Bắt đầu tái cực", "C. Ưu phân cực", "D. Khử cực", "E. Tái cực"],
+    answer: ["A. Giai đoạn nghỉ"] // Dựa theo key 'A' trong phần đáp án
+  },
+    {
+    type: "single",
+    question: "Câu 33: Chữ hoa in nào trong hình trên chú thích về:",
+    options: ["A. Thời kỳ kênh Na+ và K+ phụ thuộc điện thế bị đóng.", "B. Thời kỳ kênh Na+ phụ thuộc điện thế bị bất hoạt rồi lập lại trạng thái đóng, kênh kali tiếp tục mở.", "C. Thời kỳ kênh Na+ phụ thuộc điện thế trở nên bất hoạt và kênh kali mở.", "D. Thời kỳ một vài kênh K+ phụ thuộc điện thế vẫn đang mở làm K+ đi ra ngoài tế bào.", "E. Thời kỳ kênh Na+ phụ thuộc điện thế mở rất nhanh, natri ùa vào trong tế bào."],
+    answer: ["A. Thời kỳ kênh Na+ và K+ phụ thuộc điện thế bị đóng."] // Dựa theo key 'A' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 34: Chọn giai đoạn của điện thế hoạt động phù hợp với trạng thái của kênh Na+ và K+",
+    options: ["A. Giai đoạn nghỉ", "B. Khử cực", "C. Đỉnh điện thế", "D. Tái cực", "E. Ưu phân cực"],
+    answer: ["A. Giai đoạn nghỉ"] // Dựa theo key 'a' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 35: Chọn giai đoạn của điện thế hoạt động phù hợp với trạng thái của kênh Na+ và K+",
+    options: ["A. Giai đoạn nghỉ", "B. Khử cực", "C. Đỉnh điện thế", "D. Tái cực", "E. Ưu phân cực"],
+    answer: ["B. Khử cực"] // Dựa theo key 'b' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 36: Chọn giai đoạn của điện thế hoạt động phù hợp với trạng thái của kênh Na+ và K+",
+    options: ["A. Giai đoạn nghỉ", "B. Khử cực", "C. Đỉnh điện thế", "D. Tái cực", "E. Ưu phân cực"],
+    answer: ["C. Đỉnh điện thế"] // Dựa theo key 'c' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 37: Chọn giai đoạn của điện thế hoạt động phù hợp với trạng thái của kênh Na+ và K+",
+    options: ["A. Giai đoạn nghỉ", "B. Khử cực", "C. Đỉnh điện thế", "D. Tái cực", "E. Ưu phân cực"],
+    answer: ["D. Tái cực"] // Dựa theo key 'd' trong phần đáp án
+  },
+  {
+    type: "single",
+    question: "Câu 38: Chọn giai đoạn của điện thế hoạt động phù hợp với trạng thái của kênh Na+ và K+",
+    options: ["A. Giai đoạn nghỉ", "B. Khử cực", "C. Đỉnh điện thế", "D. Tái cực", "E. Ưu phân cực"],
+    answer: ["E. Ưu phân cực"] // Dựa theo key 'e' trong phần đáp án
+  }
+  ];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
