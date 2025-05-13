@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Đặc điểm của sự sống:",
+    options: ["A. Thay cũ đổi mới", "B. Chịu kích thích", "C. Sinh sản giống mình", "D. Cả 3 đặc điểm trên"],
+    answer: ["D. Cả 3 đặc điểm trên"]
+  },
+  {
+    type: "single",
+    question: " 2. Sắp xếp theo trình tự quá trình điều chỉnh thân nhiệt khi cơ thể sốt: (1) Hoạt hóa bộ phận đáp ứng; (2) Tích hợp tín hiệu; (3) hoạt hóa điều hòa ngược dương tính; (4) hoạt hóa bộ phận nhân cảm; (5) giảm điểm chuẩn nhiệt độ ",
+    options: [
+      "A. 2 4 3 1 5",
+      "B. 5 3 2 4 1",
+      "C. 4 3 1 5 2",
+      "D. 4 2 1 3 5",
+      "E. 1 2 4 5 3"
+    ],
+    answer: ["D. 4 2 1 3 5"]
+  },
+  {
+    type: "truefalse",
+    question: "Câu 3: Đánh giá mệnh đề: 'Sự mất khả năng duy trì hằng tính nội môi sẽ dẫn tới tình trạng bệnh lý.'",
+    statements: [
+      { text: "Sự mất khả năng duy trì hằng tính nội môi sẽ dẫn tới tình trạng bệnh lý.", answer: "Đúng" }
+    ]
+  },
+  {
+    type: "truefalse",
+    question: "Câu 4: Đánh giá mệnh đề: 'Điều hòa cân bằng nội môi tạo ra đáp ứng đặc hiệu của cơ hoặc xương.'",
+    statements: [
+      { text: "Điều hòa cân bằng nội môi tạo ra đáp ứng đặc hiệu của cơ hoặc xương.", answer: "Sai" }
+    ]
+  },
+  {
+    type: "truefalse",
+    question: "Câu 5: Tăng nồng độ T3, T4 trong máu trong trường hợp bị lạnh là ví dụ về điều hòa ngược âm tính.",
+    statements: [
+      { text: "Tăng nồng độ T3, T4 trong máu trong trường hợp bị lạnh là ví dụ về điều hòa ngược âm tính.", answer: "Sai" }
+    ]
+  },
+  {
+    type: "truefalse",
+    question: "Câu 6: Đông máu cũng là một quá trình điều hòa ngược dương tính.",
+    statements: [
+      { text: "Đông máu cũng là một quá trình điều hòa ngược dương tính.", answer: "Đúng" }
+    ]
+  },
+  {
+    type: "truefalse",
+    question: "Câu 7: Khi nồng độ glucose máu giảm đột ngột, nồng độ insulin tăng và glucagon giảm để điều chỉnh.",
+    statements: [
+      { text: "Nồng độ insulin tăng và glucagon giảm khi glucose máu giảm đột ngột.", answer: "Sai" }
+    ]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Hằng tính nội môi là điều kiện để tạo ra:",
+    options: [
+      "A. Sự ổn định môi trường bên trong cơ thể trong giới hạn sinh lý",
+      "B. Những đáp ứng với kích thích từ trong và ngoài cơ thể",
+      "C. Mức tiêu hao năng lượng thấp nhất mà vẫn đảm bảo được chức năng của chúng"
+    ],
+    answer: ["A. Sự ổn định môi trường bên trong cơ thể trong giới hạn sinh lý"]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Hệ thống có chức năng bao bọc, chống đỡ, vận chuyển gồm:",
+    options: [
+      "A. Da, tóc, cơ, khớp",
+      "B. Da, cơ, xương, khớp",
+      "C. Hệ tiêu hoá, hệ hô hấp và hệ thống các tế bào trong cơ thể"
+    ],
+    answer: ["B. Da, cơ, xương, khớp"]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Hệ thống vận chuyển chất dinh dưỡng gồm các thành phần sau, trừ:",
+    options: [
+      "A. Máu",
+      "B. Dịch bạch huyết",
+      "C. Dịch kẽ",
+      "D. Dịch não tuỷ",
+      "E. Dịch nội bào"
+    ],
+    answer: ["E. Dịch nội bào"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Hệ thống bài tiết các sản phẩm chuyển hoá gồm các thành phần sau, trừ:",
+    options: [
+      "A. Hệ thống hô hấp",
+      "B. Hệ thống tiêu hoá",
+      "C. Hệ thống tiết niệu",
+      "D. Hệ thống miễn dịch",
+      "E. Da"
+    ],
+    answer: ["D. Hệ thống miễn dịch"]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Trong điều hòa cân bằng nội môi, việc tăng hay giảm hoạt động của một bộ phận đáp ứng liên quan đầu tiên đến vai trò của:",
+    options: [
+      "A. Trung tâm tích hợp",
+      "B. Bộ phận nhận cảm",
+      "C. Cơ hoặc tuyến",
+      "D. Vòng feedback dương tính",
+      "E. Vòng feedback âm tính"
+    ],
+    answer: ["A. Trung tâm tích hợp"]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Đặc điểm nào sau không phải là của phản xạ không điều kiện (PXKĐK):",
+    options: [
+      "A. Tính bản năng",
+      "B. Tồn tại vĩnh viễn suốt đời",
+      "C. Di truyền",
+      "D. Có một cung phản xạ không cố định",
+      "E. Có tính chất loài, trung tâm của phản xạ nằm ở phần dưới của hệ thần kinh"
+    ],
+    answer: ["D. Có một cung phản xạ không cố định"]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Đặc điểm nào sau không phải là của phản xạ có điều kiện (PXCĐK):",
+    options: [
+      "A. Được thành lập trong đời sống, sau quá trình luyện tập",
+      "B. Cung PXCĐK cố định",
+      "C. Trung tâm ở vỏ não",
+      "D. Không phụ thuộc vào tính chất của tác nhân kích thích và bộ phận cảm thụ"
+    ],
+    answer: ["B. Cung PXCĐK cố định"]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Yếu tố điều hoà bằng đường thể dịch chủ yếu là:",
+    options: [
+      "A. Oxy",
+      "B. CO2",
+      "C. Các ion",
+      "D. Hormon"
+    ],
+    answer: ["D. Hormon"]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Trường hợp tăng thông khí phổi khi nồng độ CO2 trong dịch ngoại bào tăng là ví dụ về:",
+    options: [
+      "A. Điều hòa chức năng thông khí phổi",
+      "B. Điều hòa chức năng trao đổi khí",
+      "C. Điều hòa ngược âm tính",
+      "D. Điều hòa ngược dương tính",
+      "E. Bài tiết sản phẩm chuyển hóa"
+    ],
+    answer: ["C. Điều hòa ngược âm tính"]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Trường hợp giảm thông khí phổi khi nồng độ CO2 trong dịch ngoại bào giảm là ví dụ về:",
+    options: [
+      "A. Điều hòa chức năng thông khí phổi",
+      "B. Điều hòa chức năng trao đổi khí",
+      "C. Điều hòa ngược âm tính",
+      "D. Điều hòa ngược dương tính",
+      "E. Bài tiết sản phẩm chuyển hóa"
+    ],
+    answer: ["C. Điều hòa ngược âm tính"]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Trường hợp nhịp tim giảm khi huyết áp tăng là ví dụ về:",
+    options: [
+      "A. Điều hòa hoạt động giữa tim và hệ mạch máu",
+      "B. Điều hòa hoạt động giữa tim và hệ thần kinh",
+      "C. Điều hòa hoạt động giữa hệ thần kinh và hệ mạch máu",
+      "D. Điều hòa ngược âm tính",
+      "E. Điều hòa ngược dương tính"
+    ],
+    answer: ["D. Điều hòa ngược âm tính"]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Trường hợp nhịp tim tăng khi huyết áp giảm là ví dụ về:",
+    options: [
+      "A. Điều hòa hoạt động giữa tim và hệ mạch máu",
+      "B. Điều hòa hoạt động giữa tim và hệ thần kinh",
+      "C. Điều hòa hoạt động giữa hệ thần kinh và hệ mạch máu",
+      "D. Điều hòa ngược âm tính",
+      "E. Điều hòa ngược dương tính"
+    ],
+    answer: ["D. Điều hòa ngược âm tính"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Mục đích của điều hòa ngược âm tính:",
+    options: [
+      "A. Điều hòa hoạt động các mô của cơ thể",
+      "B. Điều hòa nồng độ các chất trong dịch ngoại bào",
+      "C. Duy trì sự ổn định nội môi",
+      "D. Duy trì nhiệt độ hằng định cho sự ổn định các chức năng cơ thể"
+    ],
+    answer: ["C. Duy trì sự ổn định nội môi"]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Một ví dụ về điều hòa ngược dương tính:",
+    options: [
+      "A. Điều nhiệt",
+      "B. Điều hòa nồng độ glucose/máu",
+      "C. Sổ thai",
+      "D. Điều hòa nồng độ calci/máu"
+    ],
+    answer: ["C. Sổ thai"]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Một ví dụ về điều hòa ngược dương tính:",
+    options: [
+      "A. Điều nhiệt",
+      "B. Điều hòa nồng độ glucose/máu",
+      "C. Stress",
+      "D. Điều hòa nồng độ calci/máu"
+    ],
+    answer: ["C. Stress"]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Một ví dụ về điều hòa ngược dương tính:",
+    options: [
+      "A. Điều nhiệt",
+      "B. Điều hòa nồng độ glucose/máu",
+      "C. Sự hình thành nút tiểu cầu",
+      "D. Điều hòa nồng độ calci/máu"
+    ],
+    answer: ["C. Sự hình thành nút tiểu cầu"]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Một ví dụ về tác dụng không có lợi của điều hòa ngược dương tính:",
+    options: [
+      "A. Sổ thai",
+      "B. Stress",
+      "C. Mất đột ngột 2 lít máu",
+      "D. Sự hình thành nút tiểu cầu"
+    ],
+    answer: ["C. Mất đột ngột 2 lít máu"]
+  }
+  ];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
