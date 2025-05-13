@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Sinh lý học là môn học nghiên cứu về:",
+    options: [
+      "A. Chức năng sinh học",
+      "B. Cách thức hoạt động của cơ thể",
+      "C. Các chuỗi sự kiện mang tính nguyên nhân – hậu quả",
+      "D. Những hiện tượng bao trùm lên nhiều ngành khoa học khác",
+      "E. A + B + C + D"
+    ],
+    answer: ["E. A + B + C + D"]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Nhận xét nào sau đây về môn Sinh lý học không đúng:",
+    options: [
+      "A. Đối tượng nghiên cứu môn học là tìm hiểu các hoạt động chức năng bình thường của cơ thể",
+      "B. Những nghiên cứu trên động vật thực nghiệm ít có giá trị ứng dụng trên người",
+      "C. Là cơ sở cho việc giải thích các rối loạn chức năng trong bệnh học",
+      "D. Có mối liên quan chặt chẽ với môn sinh lý bệnh"
+    ],
+    answer: ["B. Những nghiên cứu trên động vật thực nghiệm ít có giá trị ứng dụng trên người"]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Tất cả các quan sát được trong nghiên cứu Sinh lý học cần được:",
+    options: [
+      "A. Công bố",
+      "B. Tái quan sát được",
+      "C. Áp dụng lâm sàng",
+      "D. Có tính dự đoán",
+      "E. Không nhất thiết phải đáp ứng tất cả các yêu cầu trên"
+    ],
+    answer: ["E. Không nhất thiết phải đáp ứng tất cả các yêu cầu trên"]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Mục tiêu nghiên cứu của môn Sinh lý học là:",
+    options: [
+      "A. Các quá trình chức năng của cơ thể",
+      "B. So sánh các quá trình xảy ra trên người và động vật"
+    ],
+    answer: ["A. Các quá trình chức năng của cơ thể"]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Ngành khoa học tự nhiên liên quan nhất với Sinh lý học y học:",
+    options: [
+      "A. Vật lý",
+      "B. Hóa học",
+      "C. Toán học",
+      "D. Cả 3 ngành trên"
+    ],
+    answer: ["D. Cả 3 ngành trên"]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Môn y học cơ sở liên quan nhất với Sinh lý học y học:",
+    options: [
+      "A. Giải phẫu",
+      "B. Mô học",
+      "C. Hóa sinh",
+      "D. Lý sinh",
+      "E. Cả 4 môn trên"
+    ],
+    answer: ["E. Cả 4 môn trên"]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Phương pháp nghiên cứu môn Sinh lý học gồm có:",
+    options: [
+      "A. In vivo, Insitu",
+      "B. In vivo, In vitro",
+      "C. In vivo, In vitro, Insitu",
+      "D. In vitro, Insitu"
+    ],
+    answer: ["C. In vivo, In vitro, Insitu"]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Giai đoạn cần đánh giá tác dụng thuốc trên người (thử nghiệm lâm sàng):",
+    options: [
+      "A. phase I",
+      "B. phase II",
+      "C. phase III",
+      "D. phase IV"
+    ],
+    answer: ["B. phase II"]
+  }
+];
+
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
