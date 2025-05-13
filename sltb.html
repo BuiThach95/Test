@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Thành phần màng tế bào gồm có protein và",
+    options: ["A. phospholipid", "B. carbohydrat", "C. acid nucleic", "D. acid amino"],
+    answer: ["A. phospholipid"]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Các protein màng tế bào không có vai trò:",
+    options: ["A. Tạo cấu trúc chống đỡ", "B. Tổng hợp DNA", "C. Là enzym", "D. Là receptor", "E. Là kháng nguyên"],
+    answer: ["B. Tổng hợp DNA"]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Thành phần không đóng vai trò chức năng của màng là:",
+    options: ["A. Carbohydrat", "B. Protein", "C. Cholesterol", "D. Acid nucleic"],
+    answer: ["D. Acid nucleic"]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Chức năng của carbohydrat màng là:",
+    options: ["A. Vận chuyển đường đơn qua màng tế bào.", "B. Có hoạt tính enzym.", "C. Cung cấp năng lượng cho tế bào.", "D. Là receptor."],
+    answer: ["D. Là receptor."]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Các chức năng sau đây là của carbohydrat màng, trừ:",
+    options: ["A. Có hoạt tính enzym.", "B. Là receptor.", "C. Làm các tế bào dính nhau.", "D. Tham gia phản ứng miễn dịch."],
+    answer: ["A. Có hoạt tính enzym."]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Các chức năng sau đây là của protein màng, trừ:",
+    options: ["A. Protein mang.", "B. Protein kênh.", "C. Protein hoạt tính enzym.", "D. Proteoglycan."],
+    answer: ["D. Proteoglycan."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Đặc tính nào sau đây không phải của protein màng:",
+    options: ["A. Đặc hiệu", "B. Gắn kết cạnh tranh", "C. Biến dạng", "D. Bão hòa"],
+    answer: ["D. Bão hòa"]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Đơn vị cấu trúc nhỏ nhất của sự sống là:",
+    options: ["A. Các bào quan", "B. Tế bào", "C. Các cơ quan", "D. Mô", "D. Nhân"],
+    answer: ["B. Tế bào"]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Thành phần lipid chủ yếu trên màng tế bào là:",
+    options: ["A. Cholesterol", "B. Triglycerid", "C. Phospholipid", "D. A+B", "D. A+C"],
+    answer: ["D. A+C"] // Dựa vào đáp án e -> A+C (có vẻ bị đánh số nhầm D hai lần trong input, lấy theo đáp án e=A+C)
+  },
+  {
+    type: "single",
+    question: "Câu 10: Tốc độ khuếch tán thuận hóa chậm hơn khuếch tán qua kênh ion vì: Trọng lượng phân tử các chất khuếch tán lớn hơn nên vận chuyển chậm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Tốc độ khuếch tán thuận hóa chậm hơn khuếch tán qua kênh ion vì: Không được cung cấp năng lượng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Tốc độ khuếch tán thuận hóa chậm hơn khuếch tán qua kênh ion vì: Cần có thời gian để gắn với chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Tốc độ khuếch tán thuận hóa chậm hơn khuếch tán qua kênh ion vì: Cần có thời gian để tách khỏi chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Tốc độ khuếch tán thuận hóa chậm hơn khuếch tán qua kênh ion vì: Cần có thời gian để tổng hợp chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Vận chuyển ion Na+ qua màng: Có thể khuếch tán cùng với nước.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Vận chuyển ion Na+ qua màng: Có thể khuếch tán qua kênh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Vận chuyển ion Na+ qua màng: Có thể vận chuyển qua chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Vận chuyển ion Na+ qua màng: Có thể khuếch tán qua lớp lipip kép vì kích thước nhỏ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Vận chuyển ion Na+ qua màng: Có thể được thúc đẩy nhờ vai trò của hormon",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Đặc điểm của các thành phần cấu trúc màng tế bào: Thành phần chủ yếu của màng là protein và lipid.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Đặc điểm của các thành phần cấu trúc màng tế bào: Lớp lipid kép có đầu ưa nước nằm giữa 2 lớp, đầu kỵ nước nằm quay mặt ra ngoài.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Đặc điểm của các thành phần cấu trúc màng tế bào: Lớp lipid kép có tác dụng làm các tế bào dính nhau.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Đặc điểm của các thành phần cấu trúc màng tế bào: Hai đầu kị nước của lớp lipid kép nằm ở hai phía của màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Đặc điểm của các thành phần cấu trúc màng tế bào: Hai đầu ưa nước của lớp lipid kép nằm ở hai phía của màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Đặc điểm của các thành phần cấu trúc màng tế bào: Hai đầu kị nước của lớp lipid kép nằm quay vào trong, ở giữa hai lớp lipid màng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 26: Đặc điểm của các thành phần cấu trúc màng tế bào: Hai đầu ưa nước của lớp lipid kép nằm quay vào trong, ở giữa hai lớp lipid màng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 27: Đặc điểm của các thành phần cấu trúc màng tế bào: Màng tế bào được cấu tạo bởi một lớp phân tử phospholipid.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 28: Đặc điểm của các thành phần cấu trúc màng tế bào: Lớp lipid màng cấu tạo gồm phospholipid và cholesterol với đầu kỵ nước quay vào trong và đầu ưa nước quay ra ngoài.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 29: Đặc điểm của các thành phần cấu trúc màng tế bào: Cấu trúc cũng có chức năng làm tăng tính linh động của màng tế bào là phospholipid, cholesterol và glycolipid.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 30: Đặc điểm của các thành phần cấu trúc màng tế bào: Cấu trúc cũng có chức năng kết dính và nhận tín hiệu là glycoprotein và glycolipid.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 31: Đặc điểm của các thành phần cấu trúc màng tế bào: Protein màng có cấu trúc ưa nước và kỵ nước rõ ràng thuộc loại protein kênh, protein liên kết.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Chất khuếch tán được qua lớp lipid kép của màng tế bào:",
+    options: ["A. Vitamin A", "B. Vitamin B1", "C. Vitamin B12", "D. Vitamin C"],
+    answer: ["A. Vitamin A"]
+  },
+  {
+    type: "single",
+    question: "Câu 33: Chất khuếch tán được qua lớp lipid kép của màng tế bào:",
+    options: ["A. Glucose", "B. Acid amin", "C. Ion K+", "D. Khí nitơ"],
+    answer: ["D. Khí nitơ"]
+  },
+  {
+    type: "single",
+    question: "Câu 34: Các chất sau đây đều khuếch tán qua lớp lipid kép, trừ:",
+    options: ["A. Oxy", "B. CO2", "C. Glucose", "D. N2"],
+    answer: ["C. Glucose"]
+  },
+  {
+    type: "single",
+    question: "Câu 35: Các chất sau đây đều khuếch tán qua kênh protein, trừ",
+    options: ["A. Nước", "B. Na+", "C. Glucose", "D. Ca2+"],
+    answer: ["C. Glucose"]
+  },
+  {
+    type: "single",
+    question: "Câu 36: Các chất sau đây đều khuếch tán qua kênh protein, trừ:",
+    options: ["A. H+", "B. Acid amin.", "C. Nước", "D. K+"],
+    answer: ["B. Acid amin."]
+  },
+  {
+    type: "single",
+    question: "Câu 37: Các chất sau đây qua màng theo cơ chế khuếch tán thuận hoá, trừ:",
+    options: ["A. Glucose", "B. Mannose", "C. Saccarose", "D. Galactose", "E. Fructose"],
+    answer: ["C. Saccarose"]
+  },
+  {
+    type: "single",
+    question: "Câu 38: Chất khuếch tán được qua kênh protein của màng tế bào:",
+    options: ["A. Acid amin", "B. Glucose", "C. Fructose", "D. Nước"],
+    answer: ["D. Nước"]
+  },
+  {
+    type: "single",
+    question: "Câu 39: Trong vận chuyển tích cực nguyên phát, sự phân giải ATP cung cấp năng lượng cho:",
+    options: ["A. Di chuyển tế bào đến gần các phân tử hoặc ion được vận chuyển", "B. Gắn phân tử hoặc ion vào vị trí đặc hiệu", "C. Phosphoryl hóa, thay đổi hình dạng protein mang", "D. Giải phóng các phân tử hoặc ion từ protein mang", "E. Thay đổi hình dạng tế bào"],
+    answer: ["C. Phosphoryl hóa, thay đổi hình dạng protein mang"]
+  },
+  {
+    type: "single",
+    question: "Câu 40: Các yếu tố sau đây đều ảnh hưởng đến tính thấm của màng, trừ",
+    options: ["A. Độ dày của màng", "B. Sự tích điện của màng", "C. Độ hoà tan trong lipid của chất khuếch tán", "D. Số kênh protein của màng", "E. Trọng lượng phân tử của chất khuếch tán"],
+    answer: ["B. Sự tích điện của màng"]
+  },
+  {
+    type: "single",
+    question: "Câu 41: Các yếu tố sau đây đều làm tăng tốc độ khuếch tán, trừ:",
+    options: ["A. Tăng chênh lệch nồng độ chất khuếch tán", "B. Tăng nhiệt độ", "C. Tăng trọng lượng phân tử chất khuếch tán", "D. Tăng độ hoà tan trong lipid của chất khuếch tán", "E. Tăng số kênh protein của màng"],
+    answer: ["C. Tăng trọng lượng phân tử chất khuếch tán"]
+  },
+  {
+    type: "single",
+    question: "Câu 42: Chất không khuyếch tán qua màng là:",
+    options: ["A. Các ion", "B. Protein", "C. Nước", "D. Các phân tử tan trong lipid"],
+    answer: ["B. Protein"]
+  },
+  {
+    type: "single",
+    question: "Câu 43: Quá trình nào sau đây không cần chất mang:",
+    options: ["A. Thẩm thấu", "B. Khuếch tán được tăng cường", "C. Vận chuyển tích cực nguyên phát", "D. Vận chuyển tích cực thứ phát"],
+    answer: ["A. Thẩm thấu"]
+  },
+  {
+    type: "single",
+    question: "Câu 44: Khuếch tán thụ động không cần có chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 45: Các ion có kích thước nhỏ khuếch tán dễ dàng qua lớp lipid kép.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 46: Nước thấm qua màng tế bào rất nhanh vì 1 phần nước khuếch tán qua lớp lipid kép, phần còn lại qua các kênh protein.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 47: Khuếch tán được tăng cường có đặc điểm là tốc độ khuếch tán tăng dần tới mức tối đa thì không tăng nữa, dù nồng độ chất khuếch tán tiếp tục tăng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Lưu ý: Dựa theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 48: Glucose khuếch tán dễ dàng qua lớp lipid kép.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 49: Tốc độ khuếch tán qua màng của một chất tỷ lệ thuận với độ hoà tan trong lipid của chất đó.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 50: Tính thấm của màng tế bào đối với một chất tỷ lệ với hệ số tan trong dầu và tỷ lệ nghịch với diện tích màng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 51: Mặt trong của kênh K+ tích điện (+) mạnh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 52: Cổng hoạt hoá của kênh K+ nằm ở mặt ngoài màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 53: Cổng hoạt hoá của kênh Na+ nằm ở mặt ngoài màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 54: Cổng hoạt hoá của kênh Na+ nằm ở mặt trong màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 55: Cổng hoạt hoá của kênh K+ nằm ở mặt trong màng tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 56: Khi vào trong tế bào, hai acid amin có thể gắn với cùng một chất mang trên màng tế bào",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 57: Khi nồng độ chất được vận chuyển bên ngoài màng tế bào tăng, các protein mang sẽ tăng tốc độ vận chuyển các chất cho đến khi tất cả các vị trí gắn đều bão hòa và được gọi là đạt ngưỡng vận chuyển tối đa (transport maximum (Tm)",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 58: Vận chuyển đòi hỏi cung cấp năng lượng bao gồm khuếch tán đơn giản, thẩm thấu, khuếch tán có gia tốc.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 59: Hoạt động của bơm Na+- K+ là 1 ví dụ về vận chuyển tích cực thứ phát.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Lưu ý: Dựa theo key bạn cung cấp, mặc dù về mặt sinh học đây là vận chuyển tích cực nguyên phát.
+  },
+  {
+    type: "single",
+    question: "Câu 60: Vận chuyển tích cực cần được cung cấp năng lượng và chất mang.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 61: Vận chuyển tích cực là vận chuyển ngược chiêù bậc thang điện hoá.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 62: Mỗi lần hoạt động bơm Na+- K+ đưa 3 ion K+ ra ngoài và 2 ion Na+ vào trong.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 63: Vận chuyển tích cực thứ phát sử dụng năng lượng từ phân giải các hợp chất phosphat giàu năng lượng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 64: Natri có thể được vận chuyển chung protein mang với một chất khác kiểu cùng chiều hoặc ngược chiều.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 65: Mọi tế bào đều có rất nhiều các bơm Na+-K+-ATPase trên màng tế bào và luôn hoạt động ở mức độ hằng định.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Lưu ý: Dựa theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 66: Đặc điểm cấu tạo của protein mang của bơm Na+-K+-ATPase:",
+    options: ["A. Ở mặt trong của màng có 3 receptor gắn với ion Na+.", "B. Ở gần vị trí gắn Na+ có enzym ATPase.", "C. Ở mặt ngoài của màng có 2 receptor gắn với ion K+.", "D. A+C.", "E. A+B+C."],
+    answer: ["E. A+B+C."]
+  },
+  {
+    type: "single",
+    question: "Câu 67: Bơm Na+-K+-ATPase hoạt động khi:",
+    options: ["A. 3 ion K+ gắn ở mặt trong và 2 ion Na+ gắn ở mặt ngoài protein mang.", "B. 3 ion Na+ gắn ở mặt trong và 2 ion K+ gắn ở mặt ngoài protein mang.", "C. Enzym ATPase được hoạt hoá.", "D. A+C.", "E. B+C."],
+    answer: ["E. B+C."]
+  },
+  {
+    type: "single",
+    question: "Câu 68: Vai trò của bơm Na+-K+-ATPase:",
+    options: ["A. Là nguyên nhân chính tạo điện tích (-) bên trong màng.", "B. Làm cho các điện tích (+) bên trong ít hơn bên ngoài màng.", "C. Làm cho các điện tích (-) bên trong ít hơn bên ngoài màng.", "D. Góp phần tạo giai đoạn tái cực khi màng bị kích thích.", "E. Góp phần tạo giai đoạn khử cực khi màng bị kích thích."],
+    answer: ["A. Là nguyên nhân chính tạo điện tích (-) bên trong màng."] // Lưu ý: Dựa theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 69: Các cách vận chuyển Na+ sau đây đều là vận chuyển tích cực, trừ:",
+    options: ["A. Qua kênh Na+.", "B. Qua bơm Na+- K+.", "C. Đồng vận chuyển với glucose.", "D. Đồng vận chuyển với acid amin."],
+    answer: ["A. Qua kênh Na+."]
+  },
+  {
+    type: "single",
+    question: "Câu 70: Trong vận chuyển tích cực thứ phát loại đồng vận chuyển của ion Na và ion Ca có đặc điểm",
+    options: ["A. Ion Ca khuếch tán đơn thuần vào bên trong do ion Na vận chuyển tích cực ra ngoài tế bào.", "B. Ion Ca khuếch tán đơn thuần ra ngoài do ion Na vận chuyển tích cực ra ngoài tế bào.", "C. Ion Ca vận chuyển tích cực ra ngoài do ion Na khuếch tán vào trong tế bào.", " D. Ion Ca vận chuyển tích cực ra ngoài do ion Na khuếch tán ra ngoài tế bào."],
+    answer: ["C. Ion Ca vận chuyển tích cực ra ngoài do ion Na khuếch tán vào trong tế bào."]
+  },
+  {
+    type: "single",
+    question: "Câu 71: Glucose qua bờ bàn chải của tế bào biểu mô niêm mạc ruột và ống thận theo hình thức:",
+    options: ["A. Vận chuyển tích cực thứ phát.", "B. Khuếch tán đơn thuần.", "C. Khuếch tán được tăng cường.", "D. Đồng vận chuyển cùng chất mang với ion Na."],
+    answer: ["D. Đồng vận chuyển cùng chất mang với ion Na."]
+  },
+  {
+    type: "single",
+    question: "Câu 72: Các enzym thuỷ phân (hydrolase) được bài tiết từ:",
+    options: ["A. Ribosom.", "B. Lysosom.", "C. Ty thể.", "D. Thể golgi"],
+    answer: ["B. Lysosom."] // Lưu ý: Dựa theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 73: Chất được tế bào nuốt theo hình thức ẩm bào:",
+    options: ["A. Vi khuẩn.", "B. Xác hồng cầu.", "C. Tế bào lạ.", "D. Dịch ngoại bào."],
+    answer: ["D. Dịch ngoại bào."]
+  },
+  {
+    type: "single",
+    question: "Câu 74: Sự tạo thành các túi tiêu hóa là một giai đoạn của quá trình:",
+    options: ["A. Thực bào", "B. Pinocytosis", "C. Nhập bào qua receptor", "D. Xuất bào"],
+    answer: ["A. Thực bào"] // Lưu ý: Dựa theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 75: Cholesterol, một số virus gây viêm gan, bại liệt, AIDS vào trong tế bào qua hình thức:",
+    options: ["A. Khuếch tán", "B. Thực bào", "C. Pinocytosis", "D. Nhập bào qua receptor", "E. Di chuyển kiểu amip"],
+    answer: ["D. Nhập bào qua receptor"]
+  },
+  {
+    type: "single",
+    question: "Câu 76: Ví dụ điển hình về hiện tượng xuất bào là:",
+    options: ["A. Hoạt hóa các thành phần phospholipid của màng tế bào.", "B. Đưa glucose và các acid amin từ trong tế bào biểu mô niêm mạc ruột vào máu.", "C. Đưa các sản phẩm có tính kháng nguyên lên bề mặt tế bào bạch cầu mono.", "D. Giải phóng các bọc chứa hormon, protein"],
+    answer: ["D. Giải phóng các bọc chứa hormon, protein"]
+  }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
