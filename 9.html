@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Luật Starling nói lên ảnh hưởng của:",
+    options: ["A. Dây X lên lực co cơ tim.", "B. Các ion lên tần số tim.", "C. Độ pH lên tần số tim.", "D. Lượng máu về tim lên lực co cơ tim.", "E. Các hormon lên lực co cơ tim."],
+    answer: ["D. Lượng máu về tim lên lực co cơ tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Lưu lượng tim tỷ lệ thuận với:",
+    options: ["A. Lực co cơ tim.", "B. Nhịp tim.", "C. Độ đàn hồi của mạch máu.", "D. Mức tiêu thụ oxy của mô."],
+    answer: ["A. Lực co cơ tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Lực co của cơ tim tăng lên khi:",
+    options: ["A. Tăng nhiệt độ máu đến tim.", "B. Kích thích dây X chi phối tim.", "C. Giảm lượng máu về tim.", "D. Kích thích dây giao cảm chi phối tim.", "E. Tăng nồng độ ion K+ nuôi tim."],
+    answer: ["D. Kích thích dây giao cảm chi phối tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Nhịp tim tăng lên khi:",
+    options: ["A. Tăng nồng độ ion Ca++ trong máu đến tim.", "B. Tăng áp suất máu trong quai động mạch chủ.", "C. Tăng nhiệt độ máu đến tim.", "D. Tăng phân áp O2 trong máu động mạch.", "E. Giảm phân áp CO2 trong máu động mạch."],
+    answer: ["C. Tăng nhiệt độ máu đến tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Trong thời kỳ tăng áp:",
+    options: ["A. Sợi cơ tâm thất co ngắn lại.", "B. Van nhĩ thất đóng lại.", "C. Van tổ chim mở ra.", "D. Máu phun vào động mạch."],
+    answer: ["B. Van nhĩ thất đóng lại."]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Tiếng tim thứ nhất.",
+    options: ["A. Kết thúc thời kỳ tâm nhĩ co.", "B. Mở đầu thời kỳ tâm thất co.", "C. Kết thúc thời kỳ tâm thất co.", "D. Mở đầu thời kỳ tâm thất trương."],
+    answer: ["B. Mở đầu thời kỳ tâm thất co."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Nguyên nhân của tiếng tim thứ hai:",
+    options: ["A. Đóng van nhĩ thất.", "B. Co cơ tâm thất.", "C. Máu phun vào động mạch.", "D. Đóng van tổ chim.", "E. Máu về tâm thất."],
+    answer: ["D. Đóng van tổ chim."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Một người trưởng thành, khi lao động thể lực, tiêu thụ 1,8 lít oxy/phút. Nồng độ oxy trong máu động mạch là 175 ml/lít, trong máu tĩnh mạch là 125 ml/lít. Lưu lượng tim của người đó là:",
+    options: ["A. 3,6 l/ph.", "B. 15 l/ph.", "C. 36 l/ph.", "D. 40 l/ph.", "E. 50 l/ph."],
+    answer: ["C. 36 l/ph."]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Tính hưng phấn của cơ tim.",
+    options: ["A. Cơ tim co càng mạnh khi cường độ kích thích càng cao.", "B. Cơ tim bị co cứng khi kích thích liên tục.", "C. Cơ tim đáp ứng khi kích thích vào lúc cơ đang giãn.", "D. Cơ tim đáp ứng khi kích thích vào lúc cơ đang co."],
+    answer: ["C. Cơ tim đáp ứng khi kích thích vào lúc cơ đang giãn."]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Khoảng PQ trong điện tâm đồ thể hiện:",
+    options: ["A. Thời gian khử cực tâm nhĩ.", "B. Thời gian khử cực tâm thất.", "C. Thời gian tái cực tâm thất.", "D. Thời gian khử cực tâm nhĩ và dẫn truyền xung động qua nút nhĩ thất.", "E. Thời gian dẫn truyền xung động từ nút xoang đến cơ tâm nhĩ."],
+    answer: ["D. Thời gian khử cực tâm nhĩ và dẫn truyền xung động qua nút nhĩ thất."]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Về đầy thất:",
+    options: ["A. Phụ thuộc hoàn toàn vào nhĩ thu.", "B. Bị giảm nếu van động mạch bị hẹp.", "C. Bị giảm nếu van nhĩ thất bị hẹp.", "D. Không phụ thuộc vào thời gian tâm trương.", "E. Không phụ thuộc vào lực tâm thu."],
+    answer: ["C. Bị giảm nếu van nhĩ thất bị hẹp."]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Thể tích tâm thu:",
+    options: ["A. Là thể tích máu do một tâm thất bơm vào động mạch trong một phút.", "B. Là thể tích máu do hai tâm thất bơm vào động mạch trong một phút.", "C. Là thể tích máu do một tâm thất bơm vào động mạch trong một lần co bóp.", "D. Là thể tích máu do hai tâm thất bơm vào động mạch trong một lần co bóp."],
+    answer: ["C. Là thể tích máu do một tâm thất bơm vào động mạch trong một lần co bóp."]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Nhận xét chu chuyển tim sinh lý và chu chuyển tim lâm sàng:",
+    options: ["A. Chu chuyển tim sinh lý dài hơn chu chuyển tim lâm sàng.", "B. Chu chuyển tim lâm sàng dài hơn chu chuyển tim sinh lý.", "C. Chu chuyển tim sinh lý không tính đến nhĩ thu còn chu chuyển tim lâm sàng có tính đến.", "D. Chu chuyển tim lâm sàng chỉ tính đến hoạt động của tâm nhĩ.", "E. Chu chuyển tim lâm sàng chỉ tính đến hoạt động của tâm thất."],
+    answer: ["E. Chu chuyển tim lâm sàng chỉ tính đến hoạt động của tâm thất."]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Thành tâm thất phải mỏng hơn tâm thất trái vì:",
+    options: ["A. Tâm thất phải chứa ít máu hơn.", "B. Thể tích tâm thu của tâm thất phải nhỏ hơn.", "C. Tâm thất phải tống máu với một áp lực thấp hơn.", "D. Tâm thất phải tống máu với một tốc độ thấp hơn.", "E. Tâm thất phải tống máu qua lỗ van động mạch phổi rộng hơn lỗ van động mạch chủ."],
+    answer: ["C. Tâm thất phải tống máu với một áp lực thấp hơn."]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Phản xạ làm giảm nhịp tim xuất hiện khi:",
+    options: ["A. Tăng HA ở quai động mạch chủ và xoang động mạch cảnh.", "B. Lượng máu về tâm nhĩ phải tăng.", "C. Phân áp O2 giảm trong máu động mạch.", "D. Phân áp CO2 tăng trong máu động mạch.", "E. pH máu giảm."],
+    answer: ["A. Tăng HA ở quai động mạch chủ và xoang động mạch cảnh."]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Trong lúc lao động thể lực, 1 người tiêu thụ oxy là 1,8 lít/phút. Nồng độ O2 trong máu động mạch là 190 ml/l, trong máu tĩnh mạch là 134 ml/l. Lưu lượng tim của người đó là:",
+    options: ["A. 3,2 l/phút.", "B. 16 l/phút.", "C. 32 l/phút.", "D. 50 l/phút.", "E. 160 l/phút."],
+    answer: ["C. 32 l/phút."]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Về lưu lượng tim:",
+    options: ["A. Lưu lượng tim trái lớn hơn lưu lượng tim phải.", "B. Lưu lượng tim hoàn toàn tỷ lệ thuận với nhịp tim.", "C. Lưu lượng tim = Thể tích tâm thu x Nhịp tim.", "D. Lưu lượng tim là thể tích máu 2 tâm thất bơm được/phút."],
+    answer: ["C. Lưu lượng tim = Thể tích tâm thu x Nhịp tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Luật Starling của tim:",
+    options: ["A. Nói lên ảnh hưởng của hệ giao cảm lên tim.", "B. Nói lên ảnh hưởng của hệ phó giao cảm lên tim.", "C. Nói lên ảnh hưởng của các hormon lên tim.", "D. Nói lên sự tự điều hoà hoạt động của tim."],
+    answer: ["D. Nói lên sự tự điều hoà hoạt động của tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Tâm thất trái có thành dày hơn tâm thất phải vì:",
+    options: ["A. Nó tống máu với thể tích tâm thu lớn hơn.", "B. Nó phải tống máu qua một lỗ hẹp là van tổ chim.", "C. Nó phải tống máu với một áp suất cao hơn.", "D. Nó phải tống máu với tốc độ cao hơn."],
+    answer: ["C. Nó phải tống máu với một áp suất cao hơn."]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Máu về tâm thất trong thời kỳ:",
+    options: ["A. Tâm nhĩ thu.", "B. Tâm trương.", "C. Tâm nhĩ thu và tâm trương.", "D. Tâm trương toàn bộ."],
+    answer: ["C. Tâm nhĩ thu và tâm trương."]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Tâm thất thu:",
+    options: ["A. Là giai đoạn dài nhất trong các giai đoạn của chu chuyển tim.", "B. Là giai đoạn kết thúc khi van nhĩ thất đóng.", "C. Là giai đoạn máu được tống vào động mạch.", "D. Là giai đoạn được tính từ khi van tổ chim mở."],
+    answer: ["C. Là giai đoạn máu được tống vào động mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Tần số tim tăng khi:",
+    options: ["A. áp suất máu trong quai động mạch chủ tăng.", "B. áp suất máu trong xoang động mạch cảnh tăng.", "C. Lượng máu về tâm nhĩ trái tăng.", "D. Phân áp CO2 trong máu động mạch tăng."],
+    answer: ["D. Phân áp CO2 trong máu động mạch tăng."]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Đúng vào lúc nghe thấy tiếng tim thứ nhất thì:",
+    options: ["A. Nhĩ đang giãn sau khi co.", "B. Thất đang co.", "C. Nhĩ đang giãn, thất vừa mới co.", "D. Nhĩ đang giãn, thất đang tống máu.", "E. Nhĩ bắt đầu co, thất đang tống máu."],
+    answer: ["C. Nhĩ đang giãn, thất vừa mới co."]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Đúng vào lúc nghe thấy tiếng tim thứ hai thì:",
+    options: ["A. Nhĩ đang co.", "B. Thất vừa giãn, nhĩ đang giãn.", "C. Thất đã giãn hoàn toàn, nhĩ đang co.", "D. Thất chưa giãn, nhĩ đang co.", "E. Thất đang co, nhĩ bắt đầu co."],
+    answer: ["B. Thất vừa giãn, nhĩ đang giãn."]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Phản xạ giảm áp xuất hiện khi:",
+    options: ["A. Tim đập nhanh làm máu đến động mạch nhiều.", "B. Tim co bóp mạnh làm máu đến động mạch nhiều.", "C. Máu về tim nhiều làm máu đến động mạch nhiều.", "D. áp suất máu trong quai động mạch chủ, xoang động mạch cảnh tăng."],
+    answer: ["D. áp suất máu trong quai động mạch chủ, xoang động mạch cảnh tăng."]
+  },
+  {
+    type: "single",
+    question: "Câu 26: Phản xạ tim - tim xuất hiện khi:",
+    options: ["A. Máu về tim nhiều.", "B. Máu về tâm nhĩ trái nhiều.", "C. Máu về tâm nhĩ phải nhiều.", "D. Máu về tâm thất nhiều."],
+    answer: ["C. Máu về tâm nhĩ phải nhiều."]
+  },
+  {
+    type: "single",
+    question: "Câu 27: Phản xạ tăng nhịp tim xuất hiện khi:",
+    options: ["A. Nồng độ O2 máu tăng, CO2 giảm.", "B. Nồng độ O2 máu giảm, CO2 tăng.", "C. Nồng độ O2 máu tăng, CO2 tăng.", "D. Nồng độ O2 máu giảm, CO2 giảm."],
+    answer: ["B. Nồng độ O2 máu giảm, CO2 tăng."]
+  },
+  {
+    type: "single",
+    question: "Câu 28: Tính trơ có chu kỳ:",
+    options: ["A. Là tính không đáp ứng của cơ tim.", "B. Là tính không đáp ứng với kích thích của cơ tim.", "C. Là tính không đáp ứng có chu kỳ của cơ tim.", "D. Là tính không đáp ứng với kích thích có chu kỳ của cơ tim."],
+    answer: ["D. Là tính không đáp ứng với kích thích có chu kỳ của cơ tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 29: Cơ tim hoạt động theo quy luật \"tất hoặc không\" vì:",
+    options: ["A. Cơ tim có đặc tính trơ có chu kỳ.", "B. Cơ tim có đặc tính nhịp điệu.", "C. Cơ tim có cầu dẫn truyền hưng phấn.", "D. Cơ tim là một hợp bào."],
+    answer: ["C. Cơ tim có cầu dẫn truyền hưng phấn."] // Theo key bạn cung cấp, có thể ý muốn nhấn mạnh vai trò của các cầu nối (gap junctions) trong việc lan truyền hưng phấn đồng bộ, dẫn đến đáp ứng toàn bộ hoặc không có đáp ứng.
+  },
+  {
+    type: "single",
+    question: "Câu 30: Điện thế hoạt động của cơ tim có giai đoạn cao nguyên vì:",
+    options: ["A. Tế bào cơ tim có kênh calci chậm và màng tế bào cơ tim tăng tính thấm với ion kali.", "B. Tế bào cơ tim có kênh calci chậm và màng tế bào cơ tim giảm tính thấm với ion kali.", "C. Tế bào cơ tim có kênh calci chậm và màng tế bào cơ tim tăng tính thấm với ion natri.", "D. Tế bào cơ tim có kênh calci chậm và màng tế bào cơ tim giảm tính thấm với ion natri."],
+    answer: ["B. Tế bào cơ tim có kênh calci chậm và màng tế bào cơ tim giảm tính thấm với ion kali."]
+  },
+  {
+    type: "single",
+    question: "Câu 31: Về cấu tạo của cơ tim: Giống cơ trơn là có các vân sáng và vân tối.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Về cấu tạo của cơ tim: Giống cơ vân là nhân nằm giữa sợi cơ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 33: Về cấu tạo của cơ tim: Cả quả tim là một hợp bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 34: Về cấu tạo của cơ tim: Màng tế bào cơ tim có nhiều kênh Ca++ chậm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 35: Về cấu tạo của cơ tim: Trong sợi cơ tim có nhiều glycogen.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 36: Về đặc tính sinh lý của cơ tim: Kích thích điện vào lúc tim đang co thì tim không đáp ứng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 37: Về đặc tính sinh lý của cơ tim: Kích thích điện đúng vào lúc nút xoang phát nhịp thì gây ngoại tâm thu có nghỉ bù.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 38: Về đặc tính sinh lý của cơ tim: Nghỉ bù là do co bóp phụ (ngoại tâm thu) gây tiêu hao nhiều năng lượng, làm tim phải nghỉ một thời gian.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 39: Về đặc tính sinh lý của cơ tim: Bó His có khả năng phát xung động với tần số 50- 60 xung /phút.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 40: Về đặc tính sinh lý của cơ tim: Tốc độ dẫn truyền xung động ở mạng lưới Purkinje là 1,5-4 m/s.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 41: Về quy luật Starling: Lực co cơ tim tỉ lệ thuận với thể tích đầu tâm trương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 42: Về quy luật Starling: Lực co cơ tim tỉ lệ thuận với thể tích cuối tâm trương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 43: Về quy luật Starling: Lực co cơ tim luôn tăng khi lượng máu về tim tăng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 44: Về quy luật Starling: Lực co cơ tim luôn tăng khi lượng máu về tim tăng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 45: Về quy luật Starling: ở những tư thế khác nhau có những đường cong Starling khác nhau.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 46: Về điện tâm đồ: V1, V2 phản ánh hoạt động điện của tâm thất trái.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 47: Về điện tâm đồ: V5, V6 phản ánh hoạt động điện của tâm thất phải.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 48: Về điện tâm đồ: Sóng R luôn luôn (+) ở các chuyển đạo.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 49: Về điện tâm đồ: Sóng P là sóng khử cực của tâm nhĩ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 50: Về điện tâm đồ: Sóng T là sóng tái cực của tâm thất.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 51: Về cơ chế điều hoà hoạt động tim: Trong điều kiện bình thường tim thường xuyên chịu tác dụng trương lực của hệ phó giao cảm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 52: Về cơ chế điều hoà hoạt động tim: Phản xạ tim- tim có tác dụng ngăn sự ứ máu trong tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 53: Về cơ chế điều hoà hoạt động tim: Nhiệt độ của máu tăng làm tăng lực co của cơ tim và nhịp tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 54: Về cơ chế điều hoà hoạt động tim: Phản xạ mắt- tim làm tim đập chậm lại là thông qua dây X.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 55: Về cơ chế điều hoà hoạt động tim: Trung tâm của phản xạ Goltz nằm ở cầu não.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 56: Về ảnh hưởng của dây thần kinh tự chủ lên tim: Kích thích sợi dây X đến tim làm giảm tần số phát nhịp của các tế bào phát nhịp nằm xen trong cơ tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 57: Về ảnh hưởng của dây thần kinh tự chủ lên tim: Hệ giao cảm hưng phấn làm tăng tần số phát nhịp của các tế bào phát nhịp nằm xen trong cơ tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 58: Về ảnh hưởng của dây thần kinh tự chủ lên tim: Hệ giao cảm làm tăng tính dẫn truyền của cơ tim còn hệ phó giao cảm có tác dụng ngược lại.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 59: Về ảnh hưởng của dây thần kinh tự chủ lên tim: Hệ phó giao cảm làm tăng tính hưng phấn của cơ tim còn hệ giao cảm có tác dụng ngược lại.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 60: Về ảnh hưởng của dây thần kinh tự chủ lên tim: Trong điều kiện bình thường tim thường xuyên chịu tác động trương lực của hệ giao cảm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 61: Về các phản xạ điều hoà tim: Phản xạ giảm áp do tăng áp suất trong xoang động mạch cảnh là thông qua dây X.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 62: Về các phản xạ điều hoà tim: Phản xạ tim - tim làm giảm nhịp tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 63: Về các phản xạ điều hoà tim: Phản xạ giảm áp do tăng áp suất trong quai động mạch chủ là thông qua dây X.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 64: Về các phản xạ điều hoà tim: Khi co kéo mạnh vào các tạng sâu trong ổ bụng có thể làm tăng nhịp tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 65: Về các phản xạ điều hoà tim: Phản xạ tim- tim là thông qua dây X.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 66: Về chu kỳ tim: Tâm nhĩ co 0,1 giây sau đó giãn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 67: Về chu kỳ tim: Trong thời kỳ tống máu cơ tâm thất co đẳng trường.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 68: Về chu kỳ tim: Trong thời kỳ tăng áp của tâm thất thu van nhĩ thất đóng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 69: Về chu kỳ tim: Thời kỳ tâm trương toàn bộ hút được 65% lượng máu từ nhĩ xuống thất.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 70: Về chu kỳ tim: Trong thời kỳ tâm trương toàn bộ van nhĩ thất mở.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 71: Sự đóng mở van trong chu kỳ tim: Van nhĩ thất bắt đầu mở trong giai đoạn tâm nhĩ thu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 72: Sự đóng mở van trong chu kỳ tim: Van nhĩ thất đóng vào đầu thời kỳ tăng áp của giai đoạn tâm thất thu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 73: Sự đóng mở van trong chu kỳ tim: Van tổ chim mở vào cuối thời kỳ tăng áp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 74: Sự đóng mở van trong chu kỳ tim: Van tổ chim mở vào cuối thời kỳ tăng áp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 75: Sự đóng mở van trong chu kỳ tim: Van tổ chim đóng vào đầu giai đoạn tâm trương toàn bộ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 76: Tiếng tim: Tiếng tim thứ nhất nghe trầm, dài.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 77: Tiếng tim: Tiếng tim thứ nhất do đóng van nhĩ - thất.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 78: Tiếng tim: Tiếng tim thứ nhất trầm, ngắn do chỉ có van hai lá đóng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 79: Tiếng tim: Tiếng tim thứ hai do đóng các van tổ chim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 80: Tiếng tim: Tiếng tim thứ hai mở đầu giai đoạn tâm trương toàn bộ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 81: Các chất sau đây gây giãn mạch, trừ:",
+    options: ["A. Nồng độ ion Mg++ trong máu tăng.", "B. Histamin.", "C. Vasopressin.", "D. Prostaglandin."],
+    answer: ["C. Vasopressin."]
+  },
+  {
+    type: "single",
+    question: "Câu 82: Các chất sau đây gây co mạch, trừ:",
+    options: ["A. Adrenalin.", "B. Angiotensin I.", "C. Angiotensin II.", "D. Vasopressin."],
+    answer: ["B. Angiotensin I."]
+  },
+  {
+    type: "single",
+    question: "Câu 83: Những thay đổi sau đây làm tăng huyết áp, trừ:",
+    options: ["A. Nồng độ O2 trong máu động mạch giảm.", "B. Nồng độ CO2 trong máu động mạch giảm.", "C. pH máu giảm.", "D. Nồng độ CO2 trong máu động mạch tăng."],
+    answer: ["B. Nồng độ CO2 trong máu động mạch giảm."]
+  },
+  {
+    type: "single",
+    question: "Câu 84: Khi trương lực mạch máu bình thường, lực co cơ tim giảm làm cho:",
+    options: ["A. Huyết áp hiệu số tăng.", "B. Huyết áp tối thiểu giảm.", "C. Huyết áp trung bình tăng.", "D. Huyết áp hiệu số giảm."],
+    answer: ["D. Huyết áp hiệu số giảm."]
+  },
+  {
+    type: "single",
+    question: "Câu 85: Huyết áp tăng kích thích vào bộ phận nhận cảm áp lực sẽ gây ra:",
+    options: ["A.Tăng lực co tim.", "B. Tăng nhịp tim.", "C.Kích thích thần kinh phó giao cảm chi phối tim.", "D. Tăng huyết áp ngoại vi.", "E. Kích thích trung tâm co mạch."],
+    answer: ["C.Kích thích thần kinh phó giao cảm chi phối tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 86: Cơ chế nào trong những cơ chế dưới đây là quan trọng nhất làm tăng dòng máu đến cơ vân trong khi vận động:",
+    options: ["A. Tăng huyết áp động mạch.", "B. Tăng xung động trên hệ a-adrenergic.", "C. Tăng xung động trên hệ b -adrenergic.", "D. Co mạch lách và thận.", "E. Giãn mạch thứ phát do tác động của các sản phẩm chuyển hoá tại chỗ."],
+    answer: ["E. Giãn mạch thứ phát do tác động của các sản phẩm chuyển hoá tại chỗ."]
+  },
+  {
+    type: "single",
+    question: "Câu 87: Cơ thể có cơ chế điều hoà làm huyết áp động mạch giảm xuống khi:",
+    options: ["A. áp suất máu trong quai động mạch chủ tăng lên.", "B. áp suất máu trong xoang động mạch cảnh giảm.", "C. Tăng sức cản của hệ tuần hoàn.", "D. Nhịp tim chậm."],
+    answer: ["A. áp suất máu trong quai động mạch chủ tăng lên."]
+  },
+  {
+    type: "single",
+    question: "Câu 88: Huyết áp động mạch trung bình được tính:",
+    options: ["A. Trung bình cộng của HA tâm thu và HA tâm trương.", "B. HA tâm trương cộng với một phần ba HA hiệu số.", "C. Trung bình cộng của nhiều lần đo huyết áp tối đa.", "D. Trung bình cộng của nhiều lần đo huyết áp tối thiểu."],
+    answer: ["B. HA tâm trương cộng với một phần ba HA hiệu số."]
+  },
+  {
+    type: "single",
+    question: "Câu 89: Huyết áp động mạch tăng khi:",
+    options: ["A. Suy dinh dưỡng protein năng lượng.", "B. Xơ vữa động mạch.", "C. ỉa chảy mất nước.", "D. Suy tim trái.", "E. Suy tim phải."],
+    answer: ["B. Xơ vữa động mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 90: Huyết áp động mạch giảm khi:",
+    options: ["A. ADH trong máu tăng.", "B. Suy dinh dưỡng protein năng lượng.", "C. Ăn mặn.", "D. Xơ vữa động mạch.", "E. pH máu giảm."],
+    answer: ["B. Suy dinh dưỡng protein năng lượng."]
+  },
+  {
+    type: "single",
+    question: "Câu 91: Hormon có tác dụng co mạch mạnh nhất là:",
+    options: ["A. Adrenalin.", "B. Noradrenalin.", "C. Angiotensin II.", "D. ADH."],
+    answer: ["C. Angiotensin II."]
+  },
+  {
+    type: "single",
+    question: "Câu 92: Các chất có tác dụng lên điều hoà huyết áp do có tác động lên mạch máu và đồng thời tác động lên tái hấp thu ở ống thận là:",
+    options: ["A. Adrenalin và noradrenalin.", "B. Serotonin và bradykinin.", "C. Angiotensin II và vasopressin.", "D. Prostaglandin và angiotensin.", "E. Noradrenalin và angiotensin II."],
+    answer: ["C. Angiotensin II và vasopressin."]
+  },
+  {
+    type: "single",
+    question: "Câu 93: Tuần hoàn mao mạch:",
+    options: ["A. Tuần hoàn mao mạch phụ thuộc chủ yếu vào yếu tố toàn thân.", "B. Các mao mạch luôn đóng mở giống nhau.", "C. áp suất trong mao mạch cao vì đường kính của mao mạch nhỏ.", "D. Trong một hệ mao mạch, các mao mạch thay nhau đóng mở."],
+    answer: ["D. Trong một hệ mao mạch, các mao mạch thay nhau đóng mở."]
+  },
+  {
+    type: "single",
+    question: "Câu 94: Nguyên nhân chính của tuần hoàn tĩnh mạch là:",
+    options: ["A. Trọng lực.", "B. Sức bơm của tim.", "C. Sức hút của tim.", "D. Hệ thống van trong tĩnh mạch.", "E. Động mạch đập, ép vào tĩnh mạch."],
+    answer: ["B. Sức bơm của tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 95: áp suất keo của huyết tương:",
+    options: ["A. Tăng dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.", "B. Không đổi từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.", "C. Giảm dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.", "D. Tăng đột ngột trong khu vực mao mạch.", "E. Giảm đột ngột trong khu vực mao mạch."],
+    answer: ["B. Không đổi từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 96: áp suất thuỷ tĩnh của huyết tương:",
+    options: ["A. Giảm dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.", "B. Tăng dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.", "C. Giảm dần từ đầu tiểu động mạch nhưng rồi tăng dần lên ở đầu tiểu tĩnh mạch.", "D. Giảm đột ngột trong khu vực mao mạch.", "E. Tăng đột ngột trong khu vực mao mạch."],
+    answer: ["A. Giảm dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 97: Trị số thấp nhất của huyết áp tĩnh mạch đo được ở:",
+    options: ["A. Tĩnh mạch phổi.", "B. Tĩnh mạch chủ bụng.", "C. Tĩnh mạch trên gan.", "D. Tâm nhĩ trái.", "E. Tâm nhĩ phải."],
+    answer: ["E. Tâm nhĩ phải."]
+  },
+  {
+    type: "single",
+    question: "Câu 98: Dịch trong lòng mao mạch ra khoảng kẽ tăng lên do:",
+    options: ["A. Giảm áp suất máu động mạch.", "B. Giảm áp suất máu tĩnh mạch.", "C. Tăng áp suất keo của dịch kẽ.", "D. Tăng chênh lệch áp suất thuỷ tĩnh và áp suất keo trong mao mạch.", "E. Co mao mạch."],
+    answer: ["D. Tăng chênh lệch áp suất thuỷ tĩnh và áp suất keo trong mao mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 99: Nguyên nhân quan trọng nhất của tuần hoàn tĩnh mạch là:",
+    options: ["A. Sức đẩy còn lại của tâm thất thu.", "B. Sức hút của tâm thất lúc thất giãn.", "C. Cơ vân co, ép vào tĩnh mạch.", "D. Động mạch đi kèm đập, ép vào tĩnh mạch.", "E. áp suất âm trong lồng ngực."],
+    answer: ["A. Sức đẩy còn lại của tâm thất thu."]
+  },
+  {
+    type: "single",
+    question: "Câu 100: Dịch từ lòng mao mạch di chuyển ra khoảng kẽ tăng lên khi:",
+    options: ["A. Giảm huyết áp động mạch.", "B. Tăng áp suất keo huyết tương.", "C. Tăng áp suất thuỷ tĩnh ở tĩnh mạch.", "D. Tăng áp suất thuỷ tĩnh ở khoảng kẽ.", "E. Giảm áp suất keo ở khoảng kẽ."],
+    answer: ["C. Tăng áp suất thuỷ tĩnh ở tĩnh mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 101: Lưu lượng mạch vành tăng lên khi:",
+    options: ["A. Kích thích thần kinh giao cảm đến tim.", "B. Kích thích thần kinh phó giao cảm đến tim.", "C. Tăng nồng độ oxy trong máu.", "D. Giảm hoạt động tim.", "E. Tăng pH máu."],
+    answer: ["A. Kích thích thần kinh giao cảm đến tim."]
+  },
+  {
+    type: "single",
+    question: "Câu 102: Lưu lượng máu não tăng lên khi:",
+    options: ["A. Tăng hoạt động tim.", "B. Tăng nồng độ CO2 trong máu.", "C. Tăng nồng độ oxy trong máu.", "D. Tăng pH máu.", "E. Tăng hoạt tính thần kinh giao cảm."],
+    answer: ["B. Tăng nồng độ CO2 trong máu."]
+  },
+  {
+    type: "single",
+    question: "Câu 103: Lưu lượng máu qua phổi tăng lên khi:",
+    options: ["A. Tăng phân áp oxy trong phế nang.", "B. Giảm phân áp oxy trong máu.", "C. Tăng pH máu.", "D. Tăng hoạt tính thần kinh giao cảm.", "E. Giảm nồng độ CO2 trong máu."],
+    answer: ["A. Tăng phân áp oxy trong phế nang."]
+  },
+  {
+    type: "single",
+    question: "Câu 104: Tiểu động mạch giãn ra khi:",
+    options: ["A. Tăng phân áp O2.", "B. Tăng bradykinin.", "C. Tăng nồng độ ion Ca++.", "D. Giảm nồng độ ion K+.", "E. Giảm histamin."],
+    answer: ["B. Tăng bradykinin."]
+  },
+  {
+    type: "single",
+    question: "Câu 105: Cơ thắt trước mao mạch giãn ra khi:",
+    options: ["A. Giảm nồng độ O2 ở dịch kẽ.", "B. Giảm nồng độ CO2 ở dịch kẽ.", "C. Giảm nhiệt độ máu.", "D. Giảm histamin ở dịch kẽ.", "E. Giảm nồng độ ion H+ ở dịch kẽ."],
+    answer: ["A. Giảm nồng độ O2 ở dịch kẽ."]
+  },
+  {
+    type: "single",
+    question: "Câu 106: Kích thích hệ thần kinh giao cảm làm tăng HA do có các tác dụng sau đây, trừ:",
+    options: ["A. Co các động mạch nhỏ do đó làm tăng sức cản.", "B. Co các tiểu động mạch do đó làm tăng sức cản.", "C. Co các mao mạch do đó làm tăng sức cản.", "D. Co các tĩnh mạch lớn do đó dồn máu về tim."],
+    answer: ["C. Co các mao mạch do đó làm tăng sức cản."]
+  },
+  {
+    type: "single",
+    question: "Câu 107: Angiotensin II làm tăng HA do có các tác dụng sau, trừ:",
+    options: ["A. Co động mạch nhỏ làm tăng sức cản.", "B. Co tiểu động mạch làm tăng sức cản.", "C. Kích thích vỏ thượng thận tăng bài tiết aldosteron.", "D. Kích thích hệ giao cảm tăng bài tiết noradrenalin.", "E. Tăng tính nhạy cảm của noradrenalin đối với mạch máu."],
+    answer: ["A. Co động mạch nhỏ làm tăng sức cản."] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 108: Angiotensin II được hình thành khi:",
+    options: ["A. Máu chảy trong động mạch.", "B. Máu qua mao mạch gan.", "C. Máu qua mao mạch phổi.", "D. Máu qua mao mạch thận."],
+    answer: ["C. Máu qua mao mạch phổi."]
+  },
+  {
+    type: "single",
+    question: "Câu 109: Phản xạ điều hoà HA xuất hiện trong các trường hợp sau, trừ:",
+    options: ["A. HA tăng tác động vào receptor áp suất ở quai động mạch chủ, xoang động mạch cảnh.", "B. Máu cung cấp cho trung tâm vận mạch tăng.", "C. Máu cung cấp cho trung tâm vận mạch giảm.", "D. HA Ý, O2 Ý, CO2 ß, H+ ß kích thích receptor hoá học ở xoang động mạch cảnh."],
+    answer: ["B. Máu cung cấp cho trung tâm vận mạch tăng."]
+  },
+  {
+    type: "single",
+    question: "Câu 110: Các yếu tố sau đây có thể gây tăng HA, trừ:",
+    options: ["A. Chế độ ăn nhiều cholesterol.", "B. Căng thẳng thần kinh kéo dài.", "C. Nghiện thuốc lá.", "D. Thường xuyên vận động."],
+    answer: ["D. Thường xuyên vận động."]
+  },
+  {
+    type: "single",
+    question: "Câu 111: Các chất điều hoà vận mạch: Adrenalin làm co mạch dưới da, giãn mạch vành, mạch não và mạch ở cơ vân.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 112: Các chất điều hoà vận mạch: Noradrenalin chỉ có tác dụng làm co các động mạch lớn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 113: Các chất điều hoà vận mạch: Bradykinin trong máu có tác dụng trực tiếp gây giãn mạch và tăng tính thấm mao mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 114: Các chất điều hoà vận mạch: Vasopressin làm tăng huyết áp chỉ do làm co mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 115: Những yếu tố sau đây làm tăng huyết áp: Tim co bóp mạnh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 116: Những yếu tố sau đây làm tăng huyết áp: Nhịp tim tăng trên 140 lần/ ph.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 117: Những yếu tố sau đây làm tăng huyết áp: Độ quánh của máu tăng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 118: Những yếu tố sau đây làm tăng huyết áp: Giãn mạch toàn thân.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 119: Angiotensin 2 có tác dụng: Kích thích ống thận tăng tái hấp thu Ca++.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 120: Angiotensin 2 có tác dụng: Kích thích tận cùng thần kinh giao cảm tăng tiết adrenalin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 121: Angiotensin 2 có tác dụng giảm tái nhập adrenalin trở lại cúc tận cùng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 122: Angiotensin 2 có tác dụng: Tăng nhậy cảm của các mạch máu với noradrenalin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 123: Angiotensin 2 có tác dụng: Kích thích vùng Postrema làm tăng trương lực mạch máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 124: Huyết áp động mạch tỷ lệ nghịch với sức cản của mạch và tỷ lệ thuận với lưu lượng tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 125: Huyết áp động mạch tỷ lệ thuận với lưu lượng tim và đường kính động mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 126:Huyết áp động mạch tỷ lệ nghịch với luỹ thừa 4 của bán kính động mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 127: Các yếu tố làm thay đổi hoạt động tim thì làm thay đổi huyết áp động mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 128: Về huyết áp động mạch: Huyết áp tối đa và huyết áp tối thiểu phụ thuộc vào lực co của cơ tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 129: Huyết áp động mạch: Tỷ lệ thuận với lưu lượng tim và bán kính mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 130: Huyết áp động mạch: Tỷ lệ thuận với sức cản của mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 131: Huyết áp động mạch: Tỷ lệ nghịch với độ quánh của máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 132: Huyết áp động mạch: Tỷ lệ thuận với thể tích máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 133: Huyết áp động mạch: Tỷ lệ thuận với áp suất thẩm thấu của máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 134: Trong một hệ mao mạch, các mao mạch thay nhau lần lượt đóng mở.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 135: Tuần hoàn mao mạch phụ thuộc chủ yếu vào các yếu tố toàn thân.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 136: Về tuần hoàn trong mạch máu: Phần lớn máu tĩnh mạch về tim được là nhờ trọng lực.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 137: Hệ thống tĩnh mạch có khả năng chứa toàn bộ khối lượng máu của cơ thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 138: Về tuần hoàn trong mạch máu: Khu vực tuần hoàn trong mao mạch, tĩnh mạch và tiểu tuần hoàn là khu vực có áp suất thấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 139: Về các loại áp suất trong khu vực mao mạch: áp suất thuỷ tĩnh giảm dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 140: Về các loại áp suất trong khu vực mao mạch: áp suất keo của huyết tương tăng dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 141: Về các loại áp suất trong khu vực mao mạch: áp suất keo của huyết tương giảm dần từ đầu tiểu động mạch sang đầu tiểu tĩnh mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 142: Về các loại áp suất trong khu vực mao mạch: áp suất keo của huyết tương giảm quá thấp có thể gây phù do thoát nước từ mao mạch ra khoảng kẽ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 143: Về các loại áp suất trong khu vực mao mạch: Cản trở lưu thông ở tiểu tĩnh mạch có thể gây phù do thoát nước từ mao mạch ra khoảng kẽ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 144: Đặc điểm của tĩnh mạch: Có tổng thiết diện lớn hơn hệ thống động mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 145: Đặc điểm của tĩnh mạch: Có tính đàn hồi tốt hơn động mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 146: Đặc điểm của tĩnh mạch: Có khả năng chứa khoảng 50% lượng máu của cơ thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 147: Đặc điểm của tĩnh mạch: Có các xoang tĩnh mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 148: Đặc điểm của tĩnh mạch: Có khả năng giãn yếu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 149: Trong một hệ thống mao mạch, các mao mạch đóng mở do sự thay đổi oxy của mô.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 150: Tuần hoàn mao mạch phụ thuộc chủ yếu vào các yếu tố tại chỗ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 151: Tuần hoàn mao mạch: áp suất máu trong mao mạch phụ thuộc vào thể tích máu hơn là lưu lượng máu qua mao mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 152: Tuần hoàn mao mạch: Trong các mao mạch máu luôn chảy liên tục.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 153: Tuần hoàn mao mạch: Có khoảng 30-50% lượng máu mao mạch chảy qua mao mạch thực sự.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key bạn cung cấp.
+  },
+  {
+    type: "single",
+    question: "Câu 154: Tuần hoàn địa phương: Có nhiều mạch nối giữa các động mạch vành lớn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 155: Tuần hoàn địa phương: Có nhiều mạch nối giữa các động mạch ở não.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 156: Tuần hoàn địa phương: Tuần hoàn phổi vừa làm nhiệm vụ trao đổi khí với phế nang vừa nuôi dưỡng phổi.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 157: Tuần hoàn địa phương: áp suất máu trong động mạch phổi thay đổi nhiều theo hoạt động của tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 158: Lưu lượng máu não nhỏ hơn lưu lượng mạch vành.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
