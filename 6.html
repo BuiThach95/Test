@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Thân nhiệt",
+    options: ["A. Ảnh hưởng gián tiếp đến tốc độ phản ứng hoá học trong cơ thể.", "B. Ảnh hưởng trực tiếp đến tốc độ phản ứng hoá học trong cơ thể.", "C. Thay đổi theo nhiệt độ môi trường.", "D. Không thay đổi theo tuổi.", "E. Không thay đổi theo nhịp ngày đêm."],
+    answer: ["B. Ảnh hưởng trực tiếp đến tốc độ phản ứng hoá học trong cơ thể."]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Nhiệt độ trung tâm có thể đo ở 1 trong 3 vị trí: trực tràng, nách và …….",
+    options: ["A. Cổ", "B. Bẹn", "C. Bụng", "D. Miệng"],
+    answer: ["D. Miệng"]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Vùng thân nhiệt trị số cao nhất là ở:",
+    options: ["A. Dạ dày.", "B. Ruột.", "C. Gan.", "D. Phổi.", "E. Tất cả đều sai."],
+    answer: ["E. Tất cả đều sai."] // Dựa theo key bạn cung cấp ('e')
+  },
+  {
+    type: "single",
+    question: "Câu 4: Vùng thân nhiệt trị số cao nhất là:",
+    options: ["A. Trực tràng.", "B. Gan.", "C. Nách.", "D. Miệng.", "E. Da."],
+    answer: ["A. Trực tràng."]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Một số bệnh ảnh hưởng đến thân nhiệt:",
+    options: ["A. Bệnh nhiễm khuẩn tả thân nhiệt tăng.", "B. Các bệnh nhiễm khuẩn nói chung thân nhiệt tăng.", "C. Ưu năng tuyến giáp thân nhiệt giảm.", "D. Nhược năng tuyến giáp thân nhiệt tăng.", "E. Viêm ruột thừa thân nhiệt giảm."],
+    answer: ["B. Các bệnh nhiễm khuẩn nói chung thân nhiệt tăng."]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Trong suốt thời kỳ có thai thân nhiệt……………",
+    options: ["A. Không đổi.", "B. Giảm.", "C. Tăng từ 3-4%.", "D. Tăng từ 0,5-0,8oC."],
+    answer: ["D. Tăng từ 0,5-0,8oC."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Động tác chườm mát bằng khăn ướt đắp trán cho một người bị sốt là ví dụ về",
+    options: ["A. Truyền nhiệt trực tiếp.", "B. Truyền nhiệt bằng hình thức đối lưu.", "C. Truyền nhiệt bằng bức xạ nhiệt.", "D. Cả A,B,C.", "E. Cả A,B."],
+    answer: ["A. Truyền nhiệt trực tiếp."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Mức độ truyền nhiệt tỷ lệ với căn bậc hai của tốc độ gió (v 1/2)",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Quá trình toả nhiệt theo phương thức truyền nhiệt được thực hiện bằng hình thức:",
+    options: ["A. Truyền nhiệt trực tiếp.", "B. Truyền nhiệt bằng hình thức đối lưu.", "C. Truyền nhiệt bằng bức xạ nhiệt.", "D. Cả A,B,C.", "E. Cả A,B."],
+    answer: ["D. Cả A,B,C."]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Trong bức xạ nhiệt, nhiệt được truyền từ vật này sang vật kia không phụ thuộc:",
+    options: ["A. Chất dẫn nhiệt giữa hai vật", "B. Nhiệt độ của vật phát nhiệt", "C. Nhiệt độ của vật nhận nhiệt", "D. Khoảng cách giữa hai vật", "E. Màu sắc vật nhận nhiệt"],
+    answer: ["A. Chất dẫn nhiệt giữa hai vật"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Trong phương thức toả nhiệt bằng bay hơi nước:",
+    options: ["A. Một lít nước chuyển từ thể lỏng sang thể khí thu của cơ thể 680 kcal.", "B. Bay hơi nước qua đường hô hấp đóng vai trò quan trọng trong cơ chế chống nóng ở người.", "C. Nước thấm qua da luôn thay đổi theo nhiệt độ môi trường.", "D. Bài tiết mồ hôi là hình thức toả nhiệt quan trọng nhất ở người.", "E. Lượng mồ hôi bay hơi phụ thuộc vào nhiệt độ môi trường."],
+    answer: ["D. Bài tiết mồ hôi là hình thức toả nhiệt quan trọng nhất ở người."]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Bilan nhiệt là sự cân bằng giữa ---- với -----",
+    options: ["A. Nhiệt chuyển hóa ; Nhiệt bay hơi nước, nhiệt bức xạ, nhiệt truyền", "B. Nhiệt bay hơi nước; Nhiệt chuyển hóa , nhiệt bức xạ, nhiệt truyền", "C. Nhiệt bức xạ; Nhiệt bay hơi nước, nhiệt chuyển hóa , nhiệt truyền", "D. Nhiệt truyền; Nhiệt bay hơi nước, nhiệt bức xạ, nhiệt chuyển hóa"],
+    answer: ["A. Nhiệt chuyển hóa ; Nhiệt bay hơi nước, nhiệt bức xạ, nhiệt truyền"]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Khi cơ thể cảm nóng hoặc cảm lạnh thì:",
+    options: ["A. Trung tâm điều nhiệt vẫn hoạt động bình thường.", "B. Trung tâm điều nhiệt bị rối loạn, trung tâm chống nóng bị tê liệt.", "C. Lượng mồ hôi bài tiết vẫn bình thường.", "D. Thân nhiệt giảm."],
+    answer: ["B. Trung tâm điều nhiệt bị rối loạn, trung tâm chống nóng bị tê liệt."] // Dựa theo key bạn cung cấp ('b')
+  },
+  {
+    type: "single",
+    question: "Câu 14: Trung tâm phản xạ điều nhiệt:",
+    options: ["A. Trung tâm phản xạ điều nhiệt nằm ở cầu não.", "B. Nửa trước vùng dưới đồi là trung tâm chống lạnh, nửa sau là trung tâm chống nóng.", "C. Nửa trước vùng dưới đồi là trung tâm chống nóng, nửa sau là trung tâm chống lạnh.", "D. Vùng dưới đồi hoạt động điều nhiệt độc lập không chịu sự điều hoà của vỏ não.", "E. Các thuốc giảm sốt (aspirin, antipyrin) gây hạ nhiệt bằng cách tác dụng gián tiếp lên trung tâm điều nhiệt."],
+    answer: ["C. Nửa trước vùng dưới đồi là trung tâm chống nóng, nửa sau là trung tâm chống lạnh."]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Khi cơ thể cảm nóng hoặc cảm lạnh thì:",
+    options: ["A. Trung tâm điều nhiệt vẫn hoạt động bình thường.", "B. Trung tâm điều nhiệt bị rối loạn, trung tâm chống nóng bị tê liệt.", "C. Lượng mồ hôi bài tiết vẫn bình thường.", "D. Thân nhiệt giảm.", "E. Các phản xạ chống nóng vẫn bình thường."],
+    answer: ["B. Trung tâm điều nhiệt bị rối loạn, trung tâm chống nóng bị tê liệt."] // Dựa theo key bạn cung cấp ('b'), giống câu 13
+  },
+  {
+    type: "single",
+    question: "Câu 16: Trung tâm điều nhiệt nằm ở…………………",
+    options: ["A. Vùng não thất III.", "B. Hành não.", "C. Cầu não.", "D. Vùng dưới đồi.", "E. Vùng chẩm."],
+    answer: ["D. Vùng dưới đồi."]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Lượng mồ hôi chỉ có tác dụng chống nóng khi ………. ngay ở trên da:",
+    options: ["A. Tạo thành giọt.", "B. Bay hơi.", "C. Thoát ra.", "D. Tái hấp thu."],
+    answer: ["B. Bay hơi."]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Lượng mồ hôi bay hơi phụ thuộc vào …….. không khí và tốc độ gió:",
+    options: ["A. Nhiệt độ.", "B. Vận tốc.", "C. Độ ẩm.", "D. Áp suất."],
+    answer: ["C. Độ ẩm."]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Tăng thải nhiệt không thông qua hình thức:",
+    options: ["A. Giảm hoạt động", "B. Toát mồ hôi", "C. Cởi bớt quần áo", "D. Co mạch ngoại vi"],
+    answer: ["D. Co mạch ngoại vi"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Các đáp ứng nhằm mục đích giảm sinh nhiệt khi cơ thể bị sốt không có:",
+    options: ["A. Giảm hoạt động cathecholamin", "B. Tăng thông khí", "C. Giãn mạch da", "D. Tăng chuyển hóa cơ bản"],
+    answer: ["D. Tăng chuyển hóa cơ bản"]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Khi vận cơ………. hoá năng tích luỹ trong tế bào cơ chuyển thành công cơ học, …………. bị tiêu hao dưới dạng nhiệt:",
+    options: ["A. 35%, 65%.", "B. 55%, 45%.", "C. 25%, 75%.", "D. 75%, 25%."],
+    answer: ["C. 25%, 75%."]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Thân nhiệt là kết quả của sự điều hoà hai quá trình đối lập nhau trong cơ thể là:",
+    options: ["A. Thoái hoá và tổng hợp chất.", "B. Sinh nhiệt và toả nhiệt.", "C. Truyền nhiệt và hấp thụ nhiệt.", "D. Tổng hợp ATP và phân giải ATP.", "E. Tổng hợp glucose và thoái hoá glucose."],
+    answer: ["B. Sinh nhiệt và toả nhiệt."]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Trẻ em có khả năng điều nhiệt………..người lớn:",
+    options: ["A. Tốt hơn.", "B. Bằng.", "C. Kém hơn.", "D. Không có khả năng điều nhiệt.", "E. Tất cả đều sai."],
+    answer: ["C. Kém hơn."]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Định nghĩa sốt:",
+    options: ["A. Là sự tăng thân nhiệt do trung tâm điều nhiệt gây ra.", "B. Là sự tăng thân nhiệt do các độc chất của vi khuẩn tác động lên não gây ra.", "C. Là một trạng thái thân nhiệt cao hơn mức bình thường do nhiều nguyên nhân gây nên.", "D. Là một phản ứng của cơ thể.", "E. Là một trạng thái bệnh lý làm tăng thân nhiệt."],
+    answer: ["C. Là một trạng thái thân nhiệt cao hơn mức bình thường do nhiều nguyên nhân gây nên."]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Khi điểm chuẩn nhiệt vùng dưới đồi cao hơn thân nhiệt, người ta cảm thấy:",
+    options: ["A. Thở hổn hển", "B. Giãn mạch da", "C. Rùng mình", "D. Vã mồ hôi"],
+    answer: ["A. Thở hổn hển"] // Dựa theo key bạn cung cấp ('a')
+  },
+  {
+    type: "single",
+    question: "Câu 26: Khi điểm chuẩn nhiệt vùng dưới đồi thấp hơn thân nhiệt, người ta cảm thấy:",
+    options: ["A. Thở hổn hển", "B. Giãn mạch da", "C. Rùng mình", "D. Vã mồ hôi"],
+    answer: ["C. Rùng mình"] // Dựa theo key bạn cung cấp ('c')
+  }
+  // ... (Add more question sets here if available) ...
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
