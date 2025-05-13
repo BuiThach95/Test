@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Màng hô hấp có:",
+    options: ["A. 4 lớp.", "B. 5 lớp.", "C. 6 lớp.", "D. 7 lớp."],
+    answer: ["C. 6 lớp."]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Đường dẫn khí luôn mở vì:",
+    options: ["A. Thành có các vòng sụn.", "B. Thành có cơ trơn.", "C. Luôn chứa khí.", "D. Có các vòng sụn và áp suất âm màng phổi."],
+    answer: ["D. Có các vòng sụn và áp suất âm màng phổi."]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Áp suất trong đường dẫn khí:",
+    options: ["A. Luôn bằng áp suất khí quyển.", "B. Bằng áp suất khí quyển trước khi hít vào.", "C. Lớn hơn áp suất khí quyển khi hít vào.", "D. Nhỏ hơn áp suất khí quyển khi thở ra."],
+    answer: ["B. Bằng áp suất khí quyển trước khi hít vào."]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Áp suất khoang màng phổi:",
+    options: ["A. Có tác dụng làm cho phổi luôn giãn sát với lồng ngực.", "B. Có giá trị thấp nhất ở thì hít vào thông thường.", "C. Được tạo ra do tính đàn hồi của lồng ngực.", "D. Có giá trị cao hơn áp suất khí quyển ở cuối thì thở ra."],
+    answer: ["A. Có tác dụng làm cho phổi luôn giãn sát với lồng ngực."]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Giá trị áp suất màng phổi qua các động tác hô hấp:",
+    options: ["A. Cuối thì thở ra tối đa là +7 mmHg.", "B. Cuối thì thở ra bình thường là 0 mmHg.", "C. Cuối thì hít vào bình thường là -7 mmHg.", "D. Cuối thì hít vào tối đa là -15 mmHg."],
+    answer: ["C. Cuối thì hít vào bình thường là -7 mmHg."]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Tác dụng của chất hoạt diện (surfactant):",
+    options: ["A. Tăng sức căng bề mặt.", "B. Giảm sức căng bề mặt.", "C. Ổn định sức căng bề mặt.", "D. Thay đổi sức căng bề mặt."],
+    answer: ["B. Giảm sức căng bề mặt."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Áp suất âm màng phổi có các ý nghĩa sau đây, trừ:",
+    options: ["A. Lồng ngực dễ di động khi thở.", "B. Phổi co giãn theo sự di động của lồng ngực.", "C. Máu về tim và lên phổi dễ dàng.", "D. Hiệu suất trao đổi khí đạt mức tối đa."],
+    answer: ["A. Lồng ngực dễ di động khi thở."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Động tác thở ra tối đa:",
+    options: ["A. Là động tác thụ động do trung tâm hô hấp không hưng phấn.", "B. Có tác dụng đẩy thêm khỏi phổi một thể tích khí gọi là thể tích khí dự trữ thở ra.", "C. Có tác dụng đẩy các tạng trong ổ bụng xuống phía dưới.", "D. Làm lồng ngực giảm thể tích do co cơ liên sườn ngoài."],
+    answer: ["B. Có tác dụng đẩy thêm khỏi phổi một thể tích khí gọi là thể tích khí dự trữ thở ra."]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Động tác hít vào tối đa:",
+    options: ["A. Là động tác hít vào cố sức sau ngừng thở.", "B. Là động tác hít vào cố sức sau thở ra bình thường.", "C. Là động tác hít vào cố sức sau thở ra hết sức.", "D. Là động tác hít vào cố sức sau hít vào bình thường."],
+    answer: ["D. Là động tác hít vào cố sức sau hít vào bình thường."]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Dung tích sống:",
+    options: ["A. Là số lít khí hít vào tối đa sau khi hít vào bình thường.", "B. Là số lít khí thở ra tối đa sau thở ra bình thường.", "C. Là số lít khí thở ra tối đa sau khi hít vào bình thường.", "D. Là số lít khí thở ra tối đa sau hít vào tối đa."],
+    answer: ["D. Là số lít khí thở ra tối đa sau hít vào tối đa."]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Dung tích toàn phổi (TLC) bằng:",
+    options: ["A. IC + FRC.", "B. FRC + IRV.", "C. TV + IRV + ERV.", "D. IC + TV + FRC."],
+    answer: ["A. IC + FRC."] // TLC = IRV + TV + ERV + RV = IC + FRC. Đáp án A đúng.
+  },
+  {
+    type: "single",
+    question: "Câu 12: Các thông số đánh giá hạn chế hô hấp là:",
+    options: ["A. TLC, RV, FRC.", "B. VC, TLC.", "C. VC, FRC, MMEF.", "D. TLC, FEV1, FRC."],
+    answer: ["B. VC, TLC."]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Các thông số đánh giá tắc nghẽn đường dẫn khí là:",
+    options: ["A. VC, TV, Tiffeneau.", "B. FEV1, TLC, MMEF.", "C. MEF 25, RV, IRV.", "D. FEV1, MMEF, Tiffeneau."],
+    answer: ["D. FEV1, MMEF, Tiffeneau."]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Thông khí phế nang bằng:",
+    options: ["A. Thông khí phút.", "B. Lượng khí thay đổi trong một phút.", "C. Thông khí phút trừ đi thông khí khoảng chết.", "D. Khoảng 6 lít."],
+    answer: ["C. Thông khí phút trừ đi thông khí khoảng chết."]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Các yếu tố sau đây ảnh hưởng đến trao đổi khí ở màng hô hấp, trừ:",
+    options: ["A. Chênh lệch phân áp O2, CO2.", "B. Năng lượng cung cấp cho trao đổi khí ở màng hô hấp.", "C. Diện tích màng hô hấp.", "D. Độ dày của màng hô hấp.", "E. Tốc độ khuếch tán của khí."],
+    answer: ["B. Năng lượng cung cấp cho trao đổi khí ở màng hô hấp."]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Khả năng khuếch tán khí qua màng hô hấp phụ thuộc vào:",
+    options: ["A. Độ dày của màng hô hấp.", "B. Chênh lệch phân áp khí qua màng.", "C. Diện tích màng hô hấp.", "D. Hệ số khuếch tán.", "E. Cả 4 yếu tố trên."],
+    answer: ["E. Cả 4 yếu tố trên."]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Các dạng O2 và CO2 trong máu:",
+    options: ["A. Dạng hoà tan O2 và CO2 là dạng vận chuyển chủ yếu.", "B. Dạng kết hợp là dạng tạo ra phân áp khí trong máu.", "C. Dạng kết hợp là dạng vận chuyển của khí.", "D. Dạng hoà tan và kết hợp không có liên quan với nhau."],
+    answer: ["C. Dạng kết hợp là dạng vận chuyển của khí."] // Dạng kết hợp (HbO2, HCO3-) là dạng vận chuyển chính. Dạng hòa tan tạo ra phân áp.
+  },
+  {
+    type: "single",
+    question: "Câu 18: Dạng vận chuyển chủ yếu CO2 trong máu là:",
+    options: ["A. Dạng hoà tan.", "B. Dạng kết hợp với Hb.", "C. Dạng kết hợp với muối kiềm.", "D. Dạng kết hợp với protein."],
+    answer: ["C. Dạng kết hợp với muối kiềm."] // Dưới dạng Bicarbonate (HCO3-) là chủ yếu.
+  },
+  {
+    type: "single",
+    question: "Câu 19: Trung tâm hô hấp:",
+    options: ["A. Trung tâm điều chỉnh phát xung động gây động tác hít vào.", "B. Trung tâm hít vào tự phát xung động gây động tác hít vào.", "C. Trung tâm thở ra tham gia vào nhịp thở cơ bản.", "D. Trung tâm hoá học liên hệ trực tiếp với trung tâm thở ra."],
+    answer: ["B. Trung tâm hít vào tự phát xung động gây động tác hít vào."]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Nhịp hô hấp bình thường được duy trì bởi:",
+    options: ["A. Trung tâm hít vào, trung tâm thở ra.", "B. Trung tâm hít vào và trung tâm điều chỉnh.", "C. Trung tâm nhận cảm hoá học.", "D. Phản xạ Hering Breuer."],
+    answer: ["B. Trung tâm hít vào và trung tâm điều chỉnh."]
+  },
+  {
+    type: "single",
+    question: "Câu 21: O2 tham gia điều hoà hô hấp thông qua cơ chế tác dụng:",
+    options: ["A. Lên trung tâm hít vào, khi nồng độ O2 trong máu giảm.", "B. Lên trung tâm hoá học, khi nồng độ O2 trong máu giảm.", "C. Lên trung tâm hô hấp khi nồng độ O2 trong máu bắt đầu giảm.", "D. Lên các receptor ở quai động mạch chủ và xoang động mạch cảnh."],
+    answer: ["D. Lên các receptor ở quai động mạch chủ và xoang động mạch cảnh."]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Vai trò của CO2 trong điều hoà hô hấp:",
+    options: ["A. CO2 tác động trực tiếp lên trung tâm hô hấp.", "B. CO2 tác động trực tiếp lên trung tâm hít vào.", "C. CO2 tác động trực tiếp lên trung tâm hoá học.", "D. CO2 tác động lên trung tâm hô hấp thông qua ion H+."],
+    answer: ["D. CO2 tác động lên trung tâm hô hấp thông qua ion H+."] // CO2 khuếch tán qua hàng rào máu não, chuyển thành H+ tác động lên trung tâm hóa học.
+  },
+  {
+    type: "single",
+    question: "Câu 23: Áp suất âm trong màng phổi:",
+    options: ["A. Tạo ra do tính đàn hồi của lồng ngực.", "B. Làm cho hiệu suất trao đổi khí đạt giá trị tối đa.", "C. Máu về tim dễ dàng ở thì thở ra.", "D. Máu lên phổi dễ dàng ở thì thở ra."],
+    answer: ["B. Làm cho hiệu suất trao đổi khí đạt giá trị tối đa."]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Oxy kết hợp với Hb ở nơi có:",
+    options: ["A. Phân áp O2 cao, phân áp CO2 cao.", "B. Phân áp O2 cao, phân áp CO2 thấp.", "C. Phân áp O2 thấp, phân áp CO2 cao.", "D. Phân áp O2 thấp, phân áp CO2 thấp."],
+    answer: ["B. Phân áp O2 cao, phân áp CO2 thấp."] // Phổi.
+  },
+  {
+    type: "single",
+    question: "Câu 25: CO2 kết hợp với muối kiềm ở nơi:",
+    options: ["A. Phân áp O2 cao, phân áp CO2 thấp.", "B. Phân áp O2 cao, phân áp CO2 cao.", "C. Phân áp O2 thấp, phân áp CO2 thấp.", "D. Phân áp O2 thấp, phân áp CO2 cao."],
+    answer: ["D. Phân áp O2 thấp, phân áp CO2 cao."] // Mô.
+  },
+  {
+    type: "single",
+    question: "Câu 26: Khả năng khuếch tán của oxy từ phế nang vào máu phụ thuộc vào:",
+    options: ["A. Phân áp CO2 trong máu mao tĩnh mạch phổi.", "B. Sự chênh lệch phân áp oxy giữa phế nang và máu.", "C. Diện tích các mao mạch phổi.", "D. Áp lực phế nang.", "E. Cả 4 yếu tố trên."],
+    answer: ["B. Sự chênh lệch phân áp oxy giữa phế nang và máu."] // Đây là yếu tố chính theo định luật Fick.
+  },
+  {
+    type: "single",
+    question: "Câu 27: Lượng O2 từ máu vào mô tăng lên do giảm:",
+    options: ["A. Hàm lượng 2-3 DPG trong máu.", "B. Phân áp CO2 trong máu.", "C. Nồng độ ion Na+ trong máu.", "D. Độ pH máu.", "E. Nhiệt độ của máu."],
+    answer: ["D. Độ pH máu."] // Giảm pH (acidosis) làm tăng giải phóng O2 (hiệu ứng Bohr).
+  },
+  {
+    type: "single",
+    question: "Câu 28: Oxy từ phế nang vào máu mao mạch phổi theo hình thức:",
+    options: ["A. Khuếch tán thụ động.", "B. Vận chuyển tích cực qua kẽ tế bào.", "C. Vận chuyển tích cực thứ phát.", "D. Khuếch tán có gia tốc."],
+    answer: ["A. Khuếch tán thụ động."]
+  },
+  {
+    type: "single",
+    question: "Câu 29: Vai trò của nồng độ ion H+ trong dịch mô não:",
+    options: ["A. Kích thích trực tiếp lên trung tâm hít vào .", "B. Kích thích trực tiếp lên trung tâm thở ra.", "C. Kích thích trực tiếp lên trung tâm hoá học.", "D. Kích thích lên receptor nhận cảm hoá học ở xoang cảnh."],
+    answer: ["C. Kích thích trực tiếp lên trung tâm hoá học."]
+  },
+  {
+    type: "single",
+    question: "Câu 30: Nhịp hô hấp bình thường được phát động bởi:",
+    options: ["A. Trung tâm điều chỉnh.", "B. Trung tâm hít vào.", "C. Trung tâm thở ra.", "D. Trung tâm hoá học."],
+    answer: ["B. Trung tâm hít vào."]
+  },
+  {
+    type: "single",
+    question: "Câu 31: Dung tích sống là thể tích khí đo được khi:",
+    options: ["A. Hít vào hết sức sau khi hít vào bình thường.", "B. Thở ra hết sức sau khi thở ra bình thường.", "C. Thở ra hít vào bình thường.", "D. Hít vào hết sức rồi thở ra hết sức."],
+    answer: ["D. Hít vào hết sức rồi thở ra hết sức."]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Ở mô, máu nhận CO2 từ mô do:",
+    options: ["A. Phân áp CO2 ở mô cao hơn phân áp CO2 trong máu.", "B. Tăng quá trình bão hoà oxyhemoglobin (HbO2).", "C. Tăng khuếch tán ion Cl- từ hồng cầu ra huyết tương.", "D. CO2 đi vào hồng cầu và ion Cl- đi ra huyết tương."],
+    answer: ["A. Phân áp CO2 ở mô cao hơn phân áp CO2 trong máu."]
+  },
+  {
+    type: "single",
+    question: "Câu 33: Oxy được vận chuyển trong máu bằng các dạng sau đây:",
+    options: ["A. Kết hợp với muối kiềm.", "B. Kết hợp với các ion Fe++ tự do trong máu.", "C.Kết hợp với nhóm carbamin của globulin.", "D. Kết hợp với hemoglobin tạo thành oxy hemoglobin.", "E. Kết hợp với ion Fe+++ trong nhân hem của hemoglobin."],
+    answer: ["D. Kết hợp với hemoglobin tạo thành oxy hemoglobin."]
+  },
+  {
+    type: "single",
+    question: "Câu 34: Thông khí phổi bị giảm do:",
+    options: ["A. Cơ hoành bị liệt do nhiều nguyên nhân khác nhau.", "B. Thở không khí có 5% CO2.", "C. Sốt do các nguyên nhân ngoài phổi.", "D. Do lên độ cao 2000m.", "E. Do hàm lượng hemoglobin giảm ở những người thiếu máu do giun móc."],
+    answer: ["A. Cơ hoành bị liệt do nhiều nguyên nhân khác nhau."] // Các đáp án B, C, D, E thường làm tăng thông khí (do tăng CO2, tăng chuyển hóa, giảm O2, thiếu máu gây thiếu oxy).
+  },
+  {
+    type: "single",
+    question: "Câu 35: Nhịp thở cơ bản được điều hoà nhờ sự tham gia của các yếu tố sau đây, trừ:",
+    options: ["A. Hoạt động của trung tâm điều chỉnh.", "B. Hoạt động của trung tâm hoá học.", "C. Hoạt động của dây X qua phản xạ Hering Breuer.", "D. Hoạt động của trung tâm hít vào."],
+    answer: ["C. Hoạt động của dây X qua phản xạ Hering Breuer."] // Phản xạ Hering-Breuer không tham gia điều hòa nhịp thở cơ bản ở người lớn bình thường.
+  },
+  {
+    type: "single",
+    question: "Câu 36: Màng hô hấp - Thành của phế nang và thành mao mạch quanh phế nang tạo ra màng hô hấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 37: Màng hô hấp - Diện tích màng hô hấp trung bình khoảng 70m2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 38: Màng hô hấp - Chất Surfactant có tác dụng giữ cho phế nang không bị xẹp lại.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Theo key B. Surfactant giảm sức căng bề mặt, giúp phế nang không xẹp lại và giảm công thở. Key B có thể do lỗi hoặc quan điểm khác. Nhưng A là đúng về chức năng surfactant. Tuân theo key.
+  },
+  {
+    type: "single",
+    question: "Câu 39: Màng hô hấp - Bề dày trung bình khoảng 0,5mm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 40: Trao đổi khí ở màng hô hấp - Điều kiện cho khí trao đổi liên tục qua màng hô hấp là không khí phế nang phải thường xuyên đổi mới.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 41: Trao đổi khí ở màng hô hấp - Khi lao động sự khuếch tán khí qua màng hô hấp tăng thêm là do mở thêm số mao mạch phổi.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Theo key B. Khi lao động, nhiều mao mạch phổi được mở ra, tăng diện tích trao đổi khí. A là đúng về sinh lý. Tuân theo key.
+  },
+  {
+    type: "single",
+    question: "Câu 42: Trao đổi khí ở màng hô hấp - Hệ số khuếch tán của O2 lớn hơn CO2",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Hệ số khuếch tán của CO2 lớn hơn O2 khoảng 20 lần.
+  },
+  {
+    type: "single",
+    question: "Câu 43: Trao đổi khí ở màng hô hấp - Các khí qua màng hô hấp bằng cơ chế khuếch tán đơn thuần.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 44: Áp suất âm màng phổi: Làm cho máu lên phổi dễ dàng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Tạo lực hút cho tuần hoàn phổi.
+  },
+  {
+    type: "single",
+    question: "Câu 45: Áp suất âm màng phổi: Làm cho máu dễ về tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Tạo lực hút cho tuần hoàn tĩnh mạch về tim.
+  },
+  {
+    type: "single",
+    question: "Câu 46: Áp suất âm màng phổi: Làm cho đường dẫn khí nhỏ luôn mở.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Đường dẫn khí lớn có sụn, đường dẫn khí nhỏ (tiểu phế quản) duy trì khẩu kính nhờ áp suất xuyên thành (áp suất trong lớn hơn áp suất màng phổi), áp suất âm màng phổi không trực tiếp giữ mở.
+  },
+  {
+    type: "single",
+    question: "Câu 47: Áp suất âm màng phổi: Làm cho phổi khó xẹp lại lúc thở ra.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Theo key B. Áp suất âm màng phổi giữ phổi giãn nở theo lồng ngực, chống lại xu hướng co lại của phổi. A là đúng về sinh lý. Tuân theo key.
+  },
+  {
+    type: "single",
+    question: "Câu 48: Áp suất khoang màng phổi: Dịch màng phổi được bơm vào mạch bạch huyết không phải nguyên nhân tạo ra áp suất khoang màng phổi.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Theo key B. Việc bơm dịch màng phổi vào bạch huyết giúp duy trì áp suất âm trong khoang màng phổi. A là đúng về sinh lý. Tuân theo key.
+  },
+  {
+    type: "single",
+    question: "Câu 49: Áp suất khoang màng phổi: Lồng ngực không tham gia tạo áp suất khoang màng phổi.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Tính đàn hồi của lồng ngực kéo ra ngoài và tính đàn hồi của phổi kéo vào trong tạo ra áp suất âm màng phổi.
+  },
+  {
+    type: "single",
+    question: "Câu 50: Áp suất khoang màng phổi: Trong hô hấp bình thường có áp suất nhỏ hơn áp suất khí quyển.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 51: Áp suất khoang màng phổi: Cuối thì thở ra tối đa có giá trị -1 đến 0 mmHg.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Theo key A. Cuối thở ra gắng sức, áp suất màng phổi có thể dương. -1 đến 0 mmHg thường là cuối thở ra bình thường. Key A có thể không chính xác. Tuân theo key.
+  },
+  {
+    type: "single",
+    question: "Câu 52: Các yếu tố ảnh hưởng đến sự phân ly HbO2.: Phân áp CO2 cao làm tăng phân ly.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Hiệu ứng Bohr.
+  },
+  {
+    type: "single",
+    question: "Câu 53: Các yếu tố ảnh hưởng đến sự phân ly HbO2.: Nhiệt độ máu tăng làm giảm phân ly.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Nhiệt độ máu tăng làm tăng phân ly.
+  },
+  {
+    type: "single",
+    question: "Câu 54: Các yếu tố ảnh hưởng đến sự phân ly HbO2.: pH máu giảm làm tăng phân ly.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Hiệu ứng Bohr.
+  },
+  {
+    type: "single",
+    question: "Câu 55: Các yếu tố ảnh hưởng đến sự phân ly HbO2.: Nồng độ 2.3.DPG không ảnh hưởng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // 2,3-DPG làm giảm ái lực của Hb với O2, tăng phân ly.
+  },
+  {
+    type: "single",
+    question: "Câu 56: Hoạt động của trung tâm hô hấp: Trung tâm hít vào tự phát xung động đều đặn, nhịp nhàng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 57: Hoạt động của trung tâm hô hấp: Xung động gây động tác hít vào tăng dần.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Gây hít vào sâu dần.
+  },
+  {
+    type: "single",
+    question: "Câu 58: Hoạt động của trung tâm hô hấp: Trung tâm điều chỉnh luôn kích thích trung tâm hít vào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Trung tâm điều chỉnh (pneumotaxic) giới hạn thời gian hít vào.
+  },
+  {
+    type: "single",
+    question: "Câu 59: Hoạt động của trung tâm hô hấp: Vùng nhận cảm hoá học luôn ức chế trung tâm hít vào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Kích thích khi PCO2 tăng hoặc PO2 giảm nặng.
+  },
+  {
+    type: "single",
+    question: "Câu 60: Các dạng vận chuyển của oxy và CO2: Dạng vận chuyển chính của oxy là dạng hoà tan.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Dạng kết hợp với Hb là chính.
+  },
+  {
+    type: "single",
+    question: "Câu 61: Các dạng vận chuyển của oxy và CO2: HbO2là dạng vận chuyển chủ yếu của oxy.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 62: Các dạng vận chuyển của oxy và CO2: Muối kiềm là dạng vận chuyển chủ yếu của CO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Dưới dạng bicarbonate.
+  },
+  {
+    type: "single",
+    question: "Câu 63: Các dạng vận chuyển của oxy và CO2: HbCO2 là dạng vận chuyển chủ yếu của CO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 64: Các dạng vận chuyển của oxy và CO2: Dạng hoà tan là dạng vận chuyển chủ yếu của CO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 65: Sự khuếch tán của oxy và CO2 qua màng hô hấp có những đặc điểm: Hệ số khuếch tán của CO2 lớn hơn của oxy 20 lần.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 66: Sự khuếch tán của oxy và CO2 qua màng hô hấp có những đặc điểm: Khả năng khuếch tán của oxy trong phế nang phụ thuộc vào phân áp CO2 trong máu mao tĩnh mạch phổi.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Phụ thuộc chênh lệch PO2, diện tích, độ dày, hệ số khuếch tán. Không trực tiếp phụ thuộc PCO2.
+  },
+  {
+    type: "single",
+    question: "Câu 67: Sự khuếch tán của oxy và CO2 qua màng hô hấp có những đặc điểm: Sự chênh lệch phân áp khí giữa hai bên của màng hô hấp là yếu tố quyết định cho sự khuếch tán của các chất khí.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 68: Sự khuếch tán của oxy và CO2 qua màng hô hấp có những đặc điểm: Phân áp oxy ở phế nang là 100mmHg còn ở mao động mạch phổi là 40 mmHg.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 69: Sự khuếch tán của oxy và CO2 qua màng hô hấp có những đặc điểm: Phân áp CO2 của phế nang là 46mmHg còn phân áp CO2 của mao động mạch phổi là 40mmHg.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Phân áp CO2 ở phế nang khoảng 40mmHg, ở máu mao mạch phổi là 45-46mmHg. Chênh lệch ngược lại.
+  },
+  {
+    type: "single",
+    question: "Câu 70: Sự trao đổi oxy giữa phế nang và máu, giữa máu và mô phụ thuộc các yếu tố: Chênh lệch phân áp oxy giữa phế nang và máu, giữa máu và mô là yếu tố quyết định cho sự trao đổi khí.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 71: Sự trao đổi oxy giữa phế nang và máu, giữa máu và mô phụ thuộc các yếu tố: Hàm lượng muối kiềm trong máu có tác dụng làm tăng phân ly oxyhemoglobin cung cấp oxy cho mô.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Muối kiềm (bicarbonate) liên quan vận chuyển CO2, không trực tiếp làm tăng phân ly HbO2.
+  },
+  {
+    type: "single",
+    question: "Câu 72: Sự trao đổi oxy giữa phế nang và máu, giữa máu và mô phụ thuộc các yếu tố: Lao động nặng, vận cơ nhiều, sản sinh nhiều CO2 làm cho PCO2 tăng cũng làm tăng phân ly oxyhemoglobin để cung cấp nhiều oxy cho mô.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Hiệu ứng Bohr.
+  },
+  {
+    type: "single",
+    question: "Câu 73: Sự trao đổi oxy giữa phế nang và máu, giữa máu và mô phụ thuộc các yếu tố: Diện tích phế nang tăng và lưu lượng máu lên phổi tăng làm tăng quá trình trao đổi oxy từ phế nang vào máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 74: Sự trao đổi oxy giữa phế nang và máu, giữa máu và mô phụ thuộc các yếu tố: ở mô pH máu giảm làm tăng quá trình tạo oxyhemoglobin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // pH giảm làm tăng *phân ly* HbO2 (giải phóng O2 cho mô), không phải tăng tạo.
+  },
+  {
+    type: "single",
+    question: "Câu 75: Các yếu tố tác động trực tiếp hoặc gián tiếp đến các trung tâm hô hấp tham gia điều hoà hoạt động hô hấp: Phân áp CO2 máu tăng có tác động lên trung tâm hô hấp mạnh hơn là sự giảm phân áp oxy.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 76: Các yếu tố tác động trực tiếp hoặc gián tiếp đến các trung tâm hô hấp tham gia điều hoà hoạt động hô hấp: CO2 điều hoà hô hấp thông qua nồng độ ion H+ tác động lên trung tâm hô hấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Thông qua H+ trong dịch não tủy tác động lên trung tâm hóa học.
+  },
+  {
+    type: "single",
+    question: "Câu 77: Các yếu tố tác động trực tiếp hoặc gián tiếp đến các trung tâm hô hấp tham gia điều hoà hoạt động hô hấp: Dây X đóng vai trò chủ yếu trong điều hoà hoạt động hô hấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 78: Các yếu tố tác động trực tiếp hoặc gián tiếp đến các trung tâm hô hấp tham gia điều hoà hoạt động hô hấp: Trung tâm hô hấp không bị ảnh hưởng bởi những kích thích từ vùng hypothalamus.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 79: Các yếu tố tác động trực tiếp hoặc gián tiếp đến các trung tâm hô hấp tham gia điều hoà hoạt động hô hấp: Trung tâm nuốt khi hưng phấn gây ức chế trung tâm hô hấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
