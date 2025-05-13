@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Nguồn cung cấp năng lượng trong cơ thể chủ yếu là do:",
+    options: ["A. Protein.", "B. carbohydrat.", "C. Các vitamin và muối khoáng.", "D. Glycogen dự trữ ở gan.", "E. Các mô mỡ của cơ thể."],
+    answer: ["B. carbohydrat."]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Sản phẩm cuối cùng của tiêu hoá carbohydrat trong ống tiêu hoá chủ yếu là:",
+    options: ["A. Fructose.", "B. Galactose.", "C. Các đường đôi.", "D. Glucose.", "E. Các đường đơn 5 cacbon."],
+    answer: ["D. Glucose."]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Chất nào không phải là dạng vận chuyển trong máu của carbohydrat",
+    options: ["A. Glucose", "B. Fructose", "C. Galactose", "D. Saccarose", "E. Lactose"],
+    answer: ["E. Lactose"]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Dạng kết hợp của carbohydrat là:",
+    options: ["A. Glycolipid, RNA", "B. Glycoprotein, DNA", "C. Glycolipid , Glycoprotein", "D. Glycolipid , Glycoprotein , DNA, RNA"],
+    answer: ["D. Glycolipid , Glycoprotein , DNA, RNA"]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Dạng dự trữ của carbohydrat là:",
+    options: ["A. Glycogen ở gan, glycolipid", "B. Glycogen ở cơ, glycoprotein", "C. Glycolipid, glycoprotein", "D. Glycogen ở gan và cơ", "E. Glycogen ở gan và cơ, glycolipid, glycoprotein"],
+    answer: ["D. Glycogen ở gan và cơ"]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Dạng vận chuyển trong máu của carbohydrat là:",
+    options: ["A. Monosaccarid", "B. Disaccarid", "C. Oligosaccarid"],
+    answer: ["A. Monosaccarid"]
+  },
+  {
+    type: "single",
+    question: "Câu 7: Glucose có vai trò trung tâm trong chuyển hoá carbohydrat vì:",
+    options: ["A. Thoái hoá và tổng hợp carbohydrat đều thông qua glucose.", "B. Là sản phẩm chủ yếu cuối cùng của carbohydrat trong ống tiêu hoá.", "C. 90-95% đường đơn vận chuyển trong máu là glucose.", "D. Toàn bộ quá trình tạo đường mới và phân giải đường ở gan đều qua giai đoạn chuyển hoá của glucose.", "E. Bao gồm cả 4 nguyên nhân trên."],
+    answer: ["E. Bao gồm cả 4 nguyên nhân trên."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Chức năng nào sau không phải của carbohydrat",
+    options: ["A. Là nguồn cung cấp năng lượng chủ yếu của cơ thể", "B. Tạo hình của cơ thể", "C. Bảo vệ miễn dịch", "D. Đông máu", "E. Dẫn truyền xung động thần kinh"],
+    answer: ["D. Đông máu"]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Bệnh Alzheimer liên quan đến rối loạn chuyển hóa",
+    options: ["A. Lipid", "B. Protein", "C. Carbohydrat", "D. Vitamin", "E. Cả 4 chất trên"],
+    answer: ["C. Carbohydrat"]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Phân giải hoàn toàn một phân tử glucose sẽ giải phóng ra 38 ATP",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Nhu cầu về các chất carbohydrat, lipid và protein trong cơ thể được tính:",
+    options: ["A. Trực tiếp qua khẩu phần ăn hàng ngày.", "B. Gián tiếp qua nhu cầu năng lượng.", "C. Gián tiếp qua tỷ lệ sinh năng lượng của ba chất carbohydrat, lipid, và protein.", "D. Dựa vào nhu cầu năng lượng hàng ngày và tỷ lệ sinh năng lượng của ba chất carbohydrat, lipid và protein.", "E. Dựa vào tỷ lệ trọng lượng khô của mỗi chất có trong cơ thể."],
+    answer: ["D. Dựa vào nhu cầu năng lượng hàng ngày và tỷ lệ sinh năng lượng của ba chất carbohydrat, lipid và protein."]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Điều hoà chuyển hoá carbohydrat trong cơ thể là quá trình:",
+    options: ["A. Làm tăng đường huyết khi đường huyết hạ.", "B. Làm hạ đường huyết khi đường huyết tăng.", "C. Làm tăng quá trình chuyển từ glucose thành glycogen.", "D. Làm tăng thoái hoá glucose ở tế bào.", "E. Giữ cho mức đường huyết luôn ở trong giới hạn bình thường."],
+    answer: ["E. Giữ cho mức đường huyết luôn ở trong giới hạn bình thường."]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Nhận xét nào sau về hệ thần kinh tự chủ không chính xác trong điều hòa glucose/máu",
+    options: ["A. Cả hệ giao cảm và phó giao cảm đều chi phối hoạt động của tiểu đảo Langerhans.", "B. Kích thích phó giao cảm gây tăng đường huyết do giảm bài tiết insulin.", "C. Kích thích giao cảm gây tăng tiết glucagon làm tăng đường huyết.", "D. Khi bị stress, hệ giao cảm bị kích thích gây tăng tiết epinephrine, glucagon làm đường huyết tăng.", "E. Trong bữa ăn, hệ phó giao cảm được hoạt hóa kích thích hoạt động cơ học và hoạt động bài tiết dịch."],
+    answer: ["B. Kích thích phó giao cảm gây tăng đường huyết do giảm bài tiết insulin."]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Cả hệ giao cảm và phó giao cảm đều chi phối hoạt động của tiểu đảo Langerhans",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Kích thích phó giao cảm gây tăng đường huyết do giảm bài tiết insulin",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Kích thích giao cảm gây tăng tiết glucagon làm giảm đường huyết",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Khi bị stress, hệ giao cảm bị kích thích gây tăng tiết epinephrine làm đường huyết tăng",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Trong bữa ăn, hệ phó giao cảm được hoạt hóa kích thích hoạt động cơ học và hoạt động bài tiết dịch",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Khi [glucose]/máu giảm, kích thích vùng dưới đồi, hoạt hóa thần kinh giao cảm, tăng bài tiết adrenalin và noradrenalin gây tăng [glucose]/máu",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Khi [glucose]/máu tăng cao sẽ kích thích trung tâm khát gây uống nhiều, giảm bài tiết ADH, tăng thải glucose ra nước tiểu gây biểu hiện lợi niệu do tăng áp suất thẩm thấu",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Các hormon không làm tăng đường huyết:",
+    options: ["A. GH của tuyến yên", "B. T3 - T4 của tuyến giáp", "C. Cortisol của tuyến vỏ thượng thận", "D. Adrenalin của tuyến tủy thượng thận", "E. Insulin của tuyến tụy nội tiết."],
+    answer: ["E. Insulin của tuyến tụy nội tiết."]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Giai đoạn sau hấp thu không xảy ra hiện tượng:",
+    options: ["A. Glucagon tăng, insulin tăng", "B. Glucose-6-phosphatase kích thích phân giải glycogen thành glucose ở gan.", "C. Chỉ có các tế bào cơ có khả năng sử dụng năng lượng lấy từ glycogen.", "D. Chỉ có tế bào gan có thể dùng năng lượng lấy từ glycogen.", "E. Một số hormon hoạt động theo chiều hướng tăng tạo đường mới."],
+    answer: ["B. Glucose-6-phosphatase kích thích phân giải glycogen thành glucose ở gan."]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Giảm đường huyết không có biểu hiện:",
+    options: ["A. Cảm giác đói", "B. Toát mồ hôi", "C. Tim đập nhanh", "D. Huyết áp tăng", "E. Hôn mê"],
+    answer: ["D. Huyết áp tăng"]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Giảm glucose máu có đặc điểm:",
+    options: ["A. Lượng insulin do tế bào beta bài tiết không đủ.", "B. Có căn nguyên do bị đái tháo đường type I từ trước.", "C. Là một đáp ứng quá mức của tế bào beta dẫn đến quá nhiều glucose trong máu.", "D. Chẩn đoán dựa vào nghiệm pháp gây tăng đường huyết khi đói.", "E. Điều trị bằng chế độ ăn 2 đến 3 bữa giàu carbohydrat trong một ngày."],
+    answer: ["B. Có căn nguyên do bị đái tháo đường type I từ trước."]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Đái tháo đường type 2 (thể không phụ thuộc insulin) được đặc trưng bởi",
+    options: ["A. Tổn thương tế bào beta do virus hoặc do cơ chế tự miễn.", "B. Giảm nồng độ insulin trong huyết thanh.", "C. Hay gặp ở người trên 40 tuổi.", "D. Hay gặp ở người trẻ dưới 30 tuổi.", "E. Nồng độ glucagon tăng cao."],
+    answer: ["C. Hay gặp ở người trên 40 tuổi."]
+  },
+  {
+    type: "single",
+    question: "Câu 26: Đái tháo đường type 1 (thể phụ thuộc insulin)",
+    options: ["A. Mất nước.", "B. Gầy nhiều.", "C. pH máu giảm.", "D. Áp suất thẩm thấu tăng gây khát, uống nhiều, đái nhiều.", "E. Cả A, B, C, D đều là biểu hiện của đái tháo đường type 1."],
+    answer: ["E. Cả A, B, C, D đều là biểu hiện của đái tháo đường type 1."]
+  },
+  {
+    type: "single",
+    question: "Câu 27: Đái tháo đường ở giai đoạn cuối của cả hai thể (giai đoạn nặng) nếu không được điều trị kịp thời thường gây nên các triệu chứng:",
+    options: ["A. Ăn nhiều, đái nhiều, uống nhiều, gầy nhiều.", "B. Đường huyết tăng cao có khi tới 300 – 1200 mg%.", "C. Đường niệu.", "D. Na trong máu giảm do các thể cetonic bài tiết kéo theo Na.", "E. Hơi thở có mùi aceton."],
+    answer: ["B. Đường huyết tăng cao có khi tới 300 – 1200 mg%."]
+  },
+  {
+    type: "single",
+    question: "Câu 28: Liên quan giữa ba chuyển hoá carbohydrat, lipid và protein chủ yếu là qua:",
+    options: ["A. Chặng chuyển từ glucose thành glucose 6P.", "B. Chặng fructose 1-6 diphosphat.", "C.Hai ngã ba chính là a.pyruvic và acetyl CoA.", "D. Chu trình tạo ure.", "E. Quá trình b oxy hoá các acid béo"],
+    answer: ["C.Hai ngã ba chính là a.pyruvic và acetyl CoA."]
+  },
+  {
+    type: "single",
+    question: "Câu 29: Nguồn dự trữ năng lượng trong cơ thể chủ yếu là do:",
+    options: ["A. Protein.", "B. Carbohydrat.", "C. Các vitamin và muối khoáng.", "D. Glycogen dự trữ ở gan.", "E. Lipid"],
+    answer: ["E. Lipid"]
+  },
+  {
+    type: "single",
+    question: "Câu 30: Dạng lipid vận chuyển trong máu không có:",
+    options: ["A. Acid béo", "B. Triglycerid", "C. Cholesterol", "D. Lipoprotein", "E. Glycoprotein"],
+    answer: ["E. Glycoprotein"]
+  },
+  {
+    type: "single",
+    question: "Câu 31: Chức năng sau không phải là của LDL:",
+    options: ["A. Vận chuyển cholesterol từ mô ngoại biên đến gan", "B. Điều hòa tổng hợp cholesterol ở mô", "C. Vận chuyển cholesterol vào tế bào cho sự tổng hợp màng và hormon", "D. Ảnh hưởng đến tổng hợp cholesterol ở tế bào"],
+    answer: ["A. Vận chuyển cholesterol từ mô ngoại biên đến gan"]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Các hormon sau làm tăng thoái hóa lipid trừ:",
+    options: ["A. Adrenalin của tuyến tủy thượng thận", "B. Glucagon của tuyến tụy nội tiết", "C. Insulin của tuyến tụy nội tiết.", "D. GH của tuyến yên", "E. T3 - T4 của tuyến giáp."],
+    answer: ["C. Insulin của tuyến tụy nội tiết."]
+  },
+  {
+    type: "single",
+    question: "Câu 33: Bệnh không liên quan đến rối loạn chuyển hóa lipid là",
+    options: ["A. Bệnh béo phì (Obesity)", "B. Xơ vữa động mạch", "C. Thiếu máu", "D. Tăng huyết áp", "E. Suy gan"],
+    answer: ["C. Thiếu máu"]
+  },
+  {
+    type: "single",
+    question: "Câu 34: Albumin là một protein của huyết tương có vai trò trong:",
+    options: ["A. Tạo ra áp suất keo của huyết tương.", "B. Đông máu.", "C. Di truyền.", "D. Chống đông máu.", "E. Tạo kháng thể."],
+    answer: ["A. Tạo ra áp suất keo của huyết tương."]
+  },
+  {
+    type: "single",
+    question: "Câu 35: Các chức năng sau là của protein trừ:",
+    options: ["A. Tham gia cấu trúc và tạo hình cơ thể", "B. Tạo áp suất keo", "C. Bảo vệ", "D. Vận chuyển", "E. Nguồn cung cấp năng lượng trực tiếp"],
+    answer: ["E. Nguồn cung cấp năng lượng trực tiếp"]
+  },
+  {
+    type: "single",
+    question: "Câu 36: Nguồn protein cần thiết có trong",
+    options: ["A. Ngô, dầu thực vật, lúa mì", "B. Đậu dài, đậu quả, hạt, ngũ cốc", "C. Trứng, cá, ngũ cốc", "D. Trứng, sữa, sữa chua, thịt cá"],
+    answer: ["D. Trứng, sữa, sữa chua, thịt cá"]
+  },
+  {
+    type: "single",
+    question: "Câu 37: Nhu cầu protein hàng ngày",
+    options: ["A. 0,4 g/kg cân nặng", "B. 0,8g/kg cân nặng", "C. 10 g/kg cân nặng", "D. 13 g/kg cân nặng"],
+    answer: ["B. 0,8g/kg cân nặng"]
+  },
+  {
+    type: "single",
+    question: "Câu 38: Thiếu protein ở giai đoạn mất thích nghi gây nên bệnh:",
+    options: ["A. Đái tháo đường.", "B. Béo phì.", "C. Xơ vữa động mạch.", "D. Suy dinh dưỡng protein năng lượng."],
+    answer: ["D. Suy dinh dưỡng protein năng lượng."]
+  },
+  {
+    type: "single",
+    question: "Câu 39: Năng lượng tồn tại trong cơ thể dưới các dạng:",
+    options: ["A. Hoá năng.", "B. Động năng.", "C. Điện năng.", "D. Nhiệt năng.", "E. Cả A,B,C,D."],
+    answer: ["E. Cả A,B,C,D."]
+  },
+  {
+    type: "single",
+    question: "Câu 40: ATP là chất giàu năng lượng của cơ thể được tạo thành trong quá trình:",
+    options: ["A. Thoái hoá các chất carbohydrat, lipid và protein.", "B. Thoái hoá protein là chủ yếu.", "C. Thoái hoá các mẩu acetyl CoA trong chu trình Krebs.", "D. b Oxy hoá các acid béo."],
+    answer: ["A. Thoái hoá các chất carbohydrat, lipid và protein."]
+  },
+  {
+    type: "single",
+    question: "Câu 41: Vai trò của ATP:",
+    options: ["A. Cung cấp năng lượng cho cơ thể hoạt động.", "B. Vận chuyển năng lượng.", "C. Dữ trữ năng lượng.", "D. Cung cấp năng lượng cho các phản ứng thoái hoá và tổng hợp các chất.", "E. Cung cấp năng lượng, vận chuyển năng lượng và dự trữ năng lượng."],
+    answer: ["E. Cung cấp năng lượng, vận chuyển năng lượng và dự trữ năng lượng."]
+  },
+  {
+    type: "single",
+    question: "Câu 42: Năng lượng tiêu hao nhiều nhất để duy trì cơ thể :",
+    options: ["A. Vận cơ.", "B. Điều nhiệt.", "C. Tiêu hoá.", "D. Chuyển hoá cơ cở.", "E. Duy trì trương lực của các cơ."],
+    answer: ["D. Chuyển hoá cơ cở."]
+  },
+  {
+    type: "single",
+    question: "Câu 43: Chuyển hoá cơ sở là mức tiêu hao năng lượng tối thiểu ở điều kiện cơ sở:",
+    options: ["A. Không vận cơ.", "B. Không cho con bú.", "C. Không bị sốt.", "D. Không tiêu hoá, không vận cơ, không điều nhiệt.", "E. Nằm nghỉ yên, không bị căng thẳng về tâm lý."],
+    answer: ["D. Không tiêu hoá, không vận cơ, không điều nhiệt."]
+  },
+  {
+    type: "single",
+    question: "Câu 44: Năng lượng tiêu hao trong vận cơ:",
+    options: ["A. Trong vận cơ hoá năng tích luỹ trong cơ bị tiêu hao như sau: 35% chuyển thành công cơ học, 65% toả dưới dạng nhiệt.", "B. Năng lượng tiêu hao trong vận cơ được tính theo Kcal/1kg cơ thể/giờ.", "C. Cường độ vận cơ càng lớn, mức tiêu hao càng giảm.", "D. Kỹ năng lao động không ảnh hưởng đến tiêu hao năng lượng.", "E. Tư thế vận cơ càng thoải mái càng ít tiêu hao năng lượng."],
+    answer: ["E. Tư thế vận cơ càng thoải mái càng ít tiêu hao năng lượng."]
+  },
+  {
+    type: "single",
+    question: "Câu 45: Về CHCS:",
+    options: ["A. CHCS phụ thuộc vào nhiệt độ môi trường.", "B. Điều kiện cơ sở là: không vận cơ, không tiêu hoá, không suy nghĩ.", "C. Năng lượng tiêu hao cho CHCS chiếm 1/2 năng lượng tiêu hao của cơ thể.", "D. CHCS là năng lượng cần cho cơ thể tồn tại trong điều kiện cơ sở.", "E. Đơn vị đo CHCS là Kcal/m2da/24 giờ."],
+    answer: ["D. CHCS là năng lượng cần cho cơ thể tồn tại trong điều kiện cơ sở."]
+  },
+  {
+    type: "single",
+    question: "Câu 46: Trong các yếu tố ảnh hưởng đến CHCS:",
+    options: ["A. CHCS thay đổi theo nhịp ngày đêm, cao nhất lúc 13-16 giờ, thấp nhất lúc 1- 4 giờ.", "B. Tuổi càng cao CHCS càng tăng.", "C. Ở cùng một lứa tuổi CHCS ở nam bằng CHCS ở nữ.", "D. Trong chu kỳ kinh nguyệt và khi có thai CHCS tăng."],
+    answer: ["A. CHCS thay đổi theo nhịp ngày đêm, cao nhất lúc 13-16 giờ, thấp nhất lúc 1- 4 giờ."]
+  },
+  {
+    type: "single",
+    question: "Câu 47: Chuyển hoá cơ sở được đo bằng phương pháp:",
+    options: ["A. Đo trực tiếp bằng phòng nhiệt lượng kế.", "B. Đo gián tiếp qua các thông số tiêu hoá.", "C. Đo gián tiếp qua hô hấp theo phương pháp vòng kín.", "D. Đo gián tiếp qua hô hấp theo phương pháp vòng hở.", "E. Được đo bằng cả phương pháp trực tiếp và gián tiếp."],
+    answer: ["C. Đo gián tiếp qua hô hấp theo phương pháp vòng kín."]
+  },
+  {
+    type: "single",
+    question: "Câu 48: Điều kiện đo chuyển hóa cơ sở",
+    options: ["A. Ngừng toàn bộ hoạt động cơ thể", "B. Nhịn đói", "C. Nhiệt độ phòng đo từ 18-20oC", "D. Nhiệt độ phòng đo tương đương thân nhiệt"],
+    answer: ["C. Nhiệt độ phòng đo từ 18-20oC"]
+  },
+  {
+    type: "single",
+    question: "Câu 49: Ở mức toàn cơ thể, chuyển hoá năng lượng được điều hoà bằng:",
+    options: ["A. Cơ chế thần kinh và thể dịch.", "B. Nhu cầu năng lượng của cơ thể.", "C. Sự hoạt động của vùng dưới đồi.", "D. Các hormon của tuyến giáp: T3 và T4.", "E. Hormon insulin của tuyến tuỵ."],
+    answer: ["A. Cơ chế thần kinh và thể dịch."]
+  },
+  {
+    type: "single",
+    question: "Câu 50: Trong các hormon tác dụng đến chuyển hoá năng lượng thì:",
+    options: ["A. T3 và T4 làm tăng CHCS ở tất cả các mô.", "B. Adrenalin làm giảm phân giải glycogen thành glucose, giảm thiêu đốt glucose, tăng dự trữ glycogen ở tế bào làm giảm chuyển hoá năng lượng.", "C. Cortisol làm tăng tổng hợp protein, tăng chuyển hoá năng lượng.", "D. Hormon giáp làm tăng hoạt động chuyển hoá ở các mô (trừ não, võng mạc, lách, phổi, tinh hoàn).", "E. Hormon GH làm tăng chuyển hoá năng lượng bằng cách tăng thiêu đốt carbohydrat."],
+    answer: ["D. Hormon giáp làm tăng hoạt động chuyển hoá ở các mô (trừ não, võng mạc, lách, phổi, tinh hoàn)."]
+  },
+  {
+    type: "single",
+    question: "Câu 51: Hormon ảnh hưởng mạnh nhất đến tốc độ chuyển hóa là:",
+    options: ["A. Noradrenalin", "B. Thyroxin", "C. Prolactin", "D. GH"],
+    answer: ["B. Thyroxin"]
+  },
+  {
+    type: "single",
+    question: "Câu 52: Ở mức tế bào chuyển hoá năng lượng được điều hoà bằng:",
+    options: ["A. Nồng độ glucose trong máu.", "B. Cơ chế điều hoà ngược thông qua hàm lượng ADP trong tế bào.", "C. Hàm lượng của chất 2,3 DPG trong máu.", "D. Phân áp oxy trong máu."],
+    answer: ["B. Cơ chế điều hoà ngược thông qua hàm lượng ADP trong tế bào."]
+  },
+  {
+    type: "single",
+    question: "Câu 53: Nguyên nhân chính giảm tiêu thụ Cal ở người già là:",
+    options: ["A. Giảm chuyển hóa và khối cơ", "B. Giảm độ thèm ăn", "C. Mất cân bằng giữa tốc độ chuyển hóa và lượng thức ăn tiêu thụ", "D. Giảm vận động, tăng tích lũy mỡ"],
+    answer: ["A. Giảm chuyển hóa và khối cơ"]
+  }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
