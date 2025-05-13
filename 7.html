@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Máu có những chức năng sau trừ",
+    options: ["A. Vận chuyển", "B. Điều nhiệt", "C. Chống đỡ", "D. Bảo vệ", "E. Điều hòa"],
+    answer: ["C. Chống đỡ"]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Hematocrit của một mẫu máu xét nghiệm cho kết quả 41%, có nghĩa là:",
+    options: ["A. Hemoglobin chiếm 41% trong huyết tương.", "B. Huyết tương chiếm 41% thể tích máu toàn phần.", "C. Các thành phần hữu hình chiếm 41% thể tích máu toàn phần.", "D. Hồng cầu chiếm 41% thể tích máu toàn phần."],
+    answer: ["D. Hồng cầu chiếm 41% thể tích máu toàn phần."]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Nguyên nhân làm số lượng hồng cầu ở nam thường cao hơn ở nữ trong cùng độ tuổi là:",
+    options: ["A. Thời gian bán huỷ hồng cầu ở nữ ngắn hơn ở nam.", "B. Sự đáp ứng của tiền nguyên hồng cầu với erythropoietin ở nữ giảm.", "C. Số tế bào gốc trong tuỷ xương nữ ít hơn nam.", "D. Lượng testosteron ở nữ thấp hơn nam.", "E. Nữ bị mất máu trong chu kỳ kinh nguyệt."],
+    answer: ["D. Lượng testosteron ở nữ thấp hơn nam."]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Hemoglobin:",
+    options: ["A. Là một lipoprotein.", "B. Có thành phần globin giống nhau ở các loài.", "C. Được cấu tạo bởi một nhân hem và bốn chuỗi polypeptid giống nhau từng đôi một.", "D. Hemoglobin người trưởng thành bình thường có 2 chuỗi a và 2 chuỗi g.", "E. Chiếm 34% trọng lượng tươi của hồng cầu."],
+    answer: ["E. Chiếm 34% trọng lượng tươi của hồng cầu."]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Nguyên nhân làm nồng độ Hb ở nam thường cao hơn ở nữ trong cùng độ tuổi là:",
+    options: ["A. Thời gian bán huỷ hồng cầu ở nữ ngắn hơn ở nam.", "B. Sự đáp ứng của tiền nguyên hồng cầu với erythropoietin ở nữ giảm.", "C. Số tế bào gốc trong tuỷ xương nữ ít hơn nam.", "D. Lượng testosteron ở nữ thấp hơn nam.", "E. Nữ bị mất máu trong chu kỳ kinh nguyệt."],
+    answer: ["D. Lượng testosteron ở nữ thấp hơn nam."]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Khả năng vận chuyển tối đa oxy của máu là do:",
+    options: ["A. Độ bão hoà oxy trong máu.", "B. Nồng độ hemoglobin trong máu.", "C. PH máu.", "D. Nhiệt độ máu."],
+    answer: ["B. Nồng độ hemoglobin trong máu."]
+  },
+  {
+    type: "single",
+    question: "Câu 7: HbO2 tăng giải phóng O2 khi:",
+    options: ["A. Nồng độ 2,3 DPG trong máu giảm.", "B. Phân áp CO2 trong máu giảm.", "C. PH máu giảm.", "D. Nhiệt độ máu giảm.", "E. Phân áp O2 trong máu tăng."],
+    answer: ["C. PH máu giảm."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Về cấu trúc hemoglobin: Có cấu trúc giống nhau ở tất cả các loài.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Về cấu trúc hemoglobin: Được cấu tạo bởi 1 hem và 4 chuỗi polipeptid giống nhau từng đôi một là a và g.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Về cấu trúc hemoglobin: Phần hem được cấu tạo bởi vòng porphyrin và Fe2+",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 11: Về cấu trúc hemoglobin: Phần globin ở người trưởng thành được cấu tạo bởi 2 chuỗi alpha và 2 chuỗi beta.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 12: Chức năng hemoglobin là: Vận chuyển trên 90% O2 dưới dạng HbO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 13: Chức năng hemoglobin là: Vận chuyển 60% O2 dưới dạng HbO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 14: Chức năng hemoglobin là: Vận chuyển 80% CO2 dưới dạng HbCO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 15: Khả năng vận chuyển tối đa oxy của Hb là 200ml/100mililít máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 16: Chức năng hemoglobin là: Vận chuyển nhiều O2 hơn khi có mặt các chất oxy hoá Fe2+--->Fe3+",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 17: Chức năng hemoglobin là: Kết hợp với 4 nguyên tử oxy vào nguyên tử Fe2+ tạo HbO2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 18: Hồng cầu có những chức năng sau, trừ:",
+    options: ["A. Vận chuyển O2.", "B. Vận chuyển CO2.", "C. Vận chuyển kháng thể.", "D. Điều hoà thăng bằng acid – base.", "E. Mang các kháng nguyên quy định nhóm máu."],
+    answer: ["C. Vận chuyển kháng thể."]
+  },
+  {
+    type: "single",
+    question: "Câu 19: Hầu hết CO2 được vận chuyển trong máu dưới dạng:",
+    options: ["A. Hoà tan trong huyết tương.", "B. Gắn với nhóm -NH2 của protein huyết tương.", "C. Gắn với nhóm -NH2 của globin.", "D. Gắn với Cl-.", "E. Ở dạng NaHCO3"],
+    answer: ["E. Ở dạng NaHCO3"]
+  },
+  {
+    type: "single",
+    question: "Câu 20: Hầu hết O2 được vận chuyển trong máu dưới dạng:",
+    options: ["A. Hoà tan trong huyết tương.", "B. Gắn với Fe2+ của protein huyết tương.", "C. Gắn với Fe3+ của nhân hem.", "D. Gắn với Fe2+ của nhân hem.", "E. Gắn với Fe2+ của phần globin."],
+    answer: ["D. Gắn với Fe2+ của nhân hem."]
+  },
+  {
+    type: "single",
+    question: "Câu 21: Vị trí thăm dò quá trình tạo máu ở người trưởng thành",
+    options: ["A. Gan", "B. Lách", "C. Tuỷ đỏ xương", "D. Tủy xương dẹt", "E. Nang bạch huyết"],
+    answer: ["D. Tủy xương dẹt"]
+  },
+  {
+    type: "single",
+    question: "Câu 22: Tên tế bào ở đầu mũi tên", // Lưu ý: Câu hỏi này cần hình ảnh đi kèm
+    options: ["A. Tiền nguyên hồng cầu", "B. Nguyên hồng cầu ưa base", "C. Nguyên hồng cầu đa sắc", "D. Nguyên hồng cầu ưa acid", "E. Hồng cầu lưới"],
+    answer: ["A. Tiền nguyên hồng cầu"]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Tên tế bào ở đầu mũi tên", // Lưu ý: Câu hỏi này cần hình ảnh đi kèm
+    options: ["A. Tiền nguyên hồng cầu", "B. Nguyên hồng cầu ưa base", "C. Nguyên hồng cầu đa sắc", "D. Nguyên hồng cầu ưa acid", "E. Hồng cầu lưới"],
+    answer: ["B. Nguyên hồng cầu ưa base"]
+  },
+  {
+    type: "single",
+    question: "Câu 24: Tên tế bào ở đầu mũi tên", // Lưu ý: Câu hỏi này cần hình ảnh đi kèm
+    options: ["A. Tiền nguyên hồng cầu", "B. Nguyên hồng cầu ưa base", "C. Nguyên hồng cầu đa sắc", "D. Nguyên hồng cầu ưa acid", "E. Hồng cầu lưới"],
+    answer: ["C. Nguyên hồng cầu đa sắc"]
+  },
+  {
+    type: "single",
+    question: "Câu 25: Tên tế bào ở đầu mũi tên", // Lưu ý: Câu hỏi này cần hình ảnh đi kèm
+    options: ["A. Tiền nguyên hồng cầu", "B. Nguyên hồng cầu ưa base", "C. Nguyên hồng cầu đa sắc", "D. Nguyên hồng cầu ưa acid", "E. Hồng cầu lưới"],
+    answer: ["D. Nguyên hồng cầu ưa acid"]
+  },
+  {
+    type: "single",
+    question: "Câu 26: Tên tế bào ở đầu mũi tên", // Lưu ý: Câu hỏi này cần hình ảnh đi kèm
+    options: ["A. Tiền nguyên hồng cầu", "B. Nguyên hồng cầu ưa base", "C. Nguyên hồng cầu đa sắc", "D. Nguyên hồng cầu ưa acid", "E. Hồng cầu lưới"],
+    answer: ["E. Hồng cầu lưới"]
+  },
+  {
+    type: "single",
+    question: "Câu 27: Sự sản sinh hồng cầu tăng lên khi:",
+    options: ["A. Tăng phân áp oxy trong máu.", "B. Giảm phân áp CO2 trong máu.", "C. Tăng sản xuất angiotensinogen.", "D. Tăng tổng hợp erythropoietin.", "E. Tăng nhiệt độ máu"],
+    answer: ["D. Tăng tổng hợp erythropoietin."]
+  },
+  {
+    type: "single",
+    question: "Câu 28: Erythropoietin được sản xuất tăng lên khi: Thiếu oxy ở mô.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 29: Erythropoietin được sản xuất tăng lên khi: Cơ thể bị chảy máu nhiều.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 30: Erythropoietin được sản xuất tăng lên khi: Bệnh nhân bị suy thận mạn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Suy thận mạn làm giảm sản xuất EPO -> Sai
+  },
+  {
+    type: "single",
+    question: "Câu 31: Erythropoietin được sản xuất tăng lên khi: Bệnh nhân bị suy trục tuyến yên - tuyến giáp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 32: Erythropoietin được sản xuất tăng lên khi: Sống lâu ngày ở độ cao > 4000m.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 33: Các yếu tố sau đều tham gia vào quá trình tạo hồng cầu, trừ:",
+    options: ["A. Sắt.", "B. Yếu tố Steel.", "C. Vitamin B12.", "D. Bilirubin.", "E. Acid folic."],
+    answer: ["D. Bilirubin."]
+  },
+  {
+    type: "single",
+    question: "Câu 34: Xét nghiệm máu ở một phụ nữ 40 tuổi thấy: số lượng hồng cầu là 2,8 T/l, Hb là 110g/l, đường kính hồng cầu là 8,2mm. Có thể nhận xét các số liệu này:",
+    options: ["A. Nằm trong giới hạn bình thường.", "B. Phản ánh tình trạng mất nước của cơ thể.", "C. Hay gặp trong bệnh lý thiếu máu do thiếu Vit B12.", "D. Là của người hay sống ở độ cao > 2000m."],
+    answer: ["C. Hay gặp trong bệnh lý thiếu máu do thiếu Vit B12."] // Số lượng HC giảm, Hb giảm, đường kính HC bình thường (normocytic anemia). Thiếu B12/folic thường gây HC to. Có thể đáp án key có lỗi hoặc câu hỏi không chuẩn. Tuy nhiên, theo key, đáp án là C.
+  },
+  {
+    type: "single",
+    question: "Câu 35: Suy giảm chức năng cơ quan nào sau đây không liên quan đến quá trình sản sinh hồng cầu",
+    options: ["A. Thận", "B. Gan", "C. Tụy", "D. Dạ dày"],
+    answer: ["C. Tụy"]
+  },
+  {
+    type: "single",
+    question: "Câu 36: Cơ quan tạo hồng cầu của một người đàn ông 30 tuổi là:",
+    options: ["A. Tuỷ của tất cả các xương.", "B. Tuỷ của tất cả các xương dài.", "C. Lách.", "D. Tuỷ của tất cả các xương dẹt.", "E. Gan"],
+    answer: ["D. Tuỷ của tất cả các xương dẹt."]
+  },
+  {
+    type: "single",
+    question: "Câu 37: Nhận xét nào sau đây về hồng cầu không đúng:",
+    options: ["A. Là những tế bào không có nhân và ty thể.", "B. Số lượng lớn gấp nhiều lần bạch cầu.", "C. Cần có nguyên liệu để sản sinh là sắt và vitamin B12.", "D. Đời sống khoảng 12 tháng.", "E. Cả A + B + C + D đều đúng."],
+    answer: ["D. Đời sống khoảng 12 tháng."] // Đời sống khoảng 120 ngày ~ 4 tháng.
+  },
+  {
+    type: "single",
+    question: "Câu 38: Số lượng hồng cầu giảm trong:",
+    options: ["A. Nôn nhiều.", "B. Mất máu do tai nạn.", "C. Ỉa chảy.", "D. Mất huyết tương do bỏng.", "E. Lao động nặng và kéo dài."],
+    answer: ["B. Mất máu do tai nạn."]
+  },
+  {
+    type: "single",
+    question: "Câu 39: Cơ chế ngộ độc cacbonmonoxit (CO) là do: CO chuyển Fe+2 > Fe+3 làm giảm khả năng kết hợp với O2 của Hb",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // CO gắn trực tiếp vào Fe2+ làm giảm ái lực với O2.
+  },
+  {
+    type: "single",
+    question: "Câu 40: Cơ chế ngộ độc cacbonmonoxit (CO) là do: CO làm pH máu giảm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 41: Cơ chế ngộ độc cacbonmonoxit (CO) là do: CO gắn với nhóm -NH2 của phần globin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 42: Cơ chế ngộ độc cacbonmonoxit (CO) là do: CO có ái lực với Hb lớn hơn O2 200 lần.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 43: Số lượng hồng cầu tăng cao một cách sinh lý ở:",
+    options: ["A. Phụ nữ có thai 3 tháng cuối.", "B. Đi du lịch ở vùng núi cao > 4000 mét.", "C. Trẻ sơ sinh.", "D. Mất huyết tương do bỏng.", "E. Lao động nặng và kéo dài."],
+    answer: ["C. Trẻ sơ sinh."]
+  },
+  {
+    type: "single",
+    question: "Câu 44: Số lượng hồng cầu trong máu ngoại vi tăng khi lao động nặng kéo dài.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 45: Số lượng hồng cầu trong máu ngoại vi tăng ở những phụ nữ có thai.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Thường giảm do pha loãng máu.
+  },
+  {
+    type: "single",
+    question: "Câu 46: Số lượng hồng cầu trong máu ngoại vi: Tăng ở trẻ sơ sinh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 47: Số lượng hồng cầu trong máu ngoại vi: Giảm do bị ỉa chảy mất nước.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Tăng do cô đặc máu.
+  },
+  {
+    type: "single",
+    question: "Câu 48: Số lượng hồng cầu trong máu ngoại vi: Giảm do sống lâu trên núi cao.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Tăng do thiếu oxy.
+  },
+  {
+    type: "single",
+    question: "Câu 49: Một người nhóm máu B sẽ có kháng nguyên ____ trên màng hồng cầu và có kháng thể anti-___ trong huyết tương.",
+    options: ["A. B; B", "B. B; A", "C. A; A", "D. A; B"],
+    answer: ["B. B; A"]
+  },
+  {
+    type: "single",
+    question: "Câu 50: Trong hệ thống nhóm máu ABO không có kiểu gen",
+    options: ["A. ii", "B. iAi", "C. IBi", "D. IAIB", "E. Tất cả các kiểu gen trên đều đúng."],
+    answer: ["B. iAi"] // Kiểu gen nhóm A phải là IAi hoặc IAIA. iAi không tồn tại.
+  },
+  {
+    type: "single",
+    question: "Câu 51: Hệ thống nhóm máu ABO: Tên của nhóm máu là tên của kháng nguyên trên màng hồng cầu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 52: Hệ thống nhóm máu ABO: Kháng thể anti A và anti B là kháng thể tự nhiên có ngay từ khi mới sinh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Xuất hiện vài tháng sau sinh.
+  },
+  {
+    type: "single",
+    question: "Câu 53: Hệ thống nhóm máu ABO: Có thể truyền nhóm máu A2 cho người nhóm máu O.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 54: Hệ thống nhóm máu ABO: Bản chất kháng thể là IgM và IgG.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 55: Hệ thống nhóm máu ABO: Bản chất kháng thể là IgE và IgM.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 56: Tai biến truyền nhóm máu sẽ xảy ra khi: Kháng nguyên người nhận bị ngưng kết với kháng thể người cho.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"]
+  },
+  {
+    type: "single",
+    question: "Câu 57: Tai biến truyền nhóm máu sẽ xảy ra khi: Kháng nguyên người cho bị ngưng kết với kháng thể người nhận.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 58: Tai biến truyền nhóm máu sẽ xảy ra khi: Hồng cầu người cho bị vỡ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 59: Tai biến truyền nhóm máu sẽ xảy ra khi: Trong huyết tương người nhận có kháng nguyên A và B.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Huyết tương có kháng thể, không phải kháng nguyên.
+  },
+  {
+    type: "single",
+    question: "Câu 60: Tai biến truyền nhóm máu sẽ xảy ra khi: Trong máu người cho có cả anti A và anti B.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Lượng kháng thể người cho thường bị pha loãng trong máu người nhận. Vấn đề chính là kháng thể người nhận.
+  },
+  {
+    type: "single",
+    question: "Câu 61: Không được truyền nhóm máu B cho:",
+    options: ["A. Người có nhóm máu AB.", "B. Người có nhóm máu Rh+.", "C. Người có nhóm máu Rh-.", "D. Người có nhóm máu O."],
+    answer: ["D. Người có nhóm máu O."]
+  },
+  {
+    type: "single",
+    question: "Câu 62: Thường gặp khó khăn khi tìm máu phù hợp để truyền cho bệnh nhân trong các trường hợp sau:",
+    options: ["A. Người có nhóm máu A được truyền máu Rh+ lần đầu.", "B. Bệnh nhân đã được tiêm huyết thanh ngựa (SAT).", "C. Bệnh nhân đã được truyền máu nhiều lần.", "D. Bệnh nhân bị nhiễm HIV.", "E. Bệnh nhân chưa được truyền máu lần nào."],
+    answer: ["B. Bệnh nhân đã được tiêm huyết thanh ngựa (SAT)."] // Có thể gây phản ứng miễn dịch với protein lạ.
+  },
+  {
+    type: "single",
+    question: "Câu 63: Một người bị tai nạn ô tô, được đưa vào cấp cứu tại trạm y tế xã ngay gần nơi xảy ra tai nạn trong tình trạng choáng nặng, khám thấy phản ứng thành bụng rõ và có dấu hiệu gãy xương đùi phải. Hãy chọn một xét nghiệm cần làm ngay:",
+    options: ["A. Đếm số lượng hồng cầu.", "B. Hematocrit.", "C. Xác định nhóm máu ABO.", "D. Định lượng huyết cầu tố.", "E. Đếm số lượng tiểu cầu."],
+    answer: ["C. Xác định nhóm máu ABO."]
+  },
+  {
+    type: "single",
+    question: "Câu 64: Sự nguy hiểm của truyền máu có thể do các nguyên nhân sau đây, trừ:",
+    options: ["A. Truyền nhầm nhóm máu thuộc hệ thống nhóm máu ABO.", "B. Truyền máu Rh+ cho người Rh- lần thứ 2.", "C. Truyền máu không đảm bảo chất lượng.", "D. Truyền máu với khối lượng và tốc độ lớn", "E. Truyền máu Rh- cho người Rh+ lần thứ 2"],
+    answer: ["E. Truyền máu Rh- cho người Rh+ lần thứ 2"] // Truyền Rh- cho Rh+ thường không nguy hiểm.
+  },
+  {
+    type: "single",
+    question: "Câu 65: Một người đàn ông có nhóm máu A, có 2 người con. Khi xét nghiệm thấy huyết tương của một trong hai người con làm ngưng kết hồng cầu của người bố, còn huyết tương người kia không gây ngưng kết. Kết luận:",
+    options: ["A. Bố có kiểu gen đồng hợp tử nhóm A và mẹ có kiểu gen đồng hợp tử nhóm B.", "B. Bố có kiểu gen đồng hợp tử nhóm A và mẹ có kiểu gen dị hợp tử nhóm B.", "C. Bố có kiểu gen dị hợp tử nhóm A và mẹ có kiểu gen đồng hợp tử nhóm B.", "D. Bố có kiểu gen đồng hợp tử nhóm A và mẹ có nhóm máu O."],
+    answer: ["C. Bố có kiểu gen dị hợp tử nhóm A và mẹ có kiểu gen đồng hợp tử nhóm B."] // Nếu bố dị hợp (IAi) và mẹ đồng hợp B (IBIB), con có thể là IAIB (AB) hoặc IBi (B). Con nhóm AB có huyết tương (chứa anti-B) không ngưng kết HC bố (nhóm A). Con nhóm B có huyết tương (chứa anti-A) ngưng kết HC bố (nhóm A).
+  },
+  {
+    type: "single",
+    question: "Câu 66: Một người đàn ông có nhóm máu A, có hai người con, huyết thanh của một trong 2 người con làm ngưng kết hồng cầu của người đó, còn huyết thanh của người con kia không gây ngưng kết hồng cầu của người bố. Kết luận:",
+    options: ["A. Người bố phải là đồng hợp tử nhóm A.", "B. Người con phải là con của 2 người đàn bà khác nhau.", "C. Người con “gây ngưng kết” có thể là nhóm O.", "D. Mẹ của người con “gây ngưng kết” phải là nhóm O.", "E. Người con “không gây ngưng kết” có thể mang nhóm máu B."],
+    answer: ["C. Người con “gây ngưng kết” có thể là nhóm O."] // Nếu bố nhóm A (IAi) và con nhóm O (ii), huyết thanh con (chứa anti-A, anti-B) sẽ ngưng kết HC bố.
+  },
+  {
+    type: "single",
+    question: "Câu 67: Về hệ thống nhóm máu Rh:",
+    options: ["A. Người Rh- có kháng nguyên Rh- trên màng hồng cầu.", "B. Anti Rh có trong huyết tương từ khi mới sinh.", "C. Người bố Rh+ dị hợp tử sẽ có < 50% con là Rh+.", "D. Nếu mẹ Rh- lấy bố Rh+ tiên lượng sẽ xấu hơn mẹ Rh+ lấy bố Rh-.", "E. Tai biến truyền máu Rh+ nhiều lần cho người Rh- sẽ nguy hiểm hơn so với tai biến do truyền nhầm nhóm máu ABO."],
+    answer: ["D. Nếu mẹ Rh- lấy bố Rh+ tiên lượng sẽ xấu hơn mẹ Rh+ lấy bố Rh-."]
+  },
+  {
+    type: "single",
+    question: "Câu 68: Một phụ nữ có nhóm máu Rh(-) chưa từng bị truyền máu thì:",
+    options: ["A. Không được nhận máu của người Rh(+) vì sẽ sinh ra anti Rh.", "B. Không được nhận máu của người Rh(+) nếu đang mang thai nhi có nhóm máu Rh (+).", "C. Không được truyền bất kỳ loại máu nào.", "D. Không kết hôn với người có nhóm máu Rh (+).", "E. Cả A, B, C, D đều sai."],
+    answer: ["B. Không được nhận máu của người Rh(+) nếu đang mang thai nhi có nhóm máu Rh (+)."] // Lần đầu truyền Rh+ cho Rh- chưa nguy hiểm ngay. Nhưng nếu mang thai Rh+ thì nguy hiểm hơn.
+  },
+  {
+    type: "single",
+    question: "Câu 69: Bệnh tan máu ở trẻ sơ sinh:",
+    options: ["A. Đứa trẻ có nhóm máu Rh (+) và mẹ là Rh (-).", "B. Cơ thể mẹ sản xuất yếu tố chống lại yếu tố Rh trên màng hồng cầu của con.", "C. Số lượng hồng cầu của đứa bé giảm nặng.", "D. Người mẹ cần được tiêm anti Rh (RhoGAM) ngay sau khi sinh đứa thứ nhất.", "E. A + B + C + D đều đúng."],
+    answer: ["E. A + B + C + D đều đúng."]
+  },
+  {
+    type: "single",
+    question: "Câu 70: Người có nhóm máu Rh (-) là người: Không có kháng nguyên Rh trên màng hồng cầu nhưng trong huyết tương có anti Rh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Chỉ có anti-Rh khi tiếp xúc với kháng nguyên Rh.
+  },
+  {
+    type: "single",
+    question: "Câu 71: Người có nhóm máu Rh (-) là người: Có bộ gen là ccddee.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Dựa theo kiểu gen thường dùng.
+  },
+  {
+    type: "single",
+    question: "Câu 72: Người có nhóm máu Rh (-) là người: Không được nhận máu của người Rh+ ngay từ lần đầu tiên.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Lần đầu thường chưa nguy hiểm ngay lập tức.
+  },
+  {
+    type: "single",
+    question: "Câu 73: Người có nhóm máu Rh (-) là người: Không được nhận máu của người có nhóm máu O.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Nhóm O Rh- là nhóm cho được cho tất cả các nhóm máu khác.
+  },
+  {
+    type: "single",
+    question: "Câu 74: Người có nhóm máu Rh (-) là người: Không được kết hôn với người có nhóm máu Rh (+).",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Có thể kết hôn nhưng cần tư vấn y tế.
+  },
+  {
+    type: "single",
+    question: "Câu 75: Người có nhóm máu Rh (+) là người: Có yếu tố Rh trên màng hồng cầu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 76: Người có nhóm máu Rh (+) là người: Thường có kháng nguyên D trên màng hồng cầu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Kháng nguyên D là kháng nguyên quan trọng nhất của hệ Rh.
+  },
+  {
+    type: "single",
+    question: "Câu 77: Người có nhóm máu Rh (+) là người: Không được cho máu người Rh (-).",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Người Rh+ có thể cho người Rh+. Người Rh- chỉ nhận Rh-.
+  },
+  {
+    type: "single",
+    question: "Câu 78: Người có nhóm máu Rh (+) là người: Không được nhận máu của người có nhóm máu O.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Người nhóm O có thể cho nhóm A, B, AB, O. O Rh- cho tất cả.
+  },
+  {
+    type: "single",
+    question: "Câu 79: Người có nhóm máu Rh (+) là người: Không được kết hôn với người có nhóm máu Rh (-).",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Có thể kết hôn.
+  },
+  {
+    type: "single",
+    question: "Câu 80: Bạch cầu nào không phải là bạch cầu hạt:",
+    options: ["A. Trung tính", "B. Ưa base", "C. Lympho", "D. Ưa acid", "E. Cả A + B + C + D đều là bạch cầu hạt."],
+    answer: ["C. Lympho"] // Lympho và Mono là bạch cầu không hạt.
+  },
+  {
+    type: "single",
+    question: "Câu 81: Về nguồn gốc bạch cầu: Tế bào gốc biệt hoá dòng bạch cầu có nguồn gốc chung với hồng cầu và tiểu cầu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Tế bào gốc tạo máu vạn năng.
+  },
+  {
+    type: "single",
+    question: "Câu 82: Về nguồn gốc bạch cầu: Bạch cầu mono có nguồn gốc từ các đại thực bào mô biệt hoá tại tuỷ xương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Mono biệt hóa thành đại thực bào *tại mô*, nguồn gốc từ tủy xương.
+  },
+  {
+    type: "single",
+    question: "Câu 83: Về nguồn gốc bạch cầu: Bạch cầu lympho T được biệt hoá ở tuỷ xương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Biệt hóa ở tuyến ức (Thymus).
+  },
+  {
+    type: "single",
+    question: "Câu 84: Về nguồn gốc bạch cầu: Tương bào là tế bào có nguồn gốc từ bạch cầu lympho B.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 85: Về nguồn gốc bạch cầu: Bạch cầu lympho B được biệt hoá ở tuỷ xương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Biệt hóa ở tủy xương (Bone marrow).
+  },
+  {
+    type: "single",
+    question: "Câu 86: Số lượng bạch cầu trong máu ngoại vi: Tăng khi cơ thể bị nhiễm khuẩn cấp.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 87: Số lượng bạch cầu trong máu ngoại vi: Tăng khi dùng corticoid.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Corticoid làm giảm bạch cầu ái toan, ái kiềm, lympho, mono, nhưng *tăng* bạch cầu trung tính. Câu hỏi chung chung, có thể gây hiểu lầm. Dựa theo key B.
+  },
+  {
+    type: "single",
+    question: "Câu 88: Số lượng bạch cầu trong máu ngoại vi: Giảm khi dùng chloramphenicol.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Có thể gây suy tủy.
+  },
+  {
+    type: "single",
+    question: "Câu 89: Số lượng bạch cầu trong máu ngoại vi: Giảm khi bị nhiễm tia xạ.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 90: Số lượng bạch cầu trong máu ngoại vi: Ở người Việt Nam bình thường là 8 G/l máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Khoảng 4-10 G/l, 8 G/l nằm trong giới hạn bình thường.
+  },
+  {
+    type: "single",
+    question: "Câu 91: Khi xảy ra quá trình viêm:",
+    options: ["A. Bạch cầu hạt trung tính có mặt ngay sau vài phút", "B. Đại thực bào mô là những tế bào trưởng thành có thể bắt đầu ngay quá trình thực bào.", "C. Tăng huy động bạch cầu trung tính từ tuỷ xương và các kho dự trữ", "D. Bạch cầu mono tập trung nhanh chóng tại vùng viêm", "E. Đáp ứng của bạch cầu hạt trung tính và đại thực bào với quá trình viêm thông qua cơ chế điều hoà ngược âm tính."],
+    answer: ["A. Bạch cầu hạt trung tính có mặt ngay sau vài phút"]
+  },
+  {
+    type: "single",
+    question: "Câu 92: Hiện tượng nào trong phản ứng viêm xảy ra đầu tiên khi có vi khuẩn xâm nhập qua da:",
+    options: ["A. Lympho B được hoạt hóa sản xuất kháng thể đặc hiệu", "B. Histamin được giải phóng gây giãn mạch, tăng tính thấm thành mạch", "C. Thực bào bởi bạch cầu đa nhân trung tính và đại thực bào với sự hoạt hóa của hệ thống bổ thể", "D. Các đại thực bào xuyên mạch và hóa ứng động tới vùng bị nhiễm khuẩn", "E. Opsonin hóa"],
+    answer: ["C. Thực bào bởi bạch cầu đa nhân trung tính và đại thực bào với sự hoạt hóa của hệ thống bổ thể"] // Dựa theo key C. Tuy nhiên, giãn mạch do histamin thường xảy ra rất sớm.
+  },
+  {
+    type: "single",
+    question: "Câu 93: Trong quá trình đáp ứng miễn dịch:",
+    options: ["A. Các đại thực bào có vai trò đặc biệt trong việc khởi động quá trình miễn dịch.", "B. Bạch cầu lympho B có chức năng miễn dịch tế bào.", "C. Các cytokin do lympho B tiết ra sẽ \"khuếch đại\" tác dụng phá huỷ kháng nguyên lên nhiều lần.", "D. Bạch cầu lympho T có chức năng miễn dịch dịch thể.", "E. Các kháng thể do lympho T sản xuất ra sẽ tác dụng trực tiếp lên kháng nguyên hoặc thông qua hệ thống bổ thể để tiêu diệt kháng nguyên."],
+    answer: ["A. Các đại thực bào có vai trò đặc biệt trong việc khởi động quá trình miễn dịch."] // Đại thực bào là tế bào trình diện kháng nguyên (APC).
+  },
+  {
+    type: "single",
+    question: "Câu 94: Loại tế bào không có khả năng thực bào là:",
+    options: ["A. Bạch cầu trung tính trong máu và mô", "B. Bạch cầu mono trong máu", "C. Đại thực bào mô", "D. Tế bào Kupffer", "E. Bạch cầu lympho trong máu"],
+    answer: ["E. Bạch cầu lympho trong máu"]
+  },
+  {
+    type: "single",
+    question: "Câu 95: Tế bào di động đầu tiên đến nơi có vật lạ xâm nhập là:",
+    options: ["A. Bạch cầu đa nhân trung tính", "B. Bạch cầu mono", "C. Đại thực bào", "D. Bạch cầu ưa base", "E. Bạch cầu lympho"],
+    answer: ["A. Bạch cầu đa nhân trung tính"]
+  },
+  {
+    type: "single",
+    question: "Câu 96: Các enzyme và những thành phần tham gia trực tiếp vào quá trình thực bào nằm trong:",
+    options: ["A. Nhân", "B. Ty thể", "C. Lưới nội sinh chất", "D. Lysosom", "E. Bộ máy Golgi"],
+    answer: ["D. Lysosom"]
+  },
+  {
+    type: "single",
+    question: "Câu 97: Về chức năng của bạch cầu: Bạch cầu đa nhân trung tính là loại bạch cầu duy nhất có khả năng hoá ứng động và xuyên mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Mono/Đại thực bào cũng có khả năng này.
+  },
+  {
+    type: "single",
+    question: "Câu 98: Về chức năng của bạch cầu: Khả năng thực bào của bạch cầu ưa acid lớn hơn bạch cầu ưa base",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 99: Về chức năng của bạch cầu: Bạch cầu ưa acid và bạch cầu ưa base đều tăng trong những bệnh dị ứng.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Ưa acid tăng trong dị ứng, ưa base chứa histamin liên quan dị ứng nhưng số lượng không nhất thiết tăng. Key B.
+  },
+  {
+    type: "single",
+    question: "Câu 100: Về chức năng của bạch cầu: Bạch cầu trung tính và mono là những tế bào trình diện kháng nguyên.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Đại thực bào (từ mono), tế bào đuôi gai, lympho B là APC.
+  },
+  {
+    type: "single",
+    question: "Câu 101: Bạch cầu lympho T tham gia vào đáp ứng miễn dịch đặc hiệu của cơ thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 102: Bạch cầu hạt trung tính có đặc tính sau:",
+    options: ["A. Có khả năng khử độc protein lạ.", "B. Có khả năng bám mạch và xuyên mạch.", "C. Mỗi bạch cầu trung tính có khả năng thực bào khoảng 100 vi khuẩn.", "D. Có khả năng giải phóng ra plaminogen.", "E. Có khả năng giải phóng héparine vào máu."],
+    answer: ["B. Có khả năng bám mạch và xuyên mạch."]
+  },
+  {
+    type: "single",
+    question: "Câu 103: Bạch cầu trung tính tăng trong các trường hợp sau:",
+    options: ["A. Bị nhiễm độc kim loại nặng như: chì.", "B. Bị các bệnh nhiễm khuẩn cấp tính.", "C. Bị nhiễm virus.", "D. Bị các bệnh ký sinh trùng.", "E. Khi dùng các loại corticoid."],
+    answer: ["B. Bị các bệnh nhiễm khuẩn cấp tính."]
+  },
+  {
+    type: "single",
+    question: "Câu 104: Các chức năng sau là của bạch cầu hạt ưa acid, trừ:",
+    options: ["A. Giải phóng những dạng oxy hoạt động có thể giết ký sinh trùng.", "B. Giải phóng ra một polypeptid giết ký sinh trùng là MBP.", "C. Giải phóng ra chất gây hoá ứng động với bạch cầu ưa base", "D. Giải phóng ra histaminase để khử hoạt histamin do bạch cầu ưa base giải phóng.", "E. Giải phóng enzym thuỷ phân từ các hạt của tế bào."],
+    answer: ["C. Giải phóng ra chất gây hoá ứng động với bạch cầu ưa base"] // Ưa acid giảm viêm, ưa base tăng viêm. Khó gây hóa ứng động cho nhau.
+  },
+  {
+    type: "single",
+    question: "Câu 105: Bạch cầu ưa base có thể:",
+    options: ["A. Tiêu hoá dị nguyên trực tiếp.", "B. Gây hoá ứng động âm tính với bạch cầu ưa acid.", "C. Hạn chế các biểu hiện của dị ứng, viêm.", "D. Được hoạt hoá bởi sự kết hợp của dị nguyên và IgG trên bề mặt.", "E. Được hoạt hoá bởi sự kết hợp của dị nguyên và IgE trên bề mặt tế bào."],
+    answer: ["E. Được hoạt hoá bởi sự kết hợp của dị nguyên và IgE trên bề mặt tế bào."]
+  },
+  {
+    type: "single",
+    question: "Câu 106: Bạch cầu lymphoB tham gia vào đáp ứng miễn dịch đặc hiệu của cơ thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Miễn dịch dịch thể.
+  },
+  {
+    type: "single",
+    question: "Câu 107: Về đáp ứng miễn dịch tế bào: Do bạch cầu lympho T đảm nhiệm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 108: Về đáp ứng miễn dịch tế bào được khởi động bằng sự trình diện kháng nguyên của các loại bạch cầu khác trong máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Trình diện KN bởi APC (đại thực bào, TB đuôi gai, lympho B)
+  },
+  {
+    type: "single",
+    question: "Câu 109: Về đáp ứng miễn dịch tế bào: Tiêu diệt ngay kháng nguyên bằng các tế bào T độc.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 110: Về đáp ứng miễn dịch tế bào: Tế bào T hỗ trợ hoạt hoá đáp ứng miễn dịch một cách toàn diện nhất.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // T helper kích hoạt cả T độc và B.
+  },
+  {
+    type: "single",
+    question: "Câu 111: Về đáp ứng miễn dịch tế bào: Chỉ có tác dụng tiêu diệt yếu tố gây bệnh ở lần xâm nhập đầu tiên.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Có tế bào T nhớ.
+  },
+  {
+    type: "single",
+    question: "Câu 112: Về đáp ứng miễn dịch dịch thể: Do bạch cầu lympho B đảm nhiệm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 113: Về đáp ứng miễn dịch dịch thể: Được khởi động bằng sự kết hợp kháng nguyên với kháng thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 114: Về đáp ứng miễn dịch dịch thể: Các tương bào sản xuất các kháng thể IgG, M, A, E, D tiêu diệt trực tiếp kháng nguyên.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Kháng thể không tiêu diệt trực tiếp mà thông qua các cơ chế khác (ngưng kết, kết tủa, opsonin hóa, hoạt hóa bổ thể...) hoặc đánh dấu để tế bào khác tiêu diệt. Dựa theo key A, có thể hiểu là tiêu diệt thông qua các cơ chế đó.
+  },
+  {
+    type: "single",
+    question: "Câu 115: Về đáp ứng miễn dịch dịch thể: Các sản phẩm hoạt hoá của bổ thể chỉ có tác dụng kích thích tương bào sản xuất kháng thể.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Bổ thể có nhiều chức năng khác như tiêu diệt trực tiếp VK, hóa ứng động...
+  },
+  {
+    type: "single",
+    question: "Câu 116: Về đáp ứng miễn dịch dịch thể: Tác dụng tiêu diệt yếu tố gây bệnh ở lần xâm nhập thứ hai nhanh và mạnh hơn lần thứ nhất rất nhiều.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Đáp ứng miễn dịch thứ phát.
+  },
+  {
+    type: "single",
+    question: "Câu 117: Chức năng của bạch cầu lympho B:",
+    options: ["A. Sản xuất kháng thể dịch thể vào máu.", "B. Biệt hoá thành tương bào - các tương bào sản xuất kháng thể.", "C. Biệt hoá thành nguyên bào lympho -> nguyên tương bào -> các tương bào sản xuất kháng thể", "D. Hoạt hoá bạch cầu lympho T."],
+    answer: ["C. Biệt hoá thành nguyên bào lympho -> nguyên tương bào -> các tương bào sản xuất kháng thể"] // Mô tả quá trình biệt hóa chi tiết nhất.
+  },
+  {
+    type: "single",
+    question: "Câu 118: Lympho B",
+    options: ["A. Bài tiết kháng thể vào máu và dịch bạch huyết", "B. Tạo ra đáp ứng miễn dịch tế bào", "C. Tấn công tế bào nhiễm virus, nấm và tế bào ung thư", "D. Có nguồn gốc biệt hóa từ tuyến ức", "E. Phải xâm nhập vào bên trong tế bào rồi phá hủy chúng"],
+    answer: ["A. Bài tiết kháng thể vào máu và dịch bạch huyết"]
+  },
+  {
+    type: "single",
+    question: "Câu 119: Chức năng của các kháng thể dịch thể là:",
+    options: ["A. Nhận biết kháng nguyên đặc hiệu.", "B. Kết hợp với kháng nguyên đặc hiệu tạo phức hợp KN-KT.", "C. Tấn công trực tiếp kháng nguyên bằng phản ứng ngưng kết, trung hoà, kết tủa, làm vỡ tế bào...", "D. Hoạt hoá hệ thống bổ thể.", "E. Cả A, B, C, D."],
+    answer: ["E. Cả A, B, C, D."]
+  },
+  {
+    type: "single",
+    question: "Câu 120: Immunoglobulin không có trong huyết thanh là",
+    options: ["A. IgA", "B. IgB", "C. IgD", "D. IgE", "E. IgM"],
+    answer: ["B. IgB"] // Không tồn tại IgB.
+  },
+  {
+    type: "single",
+    question: "Câu 121: Phân tử immunoglobulin tham gia vào các phản ứng dị ứng là:",
+    options: ["A. IgA", "B. IgB", "C. IgD", "D. IgE", "E. IgM"],
+    answer: ["D. IgE"]
+  },
+  {
+    type: "single",
+    question: "Câu 122: Tế bào T độc (T giết) không có đặc tính sau:",
+    options: ["A. Mang phân tử kháng nguyên bề mặt là CD8", "B. Có khả năng tiêu diệt vật lạ trong khoảng cách xa thông qua việc bài tiết kháng thể", "C. Bài tiết perforin và enzym tiêu diệt vật lạ", "D. Những phần tế bào tổn thương bị phá hủy tham gia vào quá trình chết tự nhiên", "E. Tiêu diệt cả những tế bào bị tổn thương bới các tế bào phá hủy trung gian"],
+    answer: ["B. Có khả năng tiêu diệt vật lạ trong khoảng cách xa thông qua việc bài tiết kháng thể"] // T độc tiêu diệt trực tiếp khi tiếp xúc, và không bài tiết kháng thể (do tương bào/lympho B bài tiết).
+  },
+  {
+    type: "single",
+    question: "Câu 123: Lympho T không có đặc điểm",
+    options: ["A. Chống lại nhiễm nấm và virus", "B. Kích thích trực tiếp tạo kháng thể", "C. Đào thải mô ghép", "D. Chống lại tế bào ung thư", "E. A + B + C + D đều là chức năng của lympho T"],
+    answer: ["B. Kích thích trực tiếp tạo kháng thể"] // T hỗ trợ gián tiếp kích thích B tạo kháng thể, nhưng T độc không làm điều này. Tự lympho T không tạo kháng thể.
+  },
+  {
+    type: "single",
+    question: "Câu 124: Chất do lympho T bài tiết có tác dụng tự điều hòa còn được gọi là:",
+    options: ["A. interleukin", "B. interferon", "C. lymphokin", "D. Kháng thể"],
+    answer: ["C. lymphokin"] // Lymphokin là tên gọi chung cho các cytokin do lympho bào sản xuất. Interleukin và interferon là các loại cytokin.
+  },
+  {
+    type: "single",
+    question: "Câu 125: Hai loại tế bào có tác dụng trình diện kháng nguyên là đại thực bào và:",
+    options: ["A. Tế bào ít đuôi gai", "B. Lympho B", "C. Tiểu cầu", "D. Bạch cầu trung tính", "E. Tế bào mast"],
+    answer: ["B. Lympho B"] // Đại thực bào và Lympho B là APC. Tế bào đuôi gai cũng là APC. Dựa theo options, B là phù hợp.
+  },
+  {
+    type: "single",
+    question: "Câu 126: Phân tử bề mặt đòi hỏi rất phù hợp giữa người cho và người nhận mô được gọi là",
+    options: ["A. Kháng nguyên hòa hợp mô", "B. lymphokin", "C. interleukin", "D. interferon", "E. Kháng thể"],
+    answer: ["A. Kháng nguyên hòa hợp mô"] // MHC (Major Histocompatibility Complex).
+  },
+  {
+    type: "single",
+    question: "Câu 127: Chức năng của bạch cầu lympho T hỗ trợ là:",
+    options: ["A. Kích thích sự tăng trưởng và tăng sinh các loại lympho T cảm ứng.", "B. Kích thích sự tăng trưởng và biệt hoá lymphoB thành tương bào sản xuất kháng thể.", "C. Hoạt hoá hệ thống đại thực bào.", "D. Hoạt hoá hệ thống bổ thể.", "E. Cả A,B,C,D."],
+    answer: ["E. Cả A,B,C,D."] // T helper đóng vai trò trung tâm. Hoạt hóa bổ thể thường do kháng thể, nhưng T helper có thể gián tiếp ảnh hưởng. Dựa theo key E.
+  },
+  {
+    type: "single",
+    question: "Câu 128: Tế bào T độc có các chức năng sau đây, trừ:",
+    options: ["A. Kết hợp kháng nguyên đặc hiệu.", "B. Trình diện kháng nguyên.", "C. Bài tiết perforin tạo lỗ trên màng tế bào bị tấn công.", "D. Tiêu diệt virus.", "E. Tiêu diệt tế bào ung thư."],
+    answer: ["B. Trình diện kháng nguyên."]
+  },
+  {
+    type: "single",
+    question: "Câu 129: Đại thực bào có khả năng:",
+    options: ["A. Thực bào mạnh do vậy quan trọng hơn bạch cầu đa nhân trung tính.", "B. Tiêu diệt vật lạ ngay trong máu.", "C. Tiêu hoá vật lạ và trình diện các sản phẩm có tính kháng nguyên cho tương bào.", "D. Bài tiết interleukin 1.", "E. Bài tiết IgG, M."],
+    answer: ["D. Bài tiết interleukin 1."] // Interleukin 1 (nay gọi là IL-1) do đại thực bào bài tiết, kích hoạt T helper.
+  },
+  {
+    type: "single",
+    question: "Câu 130: Tại mô viêm, bạch cầu mono được hoạt hóa thành đại thực bào để:",
+    options: ["A. Tiêu hủy những mảnh nhỏ và những vi sinh trong dịch ngoại bào", "B. Thực bào những mảnh nhỏ của dịch ngoại bào", "C. Tạo nitric oxid (NO) để phá hủy vi khuẩn", "D. Giải phóng enzym của lysosom để phá hủy mô viêm", "E. Tất cả A + B + C + D đều đúng"],
+    answer: ["E. Tất cả A + B + C + D đều đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 131: Các đại thực bào mô có ở các vị trí sau, trừ:",
+    options: ["A. Phổi", "B. Gan", "C. Lách", "D. Thận", "E. Hạch bạch huyết"],
+    answer: ["D. Thận"] // Có đại thực bào ở thận nhưng không điển hình bằng các cơ quan khác. Dựa theo key D.
+  },
+  {
+    type: "single",
+    question: "Câu 132: Tế bào máu có đời sống ngắn nhất là:",
+    options: ["A. Tiểu cầu", "B. Hồng cầu", "C. Bạch cầu hạt", "D. Lympho", "E. Mono"],
+    answer: ["A. Tiểu cầu"] // Tiểu cầu ~7-10 ngày, Bạch cầu hạt (Neutrophil) vài giờ đến vài ngày, Lympho/Mono có thể sống lâu hơn.
+  },
+  {
+    type: "single",
+    question: "Câu 133: Viêm tại chỗ không có biểu hiện:",
+    options: ["A. Đỏ", "B. Nóng", "C. Sưng", "D. Mủ", "E. A + B + C + D đều là biểu hiện của viêm"],
+    answer: ["E. A + B + C + D đều là biểu hiện của viêm"] // Đỏ, nóng, sưng là 3 dấu hiệu kinh điển. Mủ (chứa bạch cầu chết, VK) là biểu hiện thường gặp của viêm nhiễm trùng.
+  },
+  {
+    type: "single",
+    question: "Câu 134: Loại tế bào T bị tấn công khi nhiễm HIV là:",
+    options: ["A. T hỗ trợ", "B. T ức chế", "C. T độc", "D. Tế bào giết"],
+    answer: ["A. T hỗ trợ"] // Cụ thể là CD4+ T helper cells.
+  },
+  {
+    type: "single",
+    question: "Câu 135: Nhận xét về tiểu cầu:",
+    options: ["A. Tích điện dương rất mạnh.", "B. Được tạo từ tế bào khổng lồ nên có nhân rất lớn.", "C. Chứa plasminogen.", "D. Làm co cục máu không hoàn toàn.", "E. Có khả năng kết dính, kết tụ và giải phóng nhiều hoạt chất trong tiểu cầu."],
+    answer: ["E. Có khả năng kết dính, kết tụ và giải phóng nhiều hoạt chất trong tiểu cầu."]
+  },
+  {
+    type: "single",
+    question: "Câu 136: Nhận xét nào sau đây về tiểu cầu không đúng:",
+    options: ["A. Chúng có đời sống khoảng 120 ngày", "B. Kích thước nhỏ, đa dạng, được tạo ra từ các megakaryocyte", "C. Có vai trò bài tiết chất co mạch trong cầm máu.", "D. Phospholipid tiểu cầu có tác dụng hoạt hóa các yếu tố đông máu.", "E. Tiểu cầu không nhân, có khả năng chuyển động."],
+    answer: ["A. Chúng có đời sống khoảng 120 ngày"] // Đời sống khoảng 7-10 ngày.
+  },
+  {
+    type: "single",
+    question: "Câu 137: Tiểu cầu: Là những tế bào nguyên vẹn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Là mảnh vỡ tế bào từ mẫu tiểu cầu (megakaryocyte).
+  },
+  {
+    type: "single",
+    question: "Câu 138: Tiểu cầu: Có màng tích điện âm mạnh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Điều này giúp chúng không dính vào nội mô bình thường.
+  },
+  {
+    type: "single",
+    question: "Câu 139: Tiểu cầu: Có số lượng bình thường từ 200-300 G/l máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // 150-400 G/l là bình thường. 200-300 nằm trong giới hạn.
+  },
+  {
+    type: "single",
+    question: "Câu 140: Tiểu cầu: Có chứa thrombosthenin, actin và myosin làm co cục máu đông",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 141: Tiểu cầu: Là một cấu trúc hoạt động chứa tất cả các yếu tố đông máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Chứa một số yếu tố, không phải tất cả.
+  },
+  {
+    type: "single",
+    question: "Câu 142: Co mạch: Là phản xạ do xung động đau xuất phát từ vị trí thành mạch tổn thương.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Phản xạ thần kinh.
+  },
+  {
+    type: "single",
+    question: "Câu 143: Co mạch: Do tiểu cầu bài tiết serotonin và prostaglandin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Serotonin và Thromboxane A2.
+  },
+  {
+    type: "single",
+    question: "Câu 144: Co mạch: Do tiểu cầu bài tiết serotonin và thromboxan A2.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 145: Co mạch: Do sự xuất hiện điện thế hoạt động tại nơi tổn thương gây co cơ trơn thành mạch.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Tăng Ca2+ nội bào gây co.
+  },
+  {
+    type: "single",
+    question: "Câu 146: Co mạch: Càng mạnh khi tổn thương thành mạch càng lớn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 147: Hiện tượng nào không xảy ra trong quá trình cầm máu:",
+    options: ["A. Thành mạch tổn thương, bộc lộ lớp collagen dưới nội mô", "B. Các chất gây co mạch được giải phóng", "C. Tiểu cầu kết dính – kết tụ vào nơi tổn thương.", "D. Một mạng lưới fibrin đan xem với nút tiểu cầu", "E. A + B + C + D đều đúng"],
+    answer: ["E. A + B + C + D đều đúng"] // Tất cả đều xảy ra trong cầm máu.
+  },
+  {
+    type: "single",
+    question: "Câu 148: Lớp nội mô khi khi tổn thương bài tiết hai chất tham gia vào cầm máu là: prostacyclin và__________.",
+    options: ["A. serotonin", "B. von Willebrand", "C. ADP", "D. thromboxane A2", "E. Không có chất nào kể trên"],
+    answer: ["B. von Willebrand"] // Von Willebrand giúp tiểu cầu bám dính vào collagen. Prostacyclin (PGI2) là chất chống kết tụ tiểu cầu, được bài tiết bởi nội mô lành, không phải nội mô tổn thương để cầm máu. Câu hỏi có thể gây nhầm lẫn. Dựa theo key B.
+  },
+  {
+    type: "single",
+    question: "Câu 149: Sự tạo thành nút tiểu cầu: Sẽ bịt kín mọi tổn thương và làm máu ngừng chảy.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Chỉ bịt kín vết thương nhỏ, cần cục máu đông cho vết thương lớn hơn.
+  },
+  {
+    type: "single",
+    question: "Câu 150: Sự tạo thành nút tiểu cầu: Được đánh giá bằng xét nghiệm thời gian máu chảy.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 151: Sự tạo thành nút tiểu cầu: Sẽ kéo dài khi số lượng tiểu cầu giảm < 150G/l máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 152: Sự tạo thành nút tiểu cầu: Không xảy ra khi không có yếu tố von Willerbrand.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 153: Sự tạo thành nút tiểu cầu: Bị ức chế bởi aspirin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Aspirin ức chế Thromboxane A2.
+  },
+  {
+    type: "single",
+    question: "Câu 154: Chất gây kết tụ tiểu cầu là:",
+    options: ["A. Prostacyclin", "B. NO", "C. Thromboxan A2", "D. Aspyrin"],
+    answer: ["C. Thromboxan A2"]
+  },
+  {
+    type: "single",
+    question: "Câu 155: Tiểu cầu khi hoạt hoá có các chức năng sau, trừ:",
+    options: ["A. Co mạch.", "B. Hình thành nút tiểu cầu.", "C. Ổn định lưới fibrin.", "D. Co cục máu đông.", "E. Giải phóng yếu tố XII, XI, IX."],
+    answer: ["E. Giải phóng yếu tố XII, XI, IX."] // Tiểu cầu cung cấp bề mặt phospholipid và giải phóng một số yếu tố, nhưng XII, XI, IX chủ yếu là yếu tố huyết tương.
+  },
+  {
+    type: "single",
+    question: "Câu 156: Ion Ca có vai trò:",
+    options: ["A. Hoạt hoá yếu tố XII.", "B. Tham gia tạo protrombinase.", "C. Hoạt hoá yếu tố V.", "D. Biến fibrin đơn phân trở thành fibrin trùng hợp không ổn định.", "E. Tan cục máu đông."],
+    answer: ["B. Tham gia tạo protrombinase."] // Ca2+ cần thiết cho nhiều bước, bao gồm hoạt hóa X và V để tạo prothrombinase.
+  },
+  {
+    type: "single",
+    question: "Câu 157: Quá trình đông máu: Là do sự hoạt hoá các yếu tố đông máu có sẵn trong máu, mô và tiểu cầu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 158: Quá trình đông máu: Theo con đường ngoại sinh xảy ra chậm và yếu hơn con đường nội sinh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Ngoại sinh nhanh và mạnh hơn.
+  },
+  {
+    type: "single",
+    question: "Câu 159: Quá trình đông máu: Ion Ca2+ tham gia vào hầu hết các giai đoạn của quá trình cầm máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Ca2+ cần cho đông máu (giai đoạn 2 và 3) và co cục máu đông, nhưng không phải toàn bộ quá trình cầm máu (co mạch, tạo nút tiểu cầu).
+  },
+  {
+    type: "single",
+    question: "Câu 160: Quá trình đông máu: Sự ổn định fibrin là do yếu tố XIII được yếu tố XII hoạt hoá.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Yếu tố XIII được trombin hoạt hóa.
+  },
+  {
+    type: "single",
+    question: "Câu 161: Quá trình đông máu: Thời gian đông máu bình thường là 7 phút.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Thời gian đông máu (Lee-White) khoảng 5-15 phút. 7 phút nằm trong giới hạn.
+  },
+  {
+    type: "single",
+    question: "Câu 162: Quá trình đông máu: Liên quan chặt chẽ đến chức năng của gan và vitamin E.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Gan và vitamin K.
+  },
+  {
+    type: "single",
+    question: "Câu 163: Quá trình đông máu: Tự phát động theo con đường nội sinh khi bị shock nhiễm khuẩn.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Có thể gây đông máu nội mạch rải rác (DIC).
+  },
+  {
+    type: "single",
+    question: "Câu 164: Quá trình đông máu: Bị rối loạn trầm trọng khi có quá nhiều mô trong cơ thể bị hoại tử.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Mô hoại tử giải phóng tromboplastin mô (yếu tố III) kích hoạt con đường ngoại sinh.
+  },
+  {
+    type: "single",
+    question: "Câu 165: Quá trình đông máu: Cục máu đông co lại dưới tác dụng của plasmin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Cục máu đông co lại do thrombosthenin trong tiểu cầu. Plasmin làm tan cục máu đông.
+  },
+  {
+    type: "single",
+    question: "Câu 166: Quá trình đông máu: Sẽ không thể tiếp tục khi plasminogen được hoạt hoá thành plasmin.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Plasmin làm tan fibrin, do đó ngăn cản cục máu đông hình thành hoặc làm tan cục đã có.
+  },
+  {
+    type: "single",
+    question: "Câu 167: Ion tham gia nhiều nhất vào quá trình đông máu là:",
+    options: ["A. Na+.", "B. Ca2+.", "C. K+.", "D. H+.", "E. Fe3+."],
+    answer: ["B. Ca2+."]
+  },
+  {
+    type: "single",
+    question: "Câu 168: Giai đoạn cuối cùng của hình thành cục máu đông là việc chuyển",
+    options: ["A. protrombin thành lưới fibrin ổn định", "B. protrombin thành protrombinase", "C. fibrinogen thành fibrin.", "D. protrombin thành trombin."],
+    answer: ["C. fibrinogen thành fibrin."]
+  },
+  {
+    type: "single",
+    question: "Câu 169: Vitamin chuyển acid glutamic trong cục máu đông thành gamma-carboxyglutamate loại sử dụng Ca2+ trong đông máu là vitamin ____.",
+    options: ["A. K", "B. C", "C. B12", "D. D", "E. A"],
+    answer: ["A. K"] // Vitamin K là cofactor cho carboxylase chuyển glutamic thành gamma-carboxyglutamic acid, cần cho yếu tố II, VII, IX, X gắn Ca2+.
+  },
+  {
+    type: "single",
+    question: "Câu 170: Vai trò của Ca2+ trong đông máu là:",
+    options: ["A. Hoạt hoá yếu tố XII.", "B. Hoạt hoá yếu tố V.", "C. Hoạt hoá yếu tố VII.", "D. Hoạt hoá yếu tố X.", "E. Hoạt hoá yếu tố von Willebrand."],
+    answer: ["D. Hoạt hoá yếu tố X."] // Ca2+ cần cho hoạt hóa yếu tố X và V, VII, IX, và gắn phức hợp enzyme-chất nền vào bề mặt phospholipid. Trong các options, D là chính xác nhất về vai trò hoạt hóa trực tiếp một yếu tố quan trọng.
+  },
+  {
+    type: "single",
+    question: "Câu 171: Một trong số các bệnh sau là do thiếu yếu tố VIII:",
+    options: ["A. Hemophillie A.", "B. Hemophillie B.", "C. Hemophillie C.", "D. Hemophillie D."],
+    answer: ["A. Hemophillie A."]
+  },
+  {
+    type: "single",
+    question: "Câu 172: Đông máu ngoại sinh:",
+    options: ["A. Xảy ra chậm hơn đông máu nội sinh.", "B. Có sự tham gia của yếu tố VIII.", "C. Chỉ xảy ra trong ống nghiệm", "D. Có sự tham gia của phospholipid tiểu cầu.", "E. Được khởi phát bởi tromboplastin do mô tổn thương giải phóng"],
+    answer: ["E. Được khởi phát bởi tromboplastin do mô tổn thương giải phóng"] // Yếu tố III (tromboplastin mô).
+  },
+  {
+    type: "single",
+    question: "Câu 173: Đông máu nội sinh:",
+    options: ["A. Xảy ra nhanh và mạnh hơn so với con đường đông máu ngoại sinh.", "B. Có sự tham gia của yếu tố VII.", "C. Có sự tham gia của yếu tố thromboplastin của mô.", "D. Tiểu cầu được hoạt hoá bởi yếu tố III.", "E. Xảy ra khi máu tiếp xúc với thành ống nghiệm."],
+    answer: ["E. Xảy ra khi máu tiếp xúc với thành ống nghiệm."] // Kích hoạt bởi bề mặt tích điện âm (ống nghiệm thủy tinh) hoặc collagen (in vivo).
+  },
+  {
+    type: "single",
+    question: "Câu 174: Chất có tác dụng hoạt hoá plasminogen thành plasmin là:",
+    options: ["A. Prothombin.", "B. Urokinase.", "C. Thrombosthenin.", "D. Bradykinin.", "E. Heparin."],
+    answer: ["B. Urokinase."] // Urokinase là một chất hoạt hóa plasminogen.
+  },
+  {
+    type: "single",
+    question: "Câu 175: Các chất sau có tác dụng hoạt hoá plasminogen thành plasmin, trừ:",
+    options: ["A. Prothombin.", "B. Urokinase.", "C. Streptokinase.", "D. Yếu tố hoạt hóa plasminogen của mô.", "E. Fibrin."],
+    answer: ["A. Prothombin."] // Prothrombin là tiền chất của thrombin, liên quan đông máu, không phải tan máu.
+  },
+  {
+    type: "single",
+    question: "Câu 176: Chất ức chế sự kết tụ tiểu cầu là:",
+    options: ["A. Glycocalix", "B. ADP", "C. Thromboxan A2", "D. Von Willebrand"],
+    answer: ["A. Glycocalix"] // Glycocalyx trên bề mặt nội mô lành có tích điện âm, ngăn tiểu cầu bám dính. Prostacyclin (PGI2) và NO cũng là chất ức chế kết tụ do nội mô tiết ra. Glycocalyx là cấu trúc bề mặt.
+  },
+  {
+    type: "single",
+    question: "Câu 177: Các chất chống đông: Heparin có tác dụng chống đông trong invivo và invitro do làm bất hoạt trực tiếp các yếu tố đông máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Heparin hoạt động gián tiếp thông qua tăng cường tác dụng của antithrombin III.
+  },
+  {
+    type: "single",
+    question: "Câu 178: Các chất chống đông: Coumarin chỉ được dùng để chống đông trong ống nghiệm.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Coumarin (warfarin) dùng chống đông in vivo.
+  },
+  {
+    type: "single",
+    question: "Câu 179: Các chất chống đông: EDTA là chất chống tạo huyết khối trong cơ thể do làm giảm nồng độ ion Ca2+ trong máu.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // EDTA chỉ dùng chống đông in vitro (trong ống nghiệm).
+  },
+  {
+    type: "single",
+    question: "Câu 180: Các chất chống đông: Thrombomodulin có tác dụng ức chế trombin nên có tác dụng chống đông mạnh.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 181: Các chất chống đông: Streptokinase có thể dùng điều trị nhồi máu cơ tim.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Streptokinase là thuốc tiêu sợi huyết (hoạt hóa plasminogen).
+  },
+  {
+    type: "single",
+    question: "Câu 182: Heparin có tác dụng:",
+    options: ["A. Ức chế các yếu tố đông máu.", "B. Ức chế sự hình thành phức hệ protrombinase.", "C. Ức chế a2-macroglobulin.", "D. Ức chế trombin.", "E. Ức chế protrombin."],
+    answer: ["D. Ức chế trombin."] // Heparin + Antithrombin III ức chế trombin (và một số yếu tố khác).
+  },
+  {
+    type: "single",
+    question: "Câu 183: Cơ chế tác dụng của dicoumarin là:",
+    options: ["A. Ức chế gan tổng hợp yếu tố II, III, VII, IX, X.", "B. Ức chế quá trình đông máu nội sinh trong ống nghiệm.", "C. Ức chế sự hấp thu Vitamin K.", "D. Ức chế gan tổng hợp yếu tố II, VII, IX, X.", "E. Ức chế gan tổng hợp yếu tố II, VII, IX, XI."],
+    answer: ["D. Ức chế gan tổng hợp yếu tố II, VII, IX, X."] // Các yếu tố phụ thuộc vitamin K.
+  },
+  {
+    type: "single",
+    question: "Câu 184: Quá đông máu trong ống nghiệm bị hạn chế hoặc bị ngăn cản khi:",
+    options: ["A. Nhiệt độ của máu tăng đến 37oC.", "B. Cho thêm vào trong máu thromboplastin.", "C. Cho thêm vào trong máu heparin.", "D. Cho thêm vào trong máu citrat calci.", "E. Cho thêm vào trong máu Cephalin và Kaolin"],
+    answer: ["C. Cho thêm vào trong máu heparin."] // Heparin là chất chống đông in vivo và in vitro. Citrat calci thực chất là muối citrat, không phải citrat calci. Citrat gắn với Ca2+ làm mất Ca2+ tự do cần cho đông máu, dùng chống đông in vitro. Option D ghi nhầm thành phần.
+  },
+  {
+    type: "single",
+    question: "Câu 185: Chất nào dưới đây không có tác dụng chống đông máu:",
+    options: ["A. citrate", "B. EDTA", "C. heparin", "D. bradykinin", "E. coumarin"],
+    answer: ["D. bradykinin"] // Bradykinin là peptide gây giãn mạch. Citrate và EDTA gắn Ca2+. Heparin và coumarin là thuốc chống đông.
+  },
+  {
+    type: "single",
+    question: "Câu 186: Các nguyên nhân sau có thể làm giảm quá trình cầm máu, trừ:",
+    options: ["A. Đông máu rải rác trong lòng mạch.", "B. Giảm số lượng tiểu cầu.", "C. Thiếu các yếu tố đông máu.", "D. Xơ vữa động mạch.", "E. Xơ gan."],
+    answer: ["D. Xơ vữa động mạch."] // Xơ vữa ĐM thường làm tăng nguy cơ huyết khối (đông máu).
+  },
+  {
+    type: "single",
+    question: "Câu 187: Để đánh giá giai đoạn cầm máu sơ bộ, các bác sỹ lâm sàng thường dùng các xét nghiệm sau, trừ:",
+    options: ["A. Nghiệm pháp dây thắt.", "B. Xác định thời gian máu chảy.", "C. Đếm số lượng tiểu cầu trực tiếp.", "D. Định lượng từng yếu tố đông máu.", "E. Đo độ tập trung tiểu cầu."],
+    answer: ["D. Định lượng từng yếu tố đông máu."] // Định lượng yếu tố đông máu đánh giá giai đoạn đông máu huyết tương, không phải cầm máu sơ bộ (liên quan tiểu cầu và mạch máu).
+  },
+  {
+    type: "single",
+    question: "Câu 188: Các nguyên nhân sau có thể làm giảm phức hệ protrombinase do thiếu Vitamin K, trừ:",
+    options: ["A. Xơ gan.", "B. Viêm cầu thận.", "C. Tắc ống mật chủ hoàn toàn.", "D. Ăn uống thiếu dầu, mỡ."],
+    answer: ["B. Viêm cầu thận."] // Xơ gan (giảm tổng hợp), tắc mật (giảm hấp thu vit K tan trong dầu), thiếu ăn dầu mỡ (thiếu vit K) đều ảnh hưởng vit K. Viêm cầu thận ít liên quan trực tiếp.
+  },
+  {
+    type: "single",
+    question: "Câu 189: Thiếu vitamin nào sẽ làm thời gian đông máu kéo dài?",
+    options: ["A. A", "B. B", "C. K", "D. D", "E. E"],
+    answer: ["C. K"]
+  },
+  {
+    type: "single",
+    question: "Câu 190: Các nguyên nhân sau có thể làm tăng tạo huyết khối, trừ:",
+    options: ["A. Xơ vữa động mạch.", "B. Đa hồng cầu.", "C. Nhiễm khuẩn.", "D. Suy tim.", "E. Dùng aspirin."],
+    answer: ["E. Dùng aspirin."] // Aspirin là thuốc chống kết tập tiểu cầu, làm giảm đông máu/huyết khối.
+  }
+  // ... (Add more question sets here if available) ...
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
