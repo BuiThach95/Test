@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trắc nghiệm tổng hợp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+
+    .question-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .options, .statements {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .option-card, .statement-block {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .option-card:hover {
+      border-color: #3399ff;
+      background: #eef7ff;
+    }
+
+    .option-card input, .statement-block input {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .statement-text {
+      margin-bottom: 8px;
+    }
+
+    .submit-btn, .next-btn {
+      margin-top: 25px;
+      background: #007BFF;
+      color: white;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-container">
+  <div id="quiz"></div>
+</div>
+
+<script>
+  const questions = [
+  {
+    type: "single",
+    question: "Câu 1: Dịch nội bào là dịch trong bào tương và các bào quan.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 2: Dịch ngoại bào là dịch có ở bên ngoài tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 3: Dịch nội bào là dịch bên trong tế bào.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 4: Dịch ngoại bào là dịch có trong máu, dịch kẽ, dịch bạch huyết.",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 5: Dịch ngoại bào cũng được gọi là nội môi",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"]
+  },
+  {
+    type: "single",
+    question: "Câu 6: Huyết tương là huyết thanh mất đi các yếu tố đông máu",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["B. Sai"] // Huyết thanh là huyết tương mất fibrinogen (một yếu tố đông máu). Huyết tương là máu toàn phần trừ các tế bào máu.
+  },
+  {
+    type: "single",
+    question: "Câu 7: Huyết tương có chức năng sau, trừ:",
+    options: ["A. Vận chuyển chất dinh dưỡng.", "B. Vận chuyển khí.", "C. Vận chuyển kháng thể.", "D. Vận chuyển hormon.", "E. Dự trữ carbohydrat, lipid, protein."],
+    answer: ["E. Dự trữ carbohydrat, lipid, protein."]
+  },
+  {
+    type: "single",
+    question: "Câu 8: Albumin của huyết tương có vai trò chính trong:",
+    options: ["A. Tạo áp suất thẩm thấu.", "B. Tạo áp suất thuỷ tĩnh.", "C. Tạo áp suất keo.", "D. Tạo kháng thể."],
+    answer: ["C. Tạo áp suất keo."]
+  },
+  {
+    type: "single",
+    question: "Câu 9: Vai trò của albumin huyết tương:",
+    options: ["A. Tạo áp suất keo của huyết tương.", "B. Là chất tham gia cấu tạo tế bào.", "C. Là chất cung cấp năng lượng cho cơ thể.", "D. Là chất mang vận chuyển một số chất khác trong huyết tương."],
+    answer: ["A. Tạo áp suất keo của huyết tương."]
+  },
+  {
+    type: "single",
+    question: "Câu 10: Dịch kẽ là dịch nằm ngoài tế bào trong hệ thống mạch, nằm trong khoảng kẽ giữa các tế bào",
+    options: ["A. Đúng", "B. Sai"],
+    answer: ["A. Đúng"] // Định nghĩa chính xác phải là nằm ngoài mạch máu, trong khoảng kẽ. Câu này có thể gây hiểu lầm với "trong hệ thống mạch", nhưng dựa theo đáp án và ngữ cảnh "dịch kẽ", A là phù hợp nhất.
+  },
+  {
+    type: "single",
+    question: "Câu 11: Thành phần dịch kẽ gồm có các chất sau, trừ",
+    options: ["A. Protein dịch kẽ", "B. Vi khuẩn", "C. Hồng cầu", "D. Bạch cầu", "E. Các chất béo được hấp thu"],
+    answer: ["C. Hồng cầu"] // Hồng cầu thường nằm trong mạch máu, không ra dịch kẽ trừ khi có tổn thương nghiêm trọng. Các yếu tố khác có thể có mặt ở dịch kẽ trong các điều kiện nhất định (protein rò rỉ, bạch cầu di chuyển, vi khuẩn xâm nhập, chất béo vận chuyển).
+  },
+  {
+    type: "single",
+    question: "Câu 12: Dịch kẽ không có chức năng",
+    options: ["A. Cung cấp oxy cho tế bào", "B. Đào thải chất bã ở phổi", "C. Cung cấp chất dinh dưỡng cho tế bào", "D. Mang các sản phẩm chuyển hóa đến da"],
+    answer: ["B. Đào thải chất bã ở phổi"] // Đào thải chất bã ở phổi thuộc chức năng hô hấp, không phải trực tiếp của dịch kẽ.
+  },
+  {
+    type: "single",
+    question: "Câu 13: Tại đầu mao động mạch, nếu áp suất thủy tĩnh mao mạch là 30mmHg, áp suất keo của máu là 28 mmHg, áp suất âm của dịch kẽ có giá trị tuyệt đối là 3mmHg, áp keo của dịch kẽ là 8mmHg. Tổng hợp các áp suất sẽ tạo ra:",
+    options: ["A. Lực đẩy dịch từ mao mạch vào khoảng kẽ là 7 mmHg.", "B. Lực đẩy dịch từ mao mạch vào khoảng kẽ là 13mmHg.", "C. Lực kéo dịch vào lòng mạch là 7 mmHg.", "D. Lực kéo dịch vào lòng mạch là 11 mmHg."],
+    answer: ["B. Lực đẩy dịch từ mao mạch vào khoảng kẽ là 13mmHg."] // Lực đẩy = (Áp suất thủy tĩnh mao mạch + Áp suất keo dịch kẽ) - (Áp suất keo máu + Áp suất thủy tĩnh dịch kẽ). Với áp suất âm dịch kẽ (-3mmHg), áp suất thủy tĩnh dịch kẽ là -3 mmHg. Lực đẩy = (30 + 8) - (28 + (-3)) = 38 - 25 = 13 mmHg.
+  },
+  {
+    type: "single",
+    question: "Câu 14: Ở đầu mao mạch tiếp giáp với tiểu tĩnh mạch những áp suất sau kéo dịch trở lại lòng mạch là:",
+    options: ["A. Áp suất keo của máu.", "B. Áp suất thuỷ tĩnh của máu.", "C. Áp suất âm của dịch kẽ.", "D. Áp suất keo của dịch kẽ."],
+    answer: ["A. Áp suất keo của máu."] // Áp suất keo máu là lực chính kéo dịch vào lòng mạch. Áp suất thủy tĩnh dịch kẽ (âm) cũng góp phần kéo vào.
+  },
+  {
+    type: "single",
+    question: "Câu 15: Dịch bạch huyết lưu thông theo con đường",
+    options: ["A. Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tim.", "B. Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tim phải.", "C. Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tim trái.", "D. Động mạch bạch huyết > Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tâm nhĩ phải.", "E. Động mạch bạch huyết > Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tâm nhĩ trái."],
+    answer: ["B. Mao mạch bạch huyết > tĩnh mạch bạch huyết > ống ngực và ống bạch huyết phải về tim phải."] // Đổ về các tĩnh mạch dưới đòn, gần tim phải.
+  },
+  {
+    type: "single",
+    question: "Câu 16: Dịch bạch huyết từ khắp nơi trong cơ thể hòa trộn và cùng đổ trực tiếp vào:",
+    options: ["A. Tĩnh mạch dưới đòn phải và trái", "B. Tĩnh mạch chủ trên và dưới", "C. Tĩnh mạch", "D. Tâm nhĩ phải", "E. Tĩnh mạch phổi phải và trái"],
+    answer: ["D. Tâm nhĩ phải"] // Dịch bạch huyết đổ về tĩnh mạch dưới đòn, rồi về tĩnh mạch chủ trên, sau đó đổ vào tâm nhĩ phải. Đáp án D là điểm đến cuối cùng trong các lựa chọn.
+  },
+  {
+    type: "single",
+    question: "Câu 17: Các yếu tố sau đều làm tăng lưu lượng bạch huyết, trừ:",
+    options: ["A. Tăng áp suất thuỷ tĩnh mao mạch.", "B. Tăng áp suất keo của huyết tương.", "C. Tăng nồng độ protein trong dịch kẽ", "D. Tăng tính thấm của mao mạch."],
+    answer: ["B. Tăng áp suất keo của huyết tương."] // Tăng áp suất keo huyết tương giữ dịch trong lòng mạch, làm giảm dịch thoát ra dịch kẽ, do đó giảm tạo bạch huyết.
+  },
+  {
+    type: "single",
+    question: "Câu 18: Các yếu tố sau đều làm tăng hoạt động của bơm bạch huyết, trừ:",
+    options: ["A. Tăng co bóp thành mạch bạch huyết.", "B. Tăng co cơ vân.", "C. Tăng áp suất keo huyết tương.", "D. Mạch đập.", "E. Tăng vận động của phần của cơ thể."],
+    answer: ["C. Tăng áp suất keo huyết tương."] // Áp suất keo huyết tương ảnh hưởng việc tạo dịch kẽ/bạch huyết, không phải hoạt động của bơm bạch huyết.
+  },
+  {
+    type: "single",
+    question: "Câu 19: Lưu lượng dịch bạch huyết tăng khi:",
+    options: ["A. Giảm áp suất mao mạch.", "B. Tăng áp suất keo của huyết tương.", "C. Giảm nồng độ protein trong dịch kẽ.", "D. Tăng tính thấm của thành mao mạch."],
+    answer: ["D. Tăng tính thấm của thành mao mạch."] // Tăng tính thấm làm dịch thoát ra dịch kẽ nhiều hơn, tăng tạo bạch huyết.
+  },
+  {
+    type: "single",
+    question: "Câu 20: Chức năng nào dưới đây không phải là chức năng của hệ bạch huyết:",
+    options: ["A. Vận chuyển dịch kẽ về máu", "B. Vận chuyển dịch bạch huyết về tĩnh mạch dưới đòn phải và trái", "C. Vận chuyển chất béo từ hệ tiêu hóa về máu", "D. Bảo vệ", "E. A + B + C + D đều đúng."],
+    answer: ["E. A + B + C + D đều đúng."] // Tất cả các đáp án A, B, C, D đều là chức năng của hệ bạch huyết. Do đó E đúng.
+  },
+  {
+    type: "single",
+    question: "Câu 21: Cấu trúc bài tiết dịch não tủy chủ yếu là:",
+    options: ["A. Đám rối mạch mạc não thất III", "B. Nhung mao màng nhện", "C. Đám rối mạch mạc của não thất bên", "D. Nhu mô não."],
+    answer: ["C. Đám rối mạch mạc của não thất bên"] // Đám rối mạch mạc (choroid plexus) ở các não thất, chủ yếu là não thất bên, sản xuất dịch não tủy.
+  },
+  {
+    type: "single",
+    question: "Câu 22: Áp suất của dịch não tuỷ bình thường là:",
+    options: ["A. 100 - 200 mm H2O.", "B. 300 - 400 mm H2O.", "C. 500 - 600 mm H2O.", "D. 700 - 800 mm H2O."],
+    answer: ["A. 100 - 200 mm H2O."]
+  },
+  {
+    type: "single",
+    question: "Câu 23: Các chất sau đây đều dễ dàng thấm qua hàng rào máu - não, trừ:",
+    options: ["A. Chất gây mê.", "B. Oxy.", "C. Protein .", "D. CO2.", "E. Rượu."],
+    answer: ["C. Protein ."] // Protein là phân tử lớn, khó qua hàng rào máu não. Các chất tan trong lipid (gây mê, rượu) và khí (O2, CO2) dễ qua.
+  },
+  {
+    type: "single",
+    question: "Câu 24: Chức năng quan trọng nhất của dịch não tuỷ là:",
+    options: ["A. Là bình chứa có khả năng ổn định thể tích của hộp sọ.", "B. Đệm cho não trong hộp sọ cứng.", "C. Là nơi trao đổi chất dinh dưỡng của hệ thần kinh.", "D. Là trạm trung chuyển của một số thuốc tác dụng lên não mà không qua được hàng rào máu - não."],
+    answer: ["B. Đệm cho não trong hộp sọ cứng."] // Chức năng bảo vệ cơ học là quan trọng nhất.
+  }
+];
+
+  let currentQuestion = 0;
+
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    let html = `<div class="question">${q.question}</div>`;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const inputType = q.type === "multiple" ? "checkbox" : "radio";
+      html += `<div class="options">` +
+        q.options.map(opt => `
+          <label class="option-card">
+            <input type="${inputType}" name="option" value="${opt}">
+            ${opt}
+          </label>
+        `).join('') +
+        `</div>`;
+    }
+
+    if (q.type === "truefalse") {
+      html += `<div class="statements">` +
+        q.statements.map((s, idx) => `
+          <div class="statement-block">
+            <div class="statement-text">${s.text}</div>
+            <label><input type="radio" name="statement${idx}" value="Đúng"> Đúng</label>
+            <label><input type="radio" name="statement${idx}" value="Sai"> Sai</label>
+          </div>
+        `).join('') +
+        `</div>`;
+    }
+
+    html += `
+      <button class="submit-btn" onclick="submitAnswer()">Trả lời</button>
+      <div class="result" id="result"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo ➡️</button>
+    `;
+
+    document.getElementById("quiz").innerHTML = html;
+  }
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const a1 = [...arr1].sort();
+    const a2 = [...arr2].sort();
+    return a1.every((val, i) => val === a2[i]);
+  }
+
+  function submitAnswer() {
+    const q = questions[currentQuestion];
+    const result = document.getElementById("result");
+    let isCorrect = false;
+
+    if (q.type === "single" || q.type === "multiple") {
+      const selected = Array.from(document.querySelectorAll("input[name='option']:checked"))
+        .map(i => i.value);
+      if (selected.length === 0) {
+        result.innerHTML = "❗ Bạn chưa chọn đáp án.";
+        result.style.color = "red";
+        return;
+      }
+      isCorrect = (q.type === "single")
+        ? selected[0] === q.answer[0]
+        : arraysEqual(selected, q.answer);
+    }
+
+    if (q.type === "truefalse") {
+      let allCorrect = true;
+      for (let i = 0; i < q.statements.length; i++) {
+        const chosen = document.querySelector(`input[name='statement${i}']:checked`);
+        if (!chosen || chosen.value !== q.statements[i].answer) {
+          allCorrect = false;
+          break;
+        }
+      }
+      isCorrect = allCorrect;
+    }
+
+    if (isCorrect) {
+      result.innerHTML = "✅ Chính xác!";
+      result.style.color = "green";
+    } else {
+      if (q.type === "truefalse") {
+        result.innerHTML = `❌ Sai. Đáp án đúng:<br>` +
+          q.statements.map(s => `• ${s.text} → ${s.answer}`).join("<br>");
+      } else {
+        result.innerHTML = `❌ Sai. Đáp án đúng là: ${q.answer.join(", ")}`;
+      }
+      result.style.color = "red";
+    }
+
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    } else {
+      document.getElementById("quiz").innerHTML = "<div class='result'>🎉 Bạn đã hoàn thành bài trắc nghiệm!</div>";
+    }
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
